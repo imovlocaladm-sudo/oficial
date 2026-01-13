@@ -623,7 +623,7 @@ async def get_user_details(
 @router.delete("/users/{user_id}")
 async def delete_user(
     user_id: str,
-    admin = Depends(get_current_admin)
+    admin = Depends(get_current_admin_senior)
 ):
     """Delete user and all their data (Admin only)"""
     user = await db.users.find_one({"id": user_id})
