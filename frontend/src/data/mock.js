@@ -149,6 +149,7 @@ export const propertyTypes = [
   'Casa de Vila',
   'Casa-Térrea',
   'Casa-Térrea-Condomínio',
+  'Espaço para Eventos',
   'Galpão / Depósito',
   'Imóvel Comercial',
   'Kitnet',
