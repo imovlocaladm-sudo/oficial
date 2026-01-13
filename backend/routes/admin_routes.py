@@ -270,7 +270,7 @@ async def get_all_users(
 async def update_user_status(
     user_id: str,
     user_update: UserUpdate,
-    admin = Depends(get_current_admin)
+    admin = Depends(get_current_admin_senior)
 ):
     """Update user status or type (Admin only)"""
     user = await db.users.find_one({"id": user_id})
