@@ -264,6 +264,8 @@ async def update_user_status(
     if not user:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found"
+        )
 
 
 @router.put("/users/{user_id}/full-edit")
