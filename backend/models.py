@@ -152,6 +152,8 @@ class PropertyBase(BaseModel):
     features: Optional[List[str]] = []
     images: Optional[List[str]] = []
     is_launch: bool = False
+    is_featured: bool = False  # Imóvel em destaque (Corretor)
+    is_exclusive_launch: bool = False  # Lançamento exclusivo (Imobiliária)
 
 class PropertyCreate(PropertyBase):
     pass
