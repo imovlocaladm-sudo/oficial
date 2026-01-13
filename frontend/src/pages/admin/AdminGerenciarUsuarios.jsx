@@ -484,6 +484,22 @@ const AdminGerenciarUsuarios = () => {
                   >
                     <option value="particular">Particular</option>
                     <option value="corretor">Corretor</option>
+                    <option value="imobiliaria">Imobiliária</option>
+                    <option value="admin_senior">Admin Sênior</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Plano</label>
+                  <select
+                    value={newUser.plan_type || 'free'}
+                    onChange={(e) => setNewUser({ ...newUser, plan_type: e.target.value })}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
+                  >
+                    <option value="free">Free</option>
+                    <option value="mensal">Mensal</option>
+                    <option value="trimestral">Trimestral</option>
+                    <option value="anual">Anual</option>
+                    <option value="lifetime">⭐ Vitalício</option>
                   </select>
                 </div>
                 <div>
