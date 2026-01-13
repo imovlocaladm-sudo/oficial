@@ -394,6 +394,176 @@ async def get_user_details(
     
     # Remove sensitive data
     user_data = {k: v for k, v in user.items() if k not in ['_id', 'hashed_password']}
+
+
+@router.get("/opportunities-board")
+async def get_opportunities_board(admin = Depends(get_current_admin)):
+    """
+    Mural de Oportunidades - Relatório completo de demandas e propostas
+    Exibe dados sobre parcerias realizadas e não realizadas
+    """
+    # Estatísticas de Demandas
+    total_demands = await db.demands.count_documents({})
+    active_demands = await db.demands.count_documents({"status": "active"})
+    fulfilled_demands = await db.demands.count_documents({"status": "fulfilled"})
+    cancelled_demands = await db.demands.count_documents({"status": "cancelled"})
+    
+    # Estatísticas de Propostas
+    total_proposals = await db.proposals.count_documents({})
+    pending_proposals = await db.proposals.count_documents({"status": "pending"})
+    accepted_proposals = await db.proposals.count_documents({"status": "accepted"})
+    rejected_proposals = await db.proposals.count_documents({"status": "rejected"})
+    
+    # Taxa de Conversão
+    conversion_rate = (accepted_proposals / total_proposals * 100) if total_proposals > 0 else 0
+    
+    # Demandas mais recentes (últimas 10)
+    recent_demands = await db.demands.find({}).sort("created_at", -1).limit(10).to_list(10)
+    
+    # Propostas mais recentes (últimas 10)
+    recent_proposals = await db.proposals.find({}).sort("created_at", -1).limit(10).to_list(10)
+    
+    # Usuários mais ativos (com mais demandas)
+    active_users_pipeline = [
+        {"$group": {"_id": "$corretor_email", "demand_count": {"$sum": 1}}},
+        {"$sort": {"demand_count": -1}},
+        {"$limit": 5},
+        {
+            "$lookup": {
+                "from": "users",
+                "localField": "_id",
+                "foreignField": "email",
+                "as": "user_info"
+            }
+        },
+        {"$unwind": "$user_info"},
+        {
+            "$project": {
+                "email": "$_id",
+                "name": "$user_info.name",
+                "demand_count": 1,
+                "_id": 0
+            }
+        }
+    ]
+    active_users = await db.demands.aggregate(active_users_pipeline).to_list(5)
+    
+    # Parcerias realizadas (demandas + propostas aceitas)
+    partnerships_pipeline = [
+        {
+            "$match": {"status": "accepted"}
+        },
+        {
+            "$lookup": {
+                "from": "demands",
+                "localField": "demand_id",
+                "foreignField": "id",
+                "as": "demand"
+            }
+        },
+        {"$unwind": "$demand"},
+        {
+            "$lookup": {
+                "from": "users",
+                "localField": "corretor_email",
+                "foreignField": "email",
+                "as": "proposer"
+            }
+        },
+        {"$unwind": "$proposer"},
+        {
+            "$lookup": {
+                "from": "users",
+                "localField": "demand.corretor_email",
+                "foreignField": "email",
+                "as": "demander"
+            }
+        },
+        {"$unwind": "$demander"},
+        {"$sort": {"created_at": -1}},
+        {"$limit": 10},
+        {
+            "$project": {
+                "_id": 0,
+                "proposal_id": "$id",
+                "demand_title": "$demand.titulo",
+                "property_type": "$demand.tipo_imovel",
+                "proposer_name": "$proposer.name",
+                "proposer_email": "$proposer.email",
+                "demander_name": "$demander.name",
+                "demander_email": "$demander.email",
+                "created_at": 1,
+                "message": 1
+            }
+        }
+    ]
+    partnerships = await db.proposals.aggregate(partnerships_pipeline).to_list(10)
+    
+    # Demandas por tipo de imóvel
+    demands_by_type_pipeline = [
+        {"$group": {"_id": "$tipo_imovel", "count": {"$sum": 1}}},
+        {"$sort": {"count": -1}}
+    ]
+    demands_by_type = await db.demands.aggregate(demands_by_type_pipeline).to_list(20)
+    
+    # Demandas por cidade
+    demands_by_city_pipeline = [
+        {"$group": {"_id": "$cidade", "count": {"$sum": 1}}},
+        {"$sort": {"count": -1}},
+        {"$limit": 5}
+    ]
+    demands_by_city = await db.demands.aggregate(demands_by_city_pipeline).to_list(5)
+    
+    return {
+        "statistics": {
+            "demands": {
+                "total": total_demands,
+                "active": active_demands,
+                "fulfilled": fulfilled_demands,
+                "cancelled": cancelled_demands
+            },
+            "proposals": {
+                "total": total_proposals,
+                "pending": pending_proposals,
+                "accepted": accepted_proposals,
+                "rejected": rejected_proposals
+            },
+            "conversion_rate": round(conversion_rate, 2)
+        },
+        "recent_demands": [
+            {
+                "id": d.get("id"),
+                "title": d.get("titulo"),
+                "property_type": d.get("tipo_imovel"),
+                "city": d.get("cidade"),
+                "status": d.get("status"),
+                "created_at": d.get("created_at").isoformat() if d.get("created_at") else None,
+                "corretor_email": d.get("corretor_email")
+            }
+            for d in recent_demands
+        ],
+        "recent_proposals": [
+            {
+                "id": p.get("id"),
+                "demand_id": p.get("demand_id"),
+                "status": p.get("status"),
+                "created_at": p.get("created_at").isoformat() if p.get("created_at") else None,
+                "corretor_email": p.get("corretor_email")
+            }
+            for p in recent_proposals
+        ],
+        "active_users": active_users,
+        "partnerships": partnerships,
+        "demands_by_type": [
+            {"type": item["_id"], "count": item["count"]}
+            for item in demands_by_type
+        ],
+        "demands_by_city": [
+            {"city": item["_id"], "count": item["count"]}
+            for item in demands_by_city
+        ]
+    }
+
     user_data['properties_count'] = properties_count
     
     return user_data
