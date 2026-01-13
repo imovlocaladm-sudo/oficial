@@ -8,7 +8,8 @@ class UserType(str, Enum):
     particular = "particular"    # Só pode anunciar Aluguel e Aluguel por Temporada
     corretor = "corretor"        # Pode anunciar todos os tipos (Venda, Aluguel, etc.)
     imobiliaria = "imobiliaria"  # Imobiliária com CRECI, múltiplos anúncios
-    admin = "admin"
+    admin = "admin"              # Admin Master - acesso total
+    admin_senior = "admin_senior"  # Admin Sênior - acesso limitado
 
 class UserStatus(str, Enum):
     active = "active"
