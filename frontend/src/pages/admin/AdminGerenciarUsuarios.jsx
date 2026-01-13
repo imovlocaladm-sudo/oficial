@@ -4,7 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import { Button } from '../../components/ui/button';
-import { ArrowLeft, UserCheck, UserX, Pause, Trash2, Filter, UserPlus, X, RefreshCw } from 'lucide-react';
+import { ArrowLeft, UserCheck, UserX, Pause, Trash2, Filter, UserPlus, X, RefreshCw, Edit } from 'lucide-react';
 import { adminAPIService } from '../../services/adminAPI';
 import { toast } from 'sonner';
 
