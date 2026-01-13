@@ -75,8 +75,8 @@ const AdminGerenciarBanners = () => {
   ];
 
   useEffect(() => {
-    if (user?.user_type !== 'admin') {
-      navigate('/admin/dashboard');
+    if (user?.user_type !== 'admin' && user?.user_type !== 'admin_senior') {
+      navigate('/');
       return;
     }
     loadBanners();
