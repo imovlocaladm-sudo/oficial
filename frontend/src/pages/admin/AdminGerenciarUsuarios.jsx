@@ -45,8 +45,10 @@ const AdminGerenciarUsuarios = () => {
   const [users, setUsers] = useState([]);
   const [filter, setFilter] = useState({ status: '', userType: '' });
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
+  const [userToEdit, setUserToEdit] = useState(null);
   const [lastUpdated, setLastUpdated] = useState(null);
   const [newUser, setNewUser] = useState({
     name: '',
@@ -59,6 +61,23 @@ const AdminGerenciarUsuarios = () => {
     user_type: 'particular',
     creci: '',
     company: ''
+  });
+  const [editUser, setEditUser] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    cpf: '',
+    city: '',
+    state: '',
+    user_type: '',
+    creci: '',
+    company: '',
+    cnpj: '',
+    razao_social: '',
+    status: '',
+    plan_type: '',
+    bio: '',
+    new_password: ''
   });
 
   // Auto-refresh every 30 seconds
