@@ -159,6 +159,7 @@ async def list_properties(
     min_price: Optional[float] = Query(None, description="Minimum price"),
     max_price: Optional[float] = Query(None, description="Maximum price"),
     is_launch: Optional[bool] = Query(None, description="Filter launches"),
+    is_featured: Optional[bool] = Query(None, description="Filter featured properties"),
     limit: int = Query(50, le=100, description="Number of results"),
     skip: int = Query(0, ge=0, description="Number of results to skip")
 ):
@@ -184,6 +185,14 @@ async def list_properties(
             query['price']['$lte'] = max_price
     if is_launch is not None:
         query['is_launch'] = is_launch
+    if is_featured is not None:
+        query['is_featured'] = is_featured
+    
+    # Excluir lançamentos exclusivos da listagem pública
+    query['$or'] = [
+        {'is_exclusive_launch': {'$exists': False}},
+        {'is_exclusive_launch': False}
+    ]
     
     # Use aggregation to include owner info
     pipeline = [
