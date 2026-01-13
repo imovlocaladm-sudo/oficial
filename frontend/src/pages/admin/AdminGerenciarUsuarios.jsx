@@ -179,6 +179,57 @@ const AdminGerenciarUsuarios = () => {
     }
   };
 
+
+  const handleOpenEditModal = async (userId) => {
+    try {
+      const userDetails = await adminAPIService.getUserDetails(userId);
+      setUserToEdit(userDetails);
+      setEditUser({
+        name: userDetails.name || '',
+        email: userDetails.email || '',
+        phone: userDetails.phone || '',
+        cpf: userDetails.cpf || '',
+        city: userDetails.city || '',
+        state: userDetails.state || '',
+        user_type: userDetails.user_type || '',
+        creci: userDetails.creci || '',
+        company: userDetails.company || '',
+        cnpj: userDetails.cnpj || '',
+        razao_social: userDetails.razao_social || '',
+        status: userDetails.status || '',
+        plan_type: userDetails.plan_type || 'free',
+        bio: userDetails.bio || '',
+        new_password: ''
+      });
+      setShowEditModal(true);
+    } catch (error) {
+      console.error('Error fetching user details:', error);
+      toast.error('Erro ao carregar detalhes do usuário');
+    }
+  };
+
+  const handleEditUser = async (e) => {
+    e.preventDefault();
+    
+    // Validation
+    if (!editUser.name || !editUser.email || !editUser.phone) {
+      toast.error('Preencha todos os campos obrigatórios');
+      return;
+    }
+
+    try {
+      await adminAPIService.fullEditUser(userToEdit.id, editUser);
+      toast.success('Usuário atualizado com sucesso!');
+      setShowEditModal(false);
+      setUserToEdit(null);
+      fetchUsers();
+    } catch (error) {
+      console.error('Error updating user:', error);
+      toast.error(error.response?.data?.detail || 'Erro ao atualizar usuário');
+    }
+  };
+
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
