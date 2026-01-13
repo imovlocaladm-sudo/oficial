@@ -410,6 +410,9 @@ async def get_user_details(
     
     # Remove sensitive data
     user_data = {k: v for k, v in user.items() if k not in ['_id', 'hashed_password']}
+    user_data['properties_count'] = properties_count
+    
+    return user_data
 
 
 @router.get("/opportunities-board")
