@@ -196,7 +196,7 @@ const GerenciarImoveis = () => {
                     </div>
 
                     {/* Actions */}
-                    <div className="flex gap-2">
+                    <div className="flex flex-wrap gap-2">
                       <Button
                         variant="outline"
                         size="sm"
@@ -213,6 +213,33 @@ const GerenciarImoveis = () => {
                         <Edit size={16} className="mr-1" />
                         Editar
                       </Button>
+                      
+                      {/* Botão Destaque (Corretor e Imobiliária) */}
+                      {(user?.user_type === 'corretor' || user?.user_type === 'imobiliaria') && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleToggleFeatured(property.id)}
+                          className={property.is_featured ? 'bg-yellow-50 border-yellow-300 text-yellow-700' : ''}
+                        >
+                          <Star size={16} className="mr-1" fill={property.is_featured ? 'currentColor' : 'none'} />
+                          {property.is_featured ? 'Remover Destaque' : 'Marcar Destaque'}
+                        </Button>
+                      )}
+                      
+                      {/* Botão Lançamento Exclusivo (apenas Imobiliária) */}
+                      {user?.user_type === 'imobiliaria' && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleToggleExclusiveLaunch(property.id)}
+                          className={property.is_exclusive_launch ? 'bg-purple-50 border-purple-300 text-purple-700' : ''}
+                        >
+                          <Lock size={16} className="mr-1" />
+                          {property.is_exclusive_launch ? 'Tornar Público' : 'Exclusivo'}
+                        </Button>
+                      )}
+                      
                       <Button
                         variant="outline"
                         size="sm"
