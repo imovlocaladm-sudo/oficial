@@ -368,6 +368,13 @@ const AdminGerenciarUsuarios = () => {
                       <td className="px-4 py-3 text-sm text-gray-700">{u.city} - {u.state}</td>
                       <td className="px-4 py-3">
                         <div className="flex items-center justify-center gap-2">
+                          <button
+                            onClick={() => handleOpenEditModal(u.id)}
+                            className="p-2 text-blue-600 hover:bg-blue-50 rounded"
+                            title="Editar"
+                          >
+                            <Edit size={16} />
+                          </button>
                           {u.status !== 'active' && (
                             <button
                               onClick={() => handleStatusChange(u.id, 'active')}
