@@ -29,3 +29,33 @@ async def verify_admin(email: str = Depends(get_current_user_email)):
 async def get_current_admin(email: str = Depends(get_current_user_email)):
     """Get current admin user"""
     return await verify_admin(email)
+
+
+async def verify_admin_senior(email: str = Depends(get_current_user_email)):
+    """Middleware to verify if user is admin senior or admin master"""
+    user = await db.users.find_one({"email": email})
+    
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found"
+        )
+    
+    # Admin Senior ou Admin Master podem acessar
+    if user.get('user_type') not in ['admin', 'admin_senior']:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access denied. Admin Senior or Admin Master privileges required."
+        )
+    
+    if user.get('status') != 'active':
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Account is not active"
+        )
+    
+    return user
+
+async def get_current_admin_senior(email: str = Depends(get_current_user_email)):
+    """Get current admin senior or admin master user"""
+    return await verify_admin_senior(email)
