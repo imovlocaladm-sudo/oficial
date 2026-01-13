@@ -64,6 +64,34 @@ const GerenciarImoveis = () => {
     }
   };
 
+  const handleToggleFeatured = async (propertyId) => {
+    try {
+      await propertiesAPI.toggleFeatured(propertyId);
+      // Atualizar a lista
+      await fetchProperties();
+      toast.success('Status de destaque atualizado!');
+    } catch (error) {
+      console.error('Error toggling featured:', error);
+      toast.error('Erro ao atualizar destaque', {
+        description: error.response?.data?.detail || 'Tente novamente.',
+      });
+    }
+  };
+
+  const handleToggleExclusiveLaunch = async (propertyId) => {
+    try {
+      await propertiesAPI.toggleExclusiveLaunch(propertyId);
+      // Atualizar a lista
+      await fetchProperties();
+      toast.success('Status de lançamento exclusivo atualizado!');
+    } catch (error) {
+      console.error('Error toggling exclusive launch:', error);
+      toast.error('Erro ao atualizar lançamento exclusivo', {
+        description: error.response?.data?.detail || 'Tente novamente.',
+      });
+    }
+  };
+
   const formatPrice = (price) => {
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
