@@ -103,6 +103,12 @@ function App() {
                 <AdminMasterDashboard />
               </ProtectedRoute>
             } />
+            <Route path="/admin/senior" element={
+              <ProtectedRoute>
+                <AdminSeniorDashboard />
+              </ProtectedRoute>
+            } />
+
             <Route path="/admin/master/users" element={
               <ProtectedRoute>
                 <AdminGerenciarUsuarios />
