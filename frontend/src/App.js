@@ -116,6 +116,12 @@ function App() {
               <ProtectedRoute>
                 <AdminGerenciarBanners />
               </ProtectedRoute>
+            <Route path="/admin/master/oportunidades" element={
+              <ProtectedRoute>
+                <AdminMuralOportunidades />
+              </ProtectedRoute>
+            } />
+
             } />
           </Routes>
           <Toaster />
