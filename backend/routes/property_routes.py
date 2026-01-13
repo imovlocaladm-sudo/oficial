@@ -511,3 +511,114 @@ async def get_my_properties(
     properties = await cursor.to_list(length=limit)
     
     return [Property(**{k: v for k, v in prop.items() if k != '_id'}) for prop in properties]
+
+
+@router.patch("/{property_id}/toggle-featured", response_model=Property)
+async def toggle_featured(
+    property_id: str,
+    email: str = Depends(get_current_user_email)
+):
+    """Marcar/desmarcar imóvel como destaque (apenas Corretor e Imobiliária)"""
+    # Get user
+    user = await users_collection.find_one({"email": email})
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found"
+        )
+    
+    # Verificar se usuário é corretor ou imobiliária
+    if user.get('user_type') not in ['corretor', 'imobiliaria']:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Apenas corretores e imobiliárias podem marcar imóveis como destaque"
+        )
+    
+    # Get property
+    property_data = await properties_collection.find_one({"id": property_id})
+    if not property_data:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Property not found"
+        )
+    
+    # Check ownership
+    if property_data['owner_id'] != user['id']:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Not authorized to modify this property"
+        )
+    
+    # Toggle featured status
+    current_status = property_data.get('is_featured', False)
+    new_status = not current_status
+    
+    await properties_collection.update_one(
+        {"id": property_id},
+        {
+            "$set": {
+                "is_featured": new_status,
+                "updated_at": datetime.utcnow()
+            }
+        }
+    )
+    
+    # Return updated property
+    updated_property = await properties_collection.find_one({"id": property_id})
+    return Property(**{k: v for k, v in updated_property.items() if k != '_id'})
+
+
+@router.patch("/{property_id}/toggle-exclusive-launch", response_model=Property)
+async def toggle_exclusive_launch(
+    property_id: str,
+    email: str = Depends(get_current_user_email)
+):
+    """Marcar/desmarcar imóvel como lançamento exclusivo (apenas Imobiliária)"""
+    # Get user
+    user = await users_collection.find_one({"email": email})
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found"
+        )
+    
+    # Verificar se usuário é imobiliária
+    if user.get('user_type') != 'imobiliaria':
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Apenas imobiliárias podem marcar imóveis como lançamento exclusivo"
+        )
+    
+    # Get property
+    property_data = await properties_collection.find_one({"id": property_id})
+    if not property_data:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Property not found"
+        )
+    
+    # Check ownership
+    if property_data['owner_id'] != user['id']:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Not authorized to modify this property"
+        )
+    
+    # Toggle exclusive launch status
+    current_status = property_data.get('is_exclusive_launch', False)
+    new_status = not current_status
+    
+    await properties_collection.update_one(
+        {"id": property_id},
+        {
+            "$set": {
+                "is_exclusive_launch": new_status,
+                "updated_at": datetime.utcnow()
+            }
+        }
+    )
+    
+    # Return updated property
+    updated_property = await properties_collection.find_one({"id": property_id})
+    return Property(**{k: v for k, v in updated_property.items() if k != '_id'})
+
