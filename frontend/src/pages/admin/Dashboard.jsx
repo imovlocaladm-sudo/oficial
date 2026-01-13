@@ -20,8 +20,18 @@ const Dashboard = () => {
   });
 
   useEffect(() => {
+    // Redirect admin_senior to their dashboard
+    if (user?.user_type === 'admin_senior') {
+      navigate('/admin/senior');
+      return;
+    }
+    // Redirect admin master to admin master dashboard
+    if (user?.user_type === 'admin') {
+      navigate('/admin/master');
+      return;
+    }
     fetchMyProperties();
-  }, []);
+  }, [user, navigate]);
 
   const fetchMyProperties = async () => {
     try {
