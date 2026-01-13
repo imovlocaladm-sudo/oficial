@@ -25,6 +25,7 @@ import Notificacoes from "./pages/admin/Notificacoes.jsx";
 
 // Master Admin Pages
 import AdminMasterDashboard from "./pages/admin/AdminMasterDashboard.jsx";
+import AdminSeniorDashboard from "./pages/admin/AdminSeniorDashboard.jsx";
 import AdminGerenciarUsuarios from "./pages/admin/AdminGerenciarUsuarios.jsx";
 import AdminGerenciarImoveis from "./pages/admin/AdminGerenciarImoveis.jsx";
 import AdminGerenciarBanners from "./pages/admin/AdminGerenciarBanners.jsx";
