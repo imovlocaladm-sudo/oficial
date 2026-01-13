@@ -81,6 +81,12 @@ export const adminAPIService = {
     const response = await adminAPI.delete(`/properties/${propertyId}`);
     return response.data;
   },
+
+  // Opportunities Board
+  getOpportunitiesBoard: async () => {
+    const response = await adminAPI.get('/opportunities-board');
+    return response.data;
+  },
 };
 
 export default adminAPIService;
