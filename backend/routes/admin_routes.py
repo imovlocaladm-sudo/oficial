@@ -372,6 +372,7 @@ async def full_edit_user(
             "status": updated_user['status'],
             "plan_type": updated_user.get('plan_type', 'free')
         }
+    }
 
 
 @router.get("/users/{user_id}/details")
