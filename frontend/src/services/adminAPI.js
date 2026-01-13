@@ -61,6 +61,16 @@ export const adminAPIService = {
     return response.data;
   },
 
+  getUserDetails: async (userId) => {
+    const response = await adminAPI.get(`/users/${userId}/details`);
+    return response.data;
+  },
+
+  fullEditUser: async (userId, userData) => {
+    const response = await adminAPI.put(`/users/${userId}/full-edit`, userData);
+    return response.data;
+  },
+
   // Property Management
   getAllProperties: async () => {
     const response = await adminAPI.get('/properties');
