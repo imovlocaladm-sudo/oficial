@@ -284,9 +284,11 @@ const Perfil = () => {
                   <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
                     user?.user_type === 'corretor'
                       ? 'bg-blue-100 text-blue-700'
+                      : user?.user_type === 'imobiliaria'
+                      ? 'bg-orange-100 text-orange-700'
                       : 'bg-gray-100 text-gray-700'
                   }`}>
-                    {user?.user_type === 'corretor' ? 'Corretor' : 'Particular'}
+                    {user?.user_type === 'corretor' ? 'Corretor' : user?.user_type === 'imobiliaria' ? 'Imobiliária' : 'Particular'}
                   </span>
                   {user?.creci && (
                     <span className="px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700">
