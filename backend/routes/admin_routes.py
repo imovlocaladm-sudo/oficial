@@ -208,7 +208,7 @@ async def get_all_users(
     user_type: Optional[str] = None,
     limit: int = 100,
     skip: int = 0,
-    admin = Depends(get_current_admin)
+    admin = Depends(get_current_admin_senior)
 ):
     """Get all users (Admin only) with pagination"""
     match_query = {"user_type": {"$ne": "admin"}}
