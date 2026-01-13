@@ -140,7 +140,7 @@ async def get_dashboard_stats(admin = Depends(get_current_admin)):
 # =============================================
 
 @router.post("/users", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
-async def create_user(user_data: UserCreate, admin = Depends(get_current_admin)):
+async def create_user(user_data: UserCreate, admin = Depends(get_current_admin_senior)):
     """Create a new user (Admin only)"""
     
     # Check if email already exists
