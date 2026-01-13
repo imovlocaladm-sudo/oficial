@@ -177,6 +177,8 @@ class PropertyUpdate(BaseModel):
     features: Optional[List[str]] = None
     images: Optional[List[str]] = None
     is_launch: Optional[bool] = None
+    is_featured: Optional[bool] = None
+    is_exclusive_launch: Optional[bool] = None
 
 class Property(PropertyBase):
     id: str
