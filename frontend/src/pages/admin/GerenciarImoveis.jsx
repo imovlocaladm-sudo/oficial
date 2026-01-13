@@ -167,6 +167,16 @@ const GerenciarImoveis = () => {
                               LANÇAMENTO
                             </span>
                           )}
+                          {property.is_featured && (
+                            <span className="px-3 py-1 rounded-md text-xs font-bold bg-yellow-100 text-yellow-700 flex items-center gap-1">
+                              ⭐ DESTAQUE
+                            </span>
+                          )}
+                          {property.is_exclusive_launch && (
+                            <span className="px-3 py-1 rounded-md text-xs font-bold bg-purple-100 text-purple-700 flex items-center gap-1">
+                              🔒 EXCLUSIVO
+                            </span>
+                          )}
                         </div>
                         <h3 className="text-xl font-bold text-gray-800 mb-1">{property.title}</h3>
                         <p className="text-sm text-gray-600">{property.property_type}</p>
