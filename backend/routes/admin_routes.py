@@ -655,7 +655,7 @@ async def delete_user(
 async def get_all_properties(
     limit: int = 100,
     skip: int = 0,
-    admin = Depends(get_current_admin)
+    admin = Depends(get_current_admin_senior)
 ):
     """Get all properties with owner info (Admin only) using aggregation"""
     pipeline = [
