@@ -690,7 +690,7 @@ async def get_all_properties(
 @router.delete("/properties/{property_id}")
 async def delete_property_admin(
     property_id: str,
-    admin = Depends(get_current_admin)
+    admin = Depends(get_current_admin_senior)
 ):
     """Delete any property (Admin only)"""
     result = await db.properties.delete_one({"id": property_id})
