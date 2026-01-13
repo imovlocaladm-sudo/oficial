@@ -302,7 +302,7 @@ async def update_user_status(
 async def full_edit_user(
     user_id: str,
     user_update: UserFullUpdate,
-    admin = Depends(get_current_admin)
+    admin = Depends(get_current_admin_senior)
 ):
     """Full user edit - Admin can edit all user fields (Admin only)"""
     user = await db.users.find_one({"id": user_id})
