@@ -152,10 +152,17 @@ async def create_user(user_data: UserCreate, admin = Depends(get_current_admin))
         )
     
     # Validate user_type
-    if user_data.user_type not in ['particular', 'corretor']:
+    if user_data.user_type not in ['particular', 'corretor', 'imobiliaria', 'admin_senior']:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Tipo de usuário inválido. Use 'particular' ou 'corretor'"
+            detail="Tipo de usuário inválido"
+        )
+    
+    # Validate plan_type
+    if user_data.plan_type not in ['free', 'mensal', 'trimestral', 'anual', 'lifetime']:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Plano inválido"
         )
     
     # Create user document
@@ -171,6 +178,10 @@ async def create_user(user_data: UserCreate, admin = Depends(get_current_admin))
         'user_type': user_data.user_type,
         'creci': user_data.creci,
         'company': user_data.company,
+        'cnpj': user_data.cnpj,
+        'razao_social': user_data.razao_social,
+        'plan_type': user_data.plan_type,
+        'plan_expires_at': None if user_data.plan_type == 'lifetime' else None,
         'status': 'active',  # New users created by admin are active by default
         'hashed_password': pwd_context.hash(user_data.password),
         'created_at': datetime.utcnow()
