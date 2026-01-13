@@ -21,11 +21,15 @@ const Home = () => {
         // Fetch all properties
         const allProperties = await propertiesAPI.list({ limit: 50 });
         
-        // Separate featured and launches
+        // Separate featured, launches, and regular properties
         const launchProperties = allProperties.filter(p => p.is_launch);
-        const featuredList = allProperties.filter(p => !p.is_launch).slice(0, 8);
+        const featuredList = allProperties.filter(p => p.is_featured);
+        const regularProperties = allProperties.filter(p => !p.is_launch && !p.is_featured);
         
-        setFeaturedProperties(featuredList);
+        // Combine: featured first, then regular (prioritize featured)
+        const combinedFeatured = [...featuredList, ...regularProperties].slice(0, 8);
+        
+        setFeaturedProperties(combinedFeatured);
         setLaunches(launchProperties.length > 0 ? launchProperties : allProperties.slice(0, 4));
         
       } catch (error) {
