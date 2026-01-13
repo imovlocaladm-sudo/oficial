@@ -34,9 +34,12 @@ class UserCreate(BaseModel):
     cpf: str
     city: str
     state: str
-    user_type: str  # 'particular' or 'corretor'
+    user_type: str  # 'particular', 'corretor', 'imobiliaria', 'admin_senior'
     creci: Optional[str] = None
     company: Optional[str] = None
+    cnpj: Optional[str] = None
+    razao_social: Optional[str] = None
+    plan_type: Optional[str] = 'free'  # 'free', 'mensal', 'trimestral', 'anual', 'lifetime'
 
 class UserUpdate(BaseModel):
     status: Optional[str] = None
