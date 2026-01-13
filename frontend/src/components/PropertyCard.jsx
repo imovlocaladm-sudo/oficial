@@ -44,13 +44,22 @@ const PropertyCard = ({ property }) => {
           <div className={`absolute top-3 left-3 px-3 py-1 rounded-md font-bold text-sm ${
             property.purpose === 'VENDA' 
               ? 'bg-green-600 text-white' 
+              : property.purpose === 'ALUGUEL_TEMPORADA'
+              ? 'bg-purple-600 text-white'
               : 'bg-blue-600 text-white'
           }`}>
-            {property.purpose}
+            {property.purpose === 'ALUGUEL_TEMPORADA' ? 'ALUGUEL_TEMPORADA' : property.purpose}
           </div>
+          {/* Launch Badge */}
           {property.is_launch && (
             <div className="absolute top-3 right-3 px-3 py-1 rounded-md font-bold text-sm bg-orange-500 text-white">
               LANÇAMENTO
+            </div>
+          )}
+          {/* Featured Badge */}
+          {property.is_featured && (
+            <div className="absolute bottom-3 left-3 px-3 py-1 rounded-md font-bold text-sm bg-yellow-500 text-white shadow-lg flex items-center gap-1">
+              ⭐ DESTAQUE
             </div>
           )}
         </div>
