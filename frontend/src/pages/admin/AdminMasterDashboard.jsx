@@ -147,6 +147,12 @@ const AdminMasterDashboard = () => {
                 Gerenciar Banners
               </Button>
             </Link>
+            <Link to="/admin/master/oportunidades">
+              <Button className="w-full bg-indigo-600 hover:bg-indigo-700">
+                <TrendingUp size={18} className="mr-2" />
+                Mural de Oportunidades
+              </Button>
+            </Link>
           </div>
         </div>
 
