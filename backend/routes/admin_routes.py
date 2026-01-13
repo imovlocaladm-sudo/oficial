@@ -266,6 +266,22 @@ async def update_user_status(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="User not found"
         )
+    
+    if user.get('user_type') == 'admin':
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Cannot modify admin users"
+        )
+    
+    update_data = {}
+    if user_update.status:
+        update_data['status'] = user_update.status
+    if user_update.user_type:
+        update_data['user_type'] = user_update.user_type
+    
+    await db.users.update_one({"id": user_id}, {"$set": update_data})
+    
+    return {"message": "User updated successfully", "user_id": user_id}
 
 
 @router.put("/users/{user_id}/full-edit")
