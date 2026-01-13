@@ -13,6 +13,20 @@ module.exports = {
   			sm: 'calc(var(--radius) - 4px)'
   		},
   		colors: {
+  			// ImovLocal Brand Colors
+  			'imovlocal': {
+  				DEFAULT: '#E31E24',
+  				50: '#FCEBEB',
+  				100: '#F9D6D7',
+  				200: '#F4ADAE',
+  				300: '#EE8486',
+  				400: '#E95B5D',
+  				500: '#E31E24',
+  				600: '#C11A1F',
+  				700: '#9B1419',
+  				800: '#760F13',
+  				900: '#500A0D',
+  			},
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
   			card: {
