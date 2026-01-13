@@ -60,7 +60,8 @@ const AdminGerenciarUsuarios = () => {
     state: 'MS',
     user_type: 'particular',
     creci: '',
-    company: ''
+    company: '',
+    plan_type: 'free'
   });
   const [editUser, setEditUser] = useState({
     name: '',
