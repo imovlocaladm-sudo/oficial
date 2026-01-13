@@ -139,6 +139,8 @@ async def create_property_with_images(
         'features': features_list,
         'images': image_urls,
         'is_launch': is_launch,
+        'is_featured': False,  # Default para não destacado
+        'is_exclusive_launch': False,  # Default para não exclusivo
         'owner_id': user['id'],
         'created_at': datetime.utcnow(),
         'updated_at': datetime.utcnow()
