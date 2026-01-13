@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, status, Depends
 from typing import List, Optional
 from pydantic import BaseModel, EmailStr
-from middlewares.admin_middleware import get_current_admin
+from middlewares.admin_middleware import get_current_admin, get_current_admin_senior
 from database import db
 from datetime import datetime, timedelta
 from passlib.context import CryptContext
