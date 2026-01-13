@@ -217,6 +217,16 @@ export const propertiesAPI = {
     const response = await api.get('/properties/user/my-properties');
     return response.data;
   },
+  
+  toggleFeatured: async (id) => {
+    const response = await api.patch(`/properties/${id}/toggle-featured`);
+    return response.data;
+  },
+  
+  toggleExclusiveLaunch: async (id) => {
+    const response = await api.patch(`/properties/${id}/toggle-exclusive-launch`);
+    return response.data;
+  },
 };
 
 // Visits API - Agendamento de Visitas
