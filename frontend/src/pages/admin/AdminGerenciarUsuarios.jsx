@@ -545,6 +545,262 @@ const AdminGerenciarUsuarios = () => {
         </div>
       )}
 
+
+      {/* Modal: Edit User */}
+      {showEditModal && userToEdit && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-y-auto">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-3xl my-8">
+            <div className="p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-2xl font-bold text-gray-800">Editar Usuário</h3>
+                <button onClick={() => setShowEditModal(false)} className="text-gray-500 hover:text-gray-700">
+                  <X size={24} />
+                </button>
+              </div>
+              
+              <form onSubmit={handleEditUser}>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Nome */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Nome Completo *
+                    </label>
+                    <input
+                      type="text"
+                      value={editUser.name}
+                      onChange={(e) => setEditUser({...editUser, name: e.target.value})}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                      required
+                    />
+                  </div>
+
+                  {/* Email */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Email *
+                    </label>
+                    <input
+                      type="email"
+                      value={editUser.email}
+                      onChange={(e) => setEditUser({...editUser, email: e.target.value})}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                      required
+                    />
+                  </div>
+
+                  {/* Telefone */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Telefone *
+                    </label>
+                    <input
+                      type="text"
+                      value={editUser.phone}
+                      onChange={(e) => setEditUser({...editUser, phone: e.target.value})}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                      required
+                    />
+                  </div>
+
+                  {/* CPF */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      CPF
+                    </label>
+                    <input
+                      type="text"
+                      value={editUser.cpf}
+                      onChange={(e) => setEditUser({...editUser, cpf: e.target.value})}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                    />
+                  </div>
+
+                  {/* Cidade */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Cidade
+                    </label>
+                    <input
+                      type="text"
+                      value={editUser.city}
+                      onChange={(e) => setEditUser({...editUser, city: e.target.value})}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                    />
+                  </div>
+
+                  {/* Estado */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Estado
+                    </label>
+                    <select
+                      value={editUser.state}
+                      onChange={(e) => setEditUser({...editUser, state: e.target.value})}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                    >
+                      {states.map(state => (
+                        <option key={state.code} value={state.code}>{state.name}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* Tipo de Usuário */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Tipo de Usuário *
+                    </label>
+                    <select
+                      value={editUser.user_type}
+                      onChange={(e) => setEditUser({...editUser, user_type: e.target.value})}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                      required
+                    >
+                      <option value="particular">Particular</option>
+                      <option value="corretor">Corretor</option>
+                      <option value="imobiliaria">Imobiliária</option>
+                      <option value="admin_senior">Admin Sênior</option>
+                    </select>
+                  </div>
+
+                  {/* Status */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Status *
+                    </label>
+                    <select
+                      value={editUser.status}
+                      onChange={(e) => setEditUser({...editUser, status: e.target.value})}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                      required
+                    >
+                      <option value="active">Ativo</option>
+                      <option value="paused">Pausado</option>
+                      <option value="pending">Pendente</option>
+                    </select>
+                  </div>
+
+                  {/* Plano */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Plano
+                    </label>
+                    <select
+                      value={editUser.plan_type}
+                      onChange={(e) => setEditUser({...editUser, plan_type: e.target.value})}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                    >
+                      <option value="free">Free</option>
+                      <option value="mensal">Mensal</option>
+                      <option value="trimestral">Trimestral</option>
+                      <option value="anual">Anual</option>
+                      <option value="lifetime">⭐ Vitalício</option>
+                    </select>
+                  </div>
+
+                  {/* CRECI - mostrar apenas se corretor ou imobiliária */}
+                  {(editUser.user_type === 'corretor' || editUser.user_type === 'imobiliaria') && (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        CRECI
+                      </label>
+                      <input
+                        type="text"
+                        value={editUser.creci}
+                        onChange={(e) => setEditUser({...editUser, creci: e.target.value})}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                      />
+                    </div>
+                  )}
+
+                  {/* Empresa */}
+                  {(editUser.user_type === 'corretor' || editUser.user_type === 'imobiliaria') && (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Empresa
+                      </label>
+                      <input
+                        type="text"
+                        value={editUser.company}
+                        onChange={(e) => setEditUser({...editUser, company: e.target.value})}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                      />
+                    </div>
+                  )}
+
+                  {/* CNPJ - apenas para imobiliária */}
+                  {editUser.user_type === 'imobiliaria' && (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        CNPJ
+                      </label>
+                      <input
+                        type="text"
+                        value={editUser.cnpj}
+                        onChange={(e) => setEditUser({...editUser, cnpj: e.target.value})}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                      />
+                    </div>
+                  )}
+
+                  {/* Razão Social - apenas para imobiliária */}
+                  {editUser.user_type === 'imobiliaria' && (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Razão Social
+                      </label>
+                      <input
+                        type="text"
+                        value={editUser.razao_social}
+                        onChange={(e) => setEditUser({...editUser, razao_social: e.target.value})}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                      />
+                    </div>
+                  )}
+
+                  {/* Nova Senha */}
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Nova Senha (deixe em branco para não alterar)
+                    </label>
+                    <input
+                      type="password"
+                      value={editUser.new_password}
+                      onChange={(e) => setEditUser({...editUser, new_password: e.target.value})}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                      placeholder="Deixe em branco para manter a senha atual"
+                    />
+                  </div>
+
+                  {/* Bio */}
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Bio / Descrição
+                    </label>
+                    <textarea
+                      value={editUser.bio}
+                      onChange={(e) => setEditUser({...editUser, bio: e.target.value})}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                      rows="3"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex justify-end gap-3 mt-6">
+                  <Button type="button" variant="outline" onClick={() => setShowEditModal(false)}>
+                    Cancelar
+                  </Button>
+                  <Button type="submit" className="bg-blue-600 hover:bg-blue-700">
+                    <Edit size={18} className="mr-2" />
+                    Salvar Alterações
+                  </Button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
+
+
       {/* Modal: Confirm Delete */}
       {showDeleteModal && userToDelete && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
