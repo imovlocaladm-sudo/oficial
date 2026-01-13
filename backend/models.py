@@ -44,6 +44,7 @@ class PropertyType(str, Enum):
     sala_loja = "Sala / Salão / Loja"
     galpao = "Galpão / Depósito"
     sitio = "Sítio / Fazenda / Chácara"
+    espaco_eventos = "Espaço para Eventos"
 
 # User Models
 class UserBase(BaseModel):
