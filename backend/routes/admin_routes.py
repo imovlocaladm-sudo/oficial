@@ -264,6 +264,114 @@ async def update_user_status(
     if not user:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
+
+
+@router.put("/users/{user_id}/full-edit")
+async def full_edit_user(
+    user_id: str,
+    user_update: UserFullUpdate,
+    admin = Depends(get_current_admin)
+):
+    """Full user edit - Admin can edit all user fields (Admin only)"""
+    user = await db.users.find_one({"id": user_id})
+    
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found"
+        )
+    
+    if user.get('user_type') == 'admin' and admin['email'] != user['email']:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Cannot modify other admin users"
+        )
+    
+    update_data = {}
+    
+    # Update basic fields
+    if user_update.name:
+        update_data['name'] = user_update.name
+    if user_update.email:
+        # Check if email is already taken by another user
+        existing = await db.users.find_one({"email": user_update.email, "id": {"$ne": user_id}})
+        if existing:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Email já está em uso por outro usuário"
+            )
+        update_data['email'] = user_update.email
+    if user_update.phone:
+        update_data['phone'] = user_update.phone
+    if user_update.cpf:
+        update_data['cpf'] = user_update.cpf
+    if user_update.city:
+        update_data['city'] = user_update.city
+    if user_update.state:
+        update_data['state'] = user_update.state
+    if user_update.user_type:
+        if user_update.user_type not in ['particular', 'corretor', 'imobiliaria', 'admin', 'admin_senior']:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Tipo de usuário inválido"
+            )
+        update_data['user_type'] = user_update.user_type
+    if user_update.creci:
+        update_data['creci'] = user_update.creci
+    if user_update.company:
+        update_data['company'] = user_update.company
+    if user_update.cnpj:
+        update_data['cnpj'] = user_update.cnpj
+    if user_update.razao_social:
+        update_data['razao_social'] = user_update.razao_social
+    if user_update.status:
+        if user_update.status not in ['active', 'pending', 'paused']:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Status inválido"
+            )
+        update_data['status'] = user_update.status
+    if user_update.plan_type:
+        if user_update.plan_type not in ['free', 'mensal', 'trimestral', 'anual', 'lifetime']:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Plano inválido"
+            )
+        update_data['plan_type'] = user_update.plan_type
+        # Se mudar para lifetime, remover data de expiração
+        if user_update.plan_type == 'lifetime':
+            update_data['plan_expires_at'] = None
+    if user_update.bio is not None:
+        update_data['bio'] = user_update.bio
+    
+    # Update password if provided
+    if user_update.new_password:
+        update_data['hashed_password'] = pwd_context.hash(user_update.new_password)
+    
+    # Add updated_at timestamp
+    update_data['updated_at'] = datetime.utcnow()
+    
+    # Perform update
+    await db.users.update_one({"id": user_id}, {"$set": update_data})
+    
+    # Get updated user
+    updated_user = await db.users.find_one({"id": user_id})
+    
+    return {
+        "message": "Usuário atualizado com sucesso",
+        "user": {
+            "id": updated_user['id'],
+            "name": updated_user['name'],
+            "email": updated_user['email'],
+            "phone": updated_user['phone'],
+            "city": updated_user['city'],
+            "state": updated_user['state'],
+            "user_type": updated_user['user_type'],
+            "status": updated_user['status'],
+            "plan_type": updated_user.get('plan_type', 'free')
+        }
+    }
+
             detail="User not found"
         )
     
