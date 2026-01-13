@@ -610,14 +610,6 @@ async def delete_user(
 ):
     """Delete user and all their data (Admin only)"""
     user = await db.users.find_one({"id": user_id})
-
-@router.delete("/users/{user_id}")
-async def delete_user(
-    user_id: str,
-    admin = Depends(get_current_admin)
-):
-    """Delete user and all their data (Admin only)"""
-    user = await db.users.find_one({"id": user_id})
     
     if not user:
         raise HTTPException(
