@@ -564,30 +564,36 @@ async def get_opportunities_board(admin = Depends(get_current_admin)):
         ]
     }
 
+@router.get("/users/{user_id}/details")
+async def get_user_details(
+    user_id: str,
+    admin = Depends(get_current_admin)
+):
+    """Get complete user details for editing (Admin only)"""
+    user = await db.users.find_one({"id": user_id})
+    
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found"
+        )
+    
+    # Count user's properties
+    properties_count = await db.properties.count_documents({"owner_id": user_id})
+    
+    # Remove sensitive data
+    user_data = {k: v for k, v in user.items() if k not in ['_id', 'hashed_password']}
     user_data['properties_count'] = properties_count
     
     return user_data
 
-    }
-
-            detail="User not found"
-        )
-    
-    if user.get('user_type') == 'admin':
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Cannot modify admin users"
-        )
-    
-    update_data = {}
-    if user_update.status:
-        update_data['status'] = user_update.status
-    if user_update.user_type:
-        update_data['user_type'] = user_update.user_type
-    
-    await db.users.update_one({"id": user_id}, {"$set": update_data})
-    
-    return {"message": "User updated successfully", "user_id": user_id}
+@router.delete("/users/{user_id}")
+async def delete_user(
+    user_id: str,
+    admin = Depends(get_current_admin)
+):
+    """Delete user and all their data (Admin only)"""
+    user = await db.users.find_one({"id": user_id})
 
 @router.delete("/users/{user_id}")
 async def delete_user(
