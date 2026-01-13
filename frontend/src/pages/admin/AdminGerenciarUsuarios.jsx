@@ -83,7 +83,7 @@ const AdminGerenciarUsuarios = () => {
 
   // Auto-refresh every 30 seconds
   useEffect(() => {
-    if (user?.user_type !== 'admin') {
+    if (user?.user_type !== 'admin' && user?.user_type !== 'admin_senior') {
       navigate('/');
       return;
     }
