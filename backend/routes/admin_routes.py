@@ -408,7 +408,7 @@ async def full_edit_user(
 @router.get("/users/{user_id}/details")
 async def get_user_details(
     user_id: str,
-    admin = Depends(get_current_admin)
+    admin = Depends(get_current_admin_senior)
 ):
     """Get complete user details for editing (Admin only)"""
     user = await db.users.find_one({"id": user_id})
