@@ -534,18 +534,24 @@ const EditarImovel = () => {
                   />
                 </div>
 
-                <div>
-                  <label className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      name="is_launch"
-                      checked={formData.is_launch}
-                      onChange={handleChange}
-                      className="rounded"
-                    />
-                    <span className="text-sm font-medium text-gray-700">Marcar como lançamento</span>
-                  </label>
-                </div>
+                {/* Checkbox de Lançamento - APENAS PARA IMOBILIÁRIA */}
+                {user?.user_type === 'imobiliaria' && (
+                  <div>
+                    <label className="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        name="is_launch"
+                        checked={formData.is_launch}
+                        onChange={handleChange}
+                        className="rounded"
+                      />
+                      <span className="text-sm font-medium text-gray-700">Marcar como lançamento</span>
+                    </label>
+                    <p className="text-xs text-gray-500 mt-1 ml-6">
+                      Imóveis marcados como lançamento aparecem em destaque na seção de Lançamentos
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
 
