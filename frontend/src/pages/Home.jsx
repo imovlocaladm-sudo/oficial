@@ -25,7 +25,7 @@ const Home = () => {
         // Separar em 3 categorias distintas
         const featuredList = allProperties.filter(p => p.is_featured && !p.is_launch);
         const launchProperties = allProperties.filter(p => p.is_launch);
-        const regularProperties = allProperties.filter(p => !p.is_launch && !p.is_featured);
+        const regularList = allProperties.filter(p => !p.is_launch && !p.is_featured);
         
         // Destaques: apenas imóveis marcados como destaque
         setFeaturedProperties(featuredList.slice(0, 8));
@@ -33,7 +33,8 @@ const Home = () => {
         // Lançamentos: apenas imóveis marcados como lançamento
         setLaunches(launchProperties.slice(0, 8));
         
-        // Se não houver lançamentos, não mostrar a seção
+        // Imóveis comuns: o resto
+        setRegularProperties(regularList.slice(0, 12));
         
       } catch (error) {
         console.error('Error fetching properties:', error);
