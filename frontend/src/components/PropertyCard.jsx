@@ -56,6 +56,12 @@ const PropertyCard = ({ property }) => {
               LANÇAMENTO
             </div>
           )}
+          {/* Exclusive Badge */}
+          {property.is_exclusive_launch && (
+            <div className="absolute top-14 right-3 px-3 py-1 rounded-md font-bold text-sm bg-purple-600 text-white shadow-lg flex items-center gap-1">
+              🔒 EXCLUSIVO
+            </div>
+          )}
           {/* Featured Badge */}
           {property.is_featured && (
             <div className="absolute bottom-3 left-3 px-3 py-1 rounded-md font-bold text-sm bg-yellow-500 text-white shadow-lg flex items-center gap-1">
