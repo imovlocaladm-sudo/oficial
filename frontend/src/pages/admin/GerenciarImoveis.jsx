@@ -25,9 +25,11 @@ const GerenciarImoveis = () => {
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState(null);
+  const [featuredCount, setFeaturedCount] = useState(null);
 
   useEffect(() => {
     fetchProperties();
+    fetchFeaturedCount();
   }, []);
 
   const fetchProperties = async () => {
@@ -41,6 +43,15 @@ const GerenciarImoveis = () => {
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchFeaturedCount = async () => {
+    try {
+      const data = await propertiesAPI.getFeaturedCount();
+      setFeaturedCount(data);
+    } catch (error) {
+      console.error('Error fetching featured count:', error);
     }
   };
 
