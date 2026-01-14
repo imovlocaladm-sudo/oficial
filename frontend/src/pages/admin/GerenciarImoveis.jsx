@@ -296,13 +296,17 @@ const GerenciarImoveis = () => {
                             className={property.is_exclusive_launch ? 'bg-purple-50 border-purple-300 text-purple-700' : ''}
                             title="Lançamento Exclusivo: Imóvel visível apenas para você, não aparece na listagem pública"
                           >
-                            <Lock size={16} className="mr-1" />
+                            {property.is_exclusive_launch ? (
+                              <Lock size={16} className="mr-1" />
+                            ) : (
+                              <Unlock size={16} className="mr-1" />
+                            )}
                             {property.is_exclusive_launch ? 'Tornar Público' : 'Marcar Exclusivo'}
                           </Button>
                           <div className="absolute hidden group-hover:block bottom-full left-0 mb-2 w-64 p-2 bg-gray-900 text-white text-xs rounded shadow-lg z-10">
                             {property.is_exclusive_launch 
                               ? '🔒 Este imóvel está EXCLUSIVO e não aparece no site. Clique para tornar público.'
-                              : '💡 Marcar como exclusivo oculta o imóvel da listagem pública. Útil para lançamentos em pré-venda.'
+                              : '🔓 Marcar como exclusivo oculta o imóvel da listagem pública. Útil para lançamentos em pré-venda.'
                             }
                           </div>
                         </div>
