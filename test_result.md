@@ -101,3 +101,106 @@
 #====================================================================================================
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
+
+user_problem_statement: "Plataforma ImovLocal - Marketplace Imobiliário com sistema de login, cadastro de imóveis (Lançamentos, Destaques, Anúncios normais), busca detalhada, agendamento de visitas e sistema de parcerias entre corretores."
+
+backend:
+  - task: "User Registration"
+    implemented: true
+    working: "NA"
+    file: "routes/auth_routes.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Sistema de registro implementado. Suporta: particular, corretor, imobiliaria, admin, admin_senior"
+
+  - task: "User Login"
+    implemented: true
+    working: "NA"
+    file: "routes/auth_routes.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Login implementado com JWT tokens. Precisa testar com todos os tipos de usuário"
+
+  - task: "List Properties"
+    implemented: true
+    working: "NA"
+    file: "routes/property_routes.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Listagem de imóveis com filtros. 18 imóveis de teste criados (2 Lançamentos, 4 Destaques, 12 Anúncios normais)"
+
+  - task: "Create Property"
+    implemented: true
+    working: "NA"
+    file: "routes/property_routes.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Criar imóveis requer autenticação. Tipos: VENDA, ALUGUEL, ALUGUEL_TEMPORADA"
+
+  - task: "Get Current User"
+    implemented: true
+    working: "NA"
+    file: "routes/auth_routes.py"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Endpoint /auth/me retorna dados do usuário autenticado"
+
+metadata:
+  created_by: "main_agent"
+  version: "1.0"
+  test_sequence: 1
+  run_ui: false
+
+test_plan:
+  current_focus:
+    - "User Login"
+    - "List Properties"
+    - "Get Current User"
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"
+
+agent_communication:
+  - agent: "main"
+    message: |
+      Criados 7 usuários de teste e 18 imóveis para testar:
+      
+      USUÁRIOS DE TESTE:
+      1. admin@imovlocal.com / Master@2025 (Admin Master)
+      2. admin.senior@imovlocal.com / AdminSenior@2025 (Admin Sênior)
+      3. corretor.teste@imovlocal.com / Teste@123 (Corretor FREE)
+      4. corretor.vitalicio@imovlocal.com / Vitalicio@2026 (Corretor Vitalício)
+      5. imobiliaria.vitalicia@imovlocal.com / Vitalicio@2026 (Imobiliária Vitalícia)
+      6. particular.teste@imovlocal.com / Teste@456 (Particular FREE)
+      7. particular.vitalicio@imovlocal.com / Vitalicio@2026 (Particular Vitalício)
+      
+      IMÓVEIS CRIADOS:
+      - 2 Lançamentos (is_launch: true)
+      - 4 Destaques (is_featured: true)
+      - 12 Anúncios normais
+      
+      TESTAR:
+      1. Login com TODOS os usuários acima
+      2. GET /api/properties - listar todos os imóveis
+      3. GET /api/auth/me - obter dados do usuário logado
+      4. Verificar se imóveis aparecem corretamente por categoria
