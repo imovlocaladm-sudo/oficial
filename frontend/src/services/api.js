@@ -227,6 +227,11 @@ export const propertiesAPI = {
     const response = await api.patch(`/properties/${id}/toggle-exclusive-launch`);
     return response.data;
   },
+  
+  getFeaturedCount: async () => {
+    const response = await api.get('/properties/user/featured-count');
+    return response.data;
+  },
 };
 
 // Visits API - Agendamento de Visitas
