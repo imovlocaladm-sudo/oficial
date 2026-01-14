@@ -11,6 +11,7 @@ import { ArrowRight } from 'lucide-react';
 const Home = () => {
   const [featuredProperties, setFeaturedProperties] = useState([]);
   const [launches, setLaunches] = useState([]);
+  const [regularProperties, setRegularProperties] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
