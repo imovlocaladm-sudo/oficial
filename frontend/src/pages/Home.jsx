@@ -21,16 +21,18 @@ const Home = () => {
         // Fetch all properties
         const allProperties = await propertiesAPI.list({ limit: 50 });
         
-        // Separate featured, launches, and regular properties
+        // Separar em 3 categorias distintas
+        const featuredList = allProperties.filter(p => p.is_featured && !p.is_launch);
         const launchProperties = allProperties.filter(p => p.is_launch);
-        const featuredList = allProperties.filter(p => p.is_featured);
         const regularProperties = allProperties.filter(p => !p.is_launch && !p.is_featured);
         
-        // Combine: featured first, then regular (prioritize featured)
-        const combinedFeatured = [...featuredList, ...regularProperties].slice(0, 8);
+        // Destaques: apenas imóveis marcados como destaque
+        setFeaturedProperties(featuredList.slice(0, 8));
         
-        setFeaturedProperties(combinedFeatured);
-        setLaunches(launchProperties.length > 0 ? launchProperties : allProperties.slice(0, 4));
+        // Lançamentos: apenas imóveis marcados como lançamento
+        setLaunches(launchProperties.slice(0, 8));
+        
+        // Se não houver lançamentos, não mostrar a seção
         
       } catch (error) {
         console.error('Error fetching properties:', error);
