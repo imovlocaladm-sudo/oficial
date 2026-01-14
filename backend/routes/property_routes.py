@@ -622,3 +622,46 @@ async def toggle_exclusive_launch(
     updated_property = await properties_collection.find_one({"id": property_id})
     return Property(**{k: v for k, v in updated_property.items() if k != '_id'})
 
+
+
+@router.get("/user/featured-count")
+async def get_user_featured_count(
+    current_user_email: str = Depends(get_current_user_email)
+):
+    """
+    Retorna a contagem de imóveis em destaque do usuário atual e o limite permitido
+    Corretor: 10 destaques
+    Imobiliária: 20 destaques
+    """
+    # Get user
+    user = await users_collection.find_one({"email": current_user_email})
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found"
+        )
+    
+    # Contar quantos imóveis o usuário tem marcados como destaque
+    featured_count = await properties_collection.count_documents({
+        "owner_id": user['id'],
+        "is_featured": True
+    })
+    
+    # Determinar limite baseado no tipo de usuário
+    user_type = user.get('user_type', 'particular')
+    
+    if user_type == 'imobiliaria':
+        max_featured = 20
+    elif user_type == 'corretor':
+        max_featured = 10
+    else:
+        max_featured = 0  # Particulares não podem marcar como destaque
+    
+    return {
+        "current_featured": featured_count,
+        "max_featured": max_featured,
+        "user_type": user_type,
+        "can_add_more": featured_count < max_featured,
+        "remaining": max(0, max_featured - featured_count)
+    }
+
