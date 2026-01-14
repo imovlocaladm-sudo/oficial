@@ -123,6 +123,28 @@ const Home = () => {
             </section>
           </div>
 
+          {/* Seção de Todos os Imóveis */}
+          {regularProperties.length > 0 && (
+            <div className="mb-12">
+              <section className="bg-white p-6 rounded-lg shadow-md">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-2xl font-bold text-gray-800">Todos os Imóveis</h2>
+                  <Link 
+                    to="/busca-detalhada"
+                    className="text-blue-600 hover:text-blue-700 font-semibold hover:underline transition-colors"
+                  >
+                    Ver todos →
+                  </Link>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                  {regularProperties.map((property) => (
+                    <PropertyCard key={property.id} property={property} />
+                  ))}
+                </div>
+              </section>
+            </div>
+          )}
+
           {/* Sidebar */}
           <aside className="lg:w-80">
             {/* Client Area */}
