@@ -80,6 +80,7 @@ const GerenciarImoveis = () => {
       await propertiesAPI.toggleFeatured(propertyId);
       // Atualizar a lista
       await fetchProperties();
+      await fetchFeaturedCount(); // Atualizar contador
       toast.success('Status de destaque atualizado!');
     } catch (error) {
       console.error('Error toggling featured:', error);
