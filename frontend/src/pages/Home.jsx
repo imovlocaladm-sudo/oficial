@@ -81,69 +81,99 @@ const Home = () => {
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Main Column */}
           <div className="flex-1">
-            {/* Featured Properties */}
-            <section className="mb-12">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-3xl font-bold text-gray-800">Imóveis em destaque</h2>
-                <Link 
-                  to="/destaques" 
-                  className="flex items-center gap-2 text-blue-600 hover:text-blue-700 font-semibold transition-colors"
-                >
-                  + Destaques
-                  <ArrowRight size={18} />
-                </Link>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                {featuredProperties.map(property => (
-                  <PropertyCard key={property.id} property={property} />
-                ))}
-              </div>
-            </section>
+            {/* Banner Topo */}
+            <BannerDisplay position="home_topo" className="mb-8" />
+
+            {/* LINHA 1: Lançamentos */}
+            {launches.length > 0 && (
+              <section className="mb-12">
+                <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center gap-3">
+                    <div className="bg-orange-100 p-3 rounded-full">
+                      <span className="text-3xl">✨</span>
+                    </div>
+                    <div>
+                      <h2 className="text-3xl font-bold text-orange-600">Lançamentos</h2>
+                      <p className="text-sm text-gray-600">Novos empreendimentos exclusivos</p>
+                    </div>
+                  </div>
+                  <Link 
+                    to="/lancamentos" 
+                    className="flex items-center gap-2 text-orange-600 hover:text-orange-700 font-semibold transition-colors hover:underline"
+                  >
+                    Ver todos os lançamentos
+                    <ArrowRight size={18} />
+                  </Link>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                  {launches.map(property => (
+                    <PropertyCard key={property.id} property={property} />
+                  ))}
+                </div>
+              </section>
+            )}
 
             {/* Banner Meio */}
             <BannerDisplay position="home_meio" className="mb-12" />
 
-            {/* Launches */}
-            <section className="mb-12">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-3xl font-bold text-gray-800">Lançamentos</h2>
-                <Link 
-                  to="/lancamentos" 
-                  className="flex items-center gap-2 text-blue-600 hover:text-blue-700 font-semibold transition-colors"
-                >
-                  + Lançamentos
-                  <ArrowRight size={18} />
-                </Link>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-6">
-                {launches.map(property => (
-                  <PropertyCard key={property.id} property={property} />
-                ))}
-              </div>
-            </section>
-          </div>
-
-          {/* Seção de Todos os Imóveis */}
-          {regularProperties.length > 0 && (
-            <div className="mb-12">
-              <section className="bg-white p-6 rounded-lg shadow-md">
+            {/* LINHA 2: Imóveis em Destaque */}
+            {featuredProperties.length > 0 && (
+              <section className="mb-12">
                 <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-2xl font-bold text-gray-800">Todos os Imóveis</h2>
+                  <div className="flex items-center gap-3">
+                    <div className="bg-yellow-100 p-3 rounded-full">
+                      <span className="text-3xl">⭐</span>
+                    </div>
+                    <div>
+                      <h2 className="text-3xl font-bold text-yellow-600">Imóveis em Destaque</h2>
+                      <p className="text-sm text-gray-600">Seleção especial de propriedades</p>
+                    </div>
+                  </div>
                   <Link 
-                    to="/busca-detalhada"
-                    className="text-blue-600 hover:text-blue-700 font-semibold hover:underline transition-colors"
+                    to="/destaques" 
+                    className="flex items-center gap-2 text-yellow-600 hover:text-yellow-700 font-semibold transition-colors hover:underline"
                   >
-                    Ver todos →
+                    Ver todos os destaques
+                    <ArrowRight size={18} />
                   </Link>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                  {featuredProperties.map(property => (
+                    <PropertyCard key={property.id} property={property} />
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {/* LINHA 3: Anúncios de Imóveis */}
+            {regularProperties.length > 0 && (
+              <section className="mb-12">
+                <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center gap-3">
+                    <div className="bg-blue-100 p-3 rounded-full">
+                      <span className="text-3xl">🏢</span>
+                    </div>
+                    <div>
+                      <h2 className="text-3xl font-bold text-blue-600">Anúncios de Imóveis</h2>
+                      <p className="text-sm text-gray-600">Todas as propriedades disponíveis</p>
+                    </div>
+                  </div>
+                  <Link 
+                    to="/busca-detalhada"
+                    className="flex items-center gap-2 text-blue-600 hover:text-blue-700 font-semibold transition-colors hover:underline"
+                  >
+                    Ver todos os anúncios
+                    <ArrowRight size={18} />
+                  </Link>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                   {regularProperties.map((property) => (
                     <PropertyCard key={property.id} property={property} />
                   ))}
                 </div>
               </section>
-            </div>
-          )}
+            )}
+          </div>
 
           {/* Sidebar */}
           <aside className="lg:w-80">
