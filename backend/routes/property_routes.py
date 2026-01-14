@@ -553,6 +553,25 @@ async def toggle_featured(
     current_status = property_data.get('is_featured', False)
     new_status = not current_status
     
+    # Se está marcando como destaque (new_status = True), verificar limite
+    if new_status:
+        # Contar quantos destaques o usuário já tem
+        featured_count = await properties_collection.count_documents({
+            "owner_id": user['id'],
+            "is_featured": True
+        })
+        
+        # Determinar limite baseado no tipo de usuário
+        user_type = user.get('user_type')
+        max_featured = 20 if user_type == 'imobiliaria' else 10
+        
+        # Verificar se excedeu o limite
+        if featured_count >= max_featured:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Limite de destaques atingido! Você pode ter no máximo {max_featured} imóveis em destaque. Remova o destaque de outro imóvel primeiro."
+            )
+    
     await properties_collection.update_one(
         {"id": property_id},
         {
