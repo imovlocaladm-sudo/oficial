@@ -80,6 +80,13 @@ const AdminMasterDashboard = () => {
                   Voltar ao Site
                 </Button>
               </Link>
+              <Button 
+                onClick={logout}
+                variant="outline" 
+                className="bg-white/10 border-white/20 text-white hover:bg-red-600 hover:border-red-600"
+              >
+                Sair
+              </Button>
             </div>
           </div>
         </div>
