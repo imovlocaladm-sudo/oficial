@@ -142,6 +142,53 @@ const GerenciarImoveis = () => {
       </div>
 
       <div className="container mx-auto px-4 py-8">
+        {/* Card do Contador de Destaques */}
+        {featuredCount && (user?.user_type === 'corretor' || user?.user_type === 'imobiliaria') && (
+          <div className="bg-gradient-to-r from-yellow-400 to-yellow-600 rounded-lg shadow-lg p-6 mb-6">
+            <div className="flex items-center justify-between text-white">
+              <div className="flex items-center gap-4">
+                <div className="bg-white/20 p-4 rounded-full">
+                  <Star size={32} className="fill-white" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold">Contador de Destaques</h3>
+                  <p className="text-sm opacity-90">
+                    {user?.user_type === 'imobiliaria' 
+                      ? 'Imobiliárias têm direito a 20 destaques' 
+                      : 'Corretores têm direito a 10 destaques'
+                    }
+                  </p>
+                </div>
+              </div>
+              <div className="text-right">
+                <div className="text-4xl font-bold">
+                  {featuredCount.current_featured} / {featuredCount.max_featured}
+                </div>
+                <div className="text-sm opacity-90 mt-1">
+                  {featuredCount.remaining > 0 
+                    ? `${featuredCount.remaining} disponíveis` 
+                    : 'Limite atingido!'
+                  }
+                </div>
+                {featuredCount.remaining === 0 && (
+                  <div className="mt-2 bg-white/20 px-3 py-1 rounded text-xs">
+                    ⚠️ Remova destaques para adicionar novos
+                  </div>
+                )}
+              </div>
+            </div>
+            {/* Barra de Progresso */}
+            <div className="mt-4 bg-white/30 rounded-full h-3 overflow-hidden">
+              <div 
+                className={`h-full transition-all duration-300 ${
+                  featuredCount.remaining === 0 ? 'bg-red-500' : 'bg-white'
+                }`}
+                style={{ width: `${(featuredCount.current_featured / featuredCount.max_featured) * 100}%` }}
+              />
+            </div>
+          </div>
+        )}
+
         {loading ? (
           <div className="grid grid-cols-1 gap-6">
             {[1,2,3].map(i => (
