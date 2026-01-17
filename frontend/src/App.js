@@ -22,6 +22,7 @@ import EditarImovel from "./pages/admin/EditarImovel.jsx";
 import GerenciarImoveis from "./pages/admin/GerenciarImoveis.jsx";
 import Perfil from "./pages/admin/Perfil.jsx";
 import Notificacoes from "./pages/admin/Notificacoes.jsx";
+import MinhasVisitas from "./pages/admin/MinhasVisitas.jsx";
 
 // Master Admin Pages
 import AdminMasterDashboard from "./pages/admin/AdminMasterDashboard.jsx";
