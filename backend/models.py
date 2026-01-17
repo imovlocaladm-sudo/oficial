@@ -307,6 +307,7 @@ class DemandStatus(str, Enum):
 class DemandCreate(BaseModel):
     """Dados para criar uma demanda"""
     tipo_imovel: PropertyType
+    cidade: str = Field(..., min_length=2, max_length=100, description="Cidade de interesse")
     bairros_interesse: List[str] = Field(..., min_items=1, description="Lista de bairros de interesse")
     valor_minimo: float = Field(..., gt=0, description="Valor mínimo em reais")
     valor_maximo: float = Field(..., gt=0, description="Valor máximo em reais")
@@ -318,6 +319,7 @@ class DemandCreate(BaseModel):
 
 class DemandUpdate(BaseModel):
     """Dados para atualizar uma demanda"""
+    cidade: Optional[str] = None
     bairros_interesse: Optional[List[str]] = None
     valor_minimo: Optional[float] = None
     valor_maximo: Optional[float] = None
@@ -336,6 +338,7 @@ class Demand(BaseModel):
     corretor_phone: str  # Telefone do corretor
     corretor_creci: Optional[str] = None  # CRECI do corretor
     tipo_imovel: PropertyType
+    cidade: str  # Cidade de interesse
     bairros_interesse: List[str]
     valor_minimo: float
     valor_maximo: float
