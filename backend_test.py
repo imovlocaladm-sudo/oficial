@@ -536,7 +536,10 @@ def main():
     # Test 6: Particular user restriction for VENDA
     test_particular_restriction(results)
     
-    # Test 7: Mural de Oportunidades APIs
+    # Test 7: Mural de Oportunidades APIs - Complete Flow
+    test_mural_oportunidades_complete_flow(results)
+    
+    # Test 8: Basic Mural APIs (Legacy)
     test_mural_oportunidades(results)
     
     # Final summary
