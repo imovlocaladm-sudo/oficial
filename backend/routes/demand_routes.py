@@ -29,9 +29,16 @@ notifications_collection = db.notifications
 
 async def create_notification(user_email: str, notification_type: str, title: str, message: str, data: dict = None):
     """Helper function to create notifications"""
+    # Buscar o user_id pelo email
+    user = await users_collection.find_one({"email": user_email})
+    if not user:
+        logger.warning(f"User not found for notification: {user_email}")
+        return
+    
     notification = {
         "id": str(uuid.uuid4()),
-        "user_email": user_email,
+        "user_id": user["id"],  # Usar user_id para compatibilidade com busca
+        "user_email": user_email,  # Manter email também
         "type": notification_type,
         "title": title,
         "message": message,
@@ -40,6 +47,7 @@ async def create_notification(user_email: str, notification_type: str, title: st
         "created_at": datetime.utcnow()
     }
     await notifications_collection.insert_one(notification)
+    logger.info(f"Notification created for user {user_email}: {title}")
 
 
 async def find_compatible_properties(demand_dict: dict) -> List[dict]:
