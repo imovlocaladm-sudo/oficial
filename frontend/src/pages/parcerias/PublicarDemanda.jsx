@@ -185,6 +185,26 @@ const PublicarDemanda = () => {
                 </Select>
               </div>
 
+              {/* Cidade */}
+              <div>
+                <Label htmlFor="cidade">Cidade *</Label>
+                <Select
+                  value={formData.cidade}
+                  onValueChange={(value) => setFormData({ ...formData, cidade: value })}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecione a cidade" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {cidades.map((cidade) => (
+                      <SelectItem key={cidade} value={cidade}>
+                        {cidade}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
               {/* Bairros de Interesse */}
               <div>
                 <Label>Bairros de Interesse *</Label>
