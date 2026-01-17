@@ -225,14 +225,23 @@ const PublicarDemanda = () => {
       <Header />
       
       <div className="container mx-auto px-4 py-8 max-w-3xl">
-        <Button
-          variant="ghost"
-          onClick={() => navigate('/admin/parcerias')}
-          className="mb-4"
-        >
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          Voltar
-        </Button>
+        <div className="flex gap-2 mb-4">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => navigate('/admin/dashboard')}
+          >
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Painel de Controle
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => navigate('/admin/parcerias')}
+          >
+            Hub de Parcerias
+          </Button>
+        </div>
 
         <Card>
           <CardHeader>
