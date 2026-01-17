@@ -260,3 +260,31 @@ agent_communication:
       
       Base URL testada: https://local-property-1.preview.emergentagent.com/api
       Todos os endpoints principais estão funcionando perfeitamente!
+  - agent: "main"
+    message: |
+      ✅ FASE 2 IMPLEMENTADA - Ajustes do Portal ImovLocal
+      
+      ALTERAÇÕES REALIZADAS:
+      
+      📝 Ticket A - Dashboard da Imobiliária (Dashboard.jsx linha 70):
+      - Texto alterado de "Usuário Particular" para exibir corretamente:
+        - "Corretor de Imóveis" para corretores
+        - "Imobiliária" para imobiliárias
+        - "Usuário Particular" para particulares
+      
+      📝 Ticket B - Restrição de Anúncio para Particular (NovoImovel.jsx):
+      - Opção "Venda" REMOVIDA do formulário para usuários Particulares
+      - Apenas "Aluguel" e "Aluguel Temporada" disponíveis
+      - Valor padrão alterado de "VENDA" para "ALUGUEL" para particulares
+      - Aviso em amarelo informando a restrição
+      - Backend já possui validação de segurança (linhas 44-51, 96-102 property_routes.py)
+      
+      📝 Mural de Oportunidades:
+      - Já estava implementado no backend (demand_routes.py)
+      - Fluxo: Corretor cria demanda → Outros corretores veem → Fazem propostas → Demandante aceita/rejeita
+      
+      ARQUIVOS MODIFICADOS:
+      - /app/frontend/src/pages/admin/Dashboard.jsx
+      - /app/frontend/src/pages/admin/NovoImovel.jsx
+      
+      PRÓXIMO PASSO: Testar as alterações com usuário PARTICULAR
