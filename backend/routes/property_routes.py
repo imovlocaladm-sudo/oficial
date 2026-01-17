@@ -8,12 +8,88 @@ import uuid
 import os
 import shutil
 from pathlib import Path
+import httpx
+import logging
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/properties", tags=["properties"])
 
 # Upload directory - use relative path for deployment compatibility
 UPLOAD_DIR = Path(__file__).parent.parent / "uploads"
 UPLOAD_DIR.mkdir(exist_ok=True)
+
+# ==========================================
+# GEOCODIFICAÇÃO COM NOMINATIM (OpenStreetMap)
+# ==========================================
+
+async def geocode_address(address: str, city: str, state: str) -> dict:
+    """
+    Geocodifica um endereço usando Nominatim (OpenStreetMap) - GRATUITO
+    Retorna latitude e longitude
+    """
+    try:
+        # Montar query de busca
+        query = f"{address}, {city}, {state}, Brasil" if address else f"{city}, {state}, Brasil"
+        
+        async with httpx.AsyncClient() as client:
+            response = await client.get(
+                "https://nominatim.openstreetmap.org/search",
+                params={
+                    "q": query,
+                    "format": "json",
+                    "limit": 1,
+                    "countrycodes": "br"
+                },
+                headers={
+                    "User-Agent": "ImovLocal/1.0 (contato@imovlocal.com)"
+                },
+                timeout=10.0
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                if data and len(data) > 0:
+                    return {
+                        "latitude": float(data[0]["lat"]),
+                        "longitude": float(data[0]["lon"]),
+                        "display_name": data[0].get("display_name", "")
+                    }
+        
+        # Fallback: coordenadas aproximadas por cidade
+        city_coords = {
+            "Campo Grande": {"latitude": -20.4697, "longitude": -54.6201},
+            "Dourados": {"latitude": -22.2231, "longitude": -54.8118},
+            "Três Lagoas": {"latitude": -20.7849, "longitude": -51.7014},
+            "Corumbá": {"latitude": -19.0078, "longitude": -57.6547},
+            "Ponta Porã": {"latitude": -22.5362, "longitude": -55.7256},
+        }
+        
+        if city in city_coords:
+            return city_coords[city]
+        
+        # Default: Campo Grande
+        return {"latitude": -20.4697, "longitude": -54.6201}
+        
+    except Exception as e:
+        logger.error(f"Geocoding error: {e}")
+        return {"latitude": -20.4697, "longitude": -54.6201}
+
+
+@router.get("/geocode")
+async def geocode_endpoint(
+    address: Optional[str] = None,
+    neighborhood: Optional[str] = None,
+    city: str = "Campo Grande",
+    state: str = "MS"
+):
+    """
+    Endpoint para geocodificar um endereço
+    Retorna latitude e longitude
+    """
+    full_address = f"{address}, {neighborhood}" if address and neighborhood else (address or neighborhood or "")
+    result = await geocode_address(full_address, city, state)
+    return result
 
 async def save_upload_file(upload_file: UploadFile, property_id: str) -> str:
     """Save an uploaded file and return its URL path"""
