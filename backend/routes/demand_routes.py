@@ -495,6 +495,20 @@ async def reject_proposal(
         {"$set": {"status": ProposalStatus.rejected.value, "updated_at": datetime.utcnow()}}
     )
     
+    # Notificar ofertante
+    ofertante_user = await users_collection.find_one({"id": proposal["ofertante_id"]})
+    if ofertante_user:
+        await create_notification(
+            user_email=ofertante_user["email"],
+            notification_type=NotificationType.proposal_rejected.value,
+            title="Proposta não aceita",
+            message=f"Infelizmente sua proposta não foi aceita. Continue buscando oportunidades!",
+            data={
+                "demand_id": proposal["demand_id"],
+                "proposal_id": proposal_id
+            }
+        )
+    
     return {"message": "Proposta rejeitada"}
 
 
