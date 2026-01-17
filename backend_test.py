@@ -54,7 +54,7 @@ class TestResults:
         
         return self.failed == 0
 
-def make_request(method: str, endpoint: str, data: Dict = None, headers: Dict = None, timeout: int = 30) -> tuple:
+def make_request(method: str, endpoint: str, data: Dict = None, headers: Dict = None, timeout: int = 30, form_data: bool = False) -> tuple:
     """Make HTTP request and return (success, response_data, status_code)"""
     url = f"{BASE_URL}{endpoint}"
     
@@ -62,7 +62,11 @@ def make_request(method: str, endpoint: str, data: Dict = None, headers: Dict = 
         if method.upper() == "GET":
             response = requests.get(url, headers=headers, timeout=timeout)
         elif method.upper() == "POST":
-            response = requests.post(url, json=data, headers=headers, timeout=timeout)
+            if form_data:
+                # Send as form data instead of JSON
+                response = requests.post(url, data=data, headers=headers, timeout=timeout)
+            else:
+                response = requests.post(url, json=data, headers=headers, timeout=timeout)
         else:
             return False, f"Unsupported method: {method}", 0
         
