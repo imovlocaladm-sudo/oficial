@@ -205,10 +205,18 @@ const NovoImovel = () => {
                     required
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   >
-                    <option value="VENDA">Venda</option>
+                    {/* Usuários Particulares só podem anunciar Aluguel e Aluguel Temporada */}
+                    {user?.user_type !== 'particular' && (
+                      <option value="VENDA">Venda</option>
+                    )}
                     <option value="ALUGUEL">Aluguel</option>
                     <option value="ALUGUEL_TEMPORADA">Aluguel Temporada</option>
                   </select>
+                  {user?.user_type === 'particular' && (
+                    <p className="text-xs text-amber-600 mt-1">
+                      ⚠️ Usuários Particulares podem anunciar apenas para Aluguel e Aluguel Temporada
+                    </p>
+                  )}
                 </div>
 
                 <div>
