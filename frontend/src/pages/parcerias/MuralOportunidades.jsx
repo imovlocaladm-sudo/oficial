@@ -137,8 +137,7 @@ const MuralOportunidades = () => {
   };
 
   const handleDemandClick = (demand) => {
-    // TODO: Navegar para detalhes
-    toast.info('Página de detalhes em desenvolvimento');
+    navigate(`/admin/parcerias/demanda/${demand.id}`);
   };
 
   return (
