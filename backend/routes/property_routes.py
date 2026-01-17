@@ -684,3 +684,88 @@ async def get_user_featured_count(
         "remaining": max(0, max_featured - featured_count)
     }
 
+
+
+# ==========================================
+# SOLICITAÇÕES DE IMÓVEIS
+# ==========================================
+
+from pydantic import BaseModel, EmailStr
+from database import db
+
+property_requests_collection = db.property_requests
+
+class PropertyRequestCreate(BaseModel):
+    """Dados para criar uma solicitação de imóvel"""
+    name: str
+    email: EmailStr
+    phone: str
+    property_type: Optional[str] = None
+    purpose: str = "VENDA"
+    city: Optional[str] = None
+    neighborhood: Optional[str] = None
+    min_price: Optional[float] = None
+    max_price: Optional[float] = None
+    bedrooms: Optional[int] = None
+    description: Optional[str] = None
+
+@router.post("/requests/solicitar")
+async def create_property_request(request_data: PropertyRequestCreate):
+    """
+    Criar uma solicitação de imóvel (usuário não precisa estar logado)
+    """
+    # Validar campos obrigatórios
+    if not request_data.name or len(request_data.name.strip()) < 2:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Nome é obrigatório"
+        )
+    
+    if not request_data.phone or len(request_data.phone.replace(" ", "").replace("-", "").replace("(", "").replace(")", "")) < 10:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Telefone é obrigatório"
+        )
+    
+    # Criar solicitação
+    request_id = str(uuid.uuid4())
+    request_dict = {
+        "id": request_id,
+        "name": request_data.name.strip(),
+        "email": request_data.email,
+        "phone": request_data.phone.strip(),
+        "property_type": request_data.property_type,
+        "purpose": request_data.purpose,
+        "city": request_data.city,
+        "neighborhood": request_data.neighborhood,
+        "min_price": request_data.min_price,
+        "max_price": request_data.max_price,
+        "bedrooms": request_data.bedrooms,
+        "description": request_data.description,
+        "status": "pending",
+        "created_at": datetime.utcnow()
+    }
+    
+    await property_requests_collection.insert_one(request_dict)
+    
+    return {
+        "message": "Solicitação enviada com sucesso!",
+        "id": request_id
+    }
+
+@router.get("/requests/list")
+async def list_property_requests(
+    current_user_email: str = Depends(get_current_user_email)
+):
+    """
+    Listar solicitações de imóveis (apenas admin)
+    """
+    user = await users_collection.find_one({"email": current_user_email})
+    if user["user_type"] not in ["admin", "admin_senior"]:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Apenas administradores podem ver solicitações"
+        )
+    
+    requests = await property_requests_collection.find().sort("created_at", -1).to_list(100)
+    return [{k: v for k, v in r.items() if k != '_id'} for r in requests]
