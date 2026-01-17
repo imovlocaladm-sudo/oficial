@@ -19,6 +19,7 @@ const PublicarDemanda = () => {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     tipo_imovel: '',
+    cidade: 'Campo Grande',
     bairros_interesse: [],
     valor_minimo: '',
     valor_maximo: '',
@@ -30,6 +31,19 @@ const PublicarDemanda = () => {
   });
 
   const [bairroInput, setBairroInput] = useState('');
+
+  const cidades = [
+    'Campo Grande',
+    'Dourados',
+    'Três Lagoas',
+    'Corumbá',
+    'Ponta Porã',
+    'Naviraí',
+    'Nova Andradina',
+    'Aquidauana',
+    'Sidrolândia',
+    'Paranaíba'
+  ];
 
   const tiposImovel = [
     { value: 'Apartamento', label: 'Apartamento' },
