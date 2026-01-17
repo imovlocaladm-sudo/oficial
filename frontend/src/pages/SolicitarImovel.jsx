@@ -308,9 +308,22 @@ const SolicitarImovel = () => {
               </div>
 
               {/* Submit */}
-              <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 py-6 text-lg">
-                <Send size={20} className="mr-2" />
-                Enviar Solicitação
+              <Button 
+                type="submit" 
+                className="w-full bg-blue-600 hover:bg-blue-700 py-6 text-lg"
+                disabled={loading}
+              >
+                {loading ? (
+                  <>
+                    <Loader2 size={20} className="mr-2 animate-spin" />
+                    Enviando...
+                  </>
+                ) : (
+                  <>
+                    <Send size={20} className="mr-2" />
+                    Enviar Solicitação
+                  </>
+                )}
               </Button>
 
               <p className="text-sm text-gray-600 text-center">
