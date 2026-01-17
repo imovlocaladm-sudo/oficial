@@ -91,6 +91,11 @@ const PublicarDemanda = () => {
       return;
     }
 
+    if (!formData.cidade) {
+      toast.error('Selecione a cidade');
+      return;
+    }
+
     if (formData.bairros_interesse.length === 0) {
       toast.error('Adicione pelo menos um bairro de interesse');
       return;
@@ -111,6 +116,7 @@ const PublicarDemanda = () => {
 
       const demandData = {
         tipo_imovel: formData.tipo_imovel,
+        cidade: formData.cidade,
         bairros_interesse: formData.bairros_interesse,
         valor_minimo: parseFloat(formData.valor_minimo),
         valor_maximo: parseFloat(formData.valor_maximo),
