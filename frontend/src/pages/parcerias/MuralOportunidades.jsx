@@ -214,7 +214,47 @@ const MuralOportunidades = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
+              {/* Estado */}
+              <div>
+                <Select
+                  value={filters.estado}
+                  onValueChange={handleEstadoChange}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Estado" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {estados.map((estado) => (
+                      <SelectItem key={estado.sigla} value={estado.sigla}>
+                        {estado.sigla}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Cidade */}
+              <div>
+                <Select
+                  value={filters.cidade}
+                  onValueChange={(value) => setFilters({ ...filters, cidade: value })}
+                  disabled={!filters.estado}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Cidade" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {(cidadesPorEstado[filters.estado] || []).map((cidade) => (
+                      <SelectItem key={cidade} value={cidade}>
+                        {cidade}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Tipo de Imóvel */}
               <div>
                 <Select
                   value={filters.tipo_imovel}
@@ -236,6 +276,7 @@ const MuralOportunidades = () => {
                 </Select>
               </div>
 
+              {/* Bairro */}
               <div>
                 <Input
                   placeholder="Bairro"
@@ -244,6 +285,7 @@ const MuralOportunidades = () => {
                 />
               </div>
 
+              {/* Valor Mínimo */}
               <div>
                 <Input
                   type="number"
@@ -253,6 +295,7 @@ const MuralOportunidades = () => {
                 />
               </div>
 
+              {/* Valor Máximo */}
               <div>
                 <Input
                   type="number"
