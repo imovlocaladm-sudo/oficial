@@ -338,7 +338,7 @@ class Demand(BaseModel):
     corretor_phone: str  # Telefone do corretor
     corretor_creci: Optional[str] = None  # CRECI do corretor
     tipo_imovel: PropertyType
-    cidade: str  # Cidade de interesse
+    cidade: Optional[str] = None  # Cidade de interesse (opcional para compatibilidade)
     bairros_interesse: List[str]
     valor_minimo: float
     valor_maximo: float
