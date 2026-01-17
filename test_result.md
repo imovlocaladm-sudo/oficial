@@ -137,7 +137,7 @@ backend:
 
   - task: "List Properties"
     implemented: true
-    working: true
+    working: false
     file: "routes/property_routes.py"
     stuck_count: 0
     priority: "high"
@@ -149,6 +149,9 @@ backend:
       - working: true
         agent: "testing"
         comment: "✅ GET /api/properties retornou exatamente 18 imóveis. Verificado: 2 Lançamentos (is_launch: true), 4 Destaques (is_featured: true), 12 Anúncios normais. Todos os filtros funcionando."
+      - working: false
+        agent: "testing"
+        comment: "❌ FASE 2: GET /api/properties/ retornando erro 500. Problema: propriedade com property_type='Casa' inválido (deve ser enum como 'Casa-Térrea'). Dados inconsistentes no banco."
 
   - task: "Create Property"
     implemented: true
@@ -194,6 +197,30 @@ backend:
       - working: true
         agent: "testing"
         comment: "✅ GET /api/properties/{id} funcionando. Testado com ID real, retornou detalhes completos incluindo dados do proprietário (owner_name, owner_phone, etc)."
+
+  - task: "Particular User Restriction"
+    implemented: true
+    working: true
+    file: "routes/property_routes.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ FASE 2: Restrição funcionando perfeitamente. Particular não pode criar VENDA (403 error), mas pode criar ALUGUEL (201 success). Validação implementada nas linhas 96-102."
+
+  - task: "Mural de Oportunidades"
+    implemented: true
+    working: true
+    file: "routes/demand_routes.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ FASE 2: APIs do Mural funcionando. GET /api/demands/ retorna lista vazia (correto), POST /api/demands/ cria demanda com sucesso. Autenticação e permissões funcionando."
 
 metadata:
   created_by: "main_agent"
