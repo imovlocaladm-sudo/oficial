@@ -296,9 +296,9 @@ def test_mural_oportunidades(results: TestResults):
     
     headers = {"Authorization": f"Bearer {token}"}
     
-    # Test 1: GET /api/demands - should return list (can be empty)
-    print("  Testing GET /api/demands...")
-    success, data, status = make_request("GET", "/demands", headers=headers)
+    # Test 1: GET /api/demands/ - should return list (can be empty)
+    print("  Testing GET /api/demands/...")
+    success, data, status = make_request("GET", "/demands/", headers=headers)
     
     if success and status == 200:
         if isinstance(data, list):
@@ -311,8 +311,8 @@ def test_mural_oportunidades(results: TestResults):
     else:
         results.add_failure("Mural GET Demands", f"Status: {status}, Error: {data}")
     
-    # Test 2: POST /api/demands - create test demand
-    print("  Testing POST /api/demands...")
+    # Test 2: POST /api/demands/ - create test demand
+    print("  Testing POST /api/demands/...")
     demand_data = {
         "tipo_imovel": "Apartamento",
         "bairros_interesse": ["Centro", "Jardim"],
@@ -321,7 +321,7 @@ def test_mural_oportunidades(results: TestResults):
         "comissao_parceiro": 50
     }
     
-    success, data, status = make_request("POST", "/demands", demand_data, headers)
+    success, data, status = make_request("POST", "/demands/", demand_data, headers)
     
     if success and status == 201:
         if "id" in data and "tipo_imovel" in data:
