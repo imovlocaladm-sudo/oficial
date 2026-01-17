@@ -221,6 +221,9 @@ backend:
       - working: true
         agent: "testing"
         comment: "✅ FASE 2: APIs do Mural funcionando. GET /api/demands/ retorna lista vazia (correto), POST /api/demands/ cria demanda com sucesso. Autenticação e permissões funcionando."
+      - working: true
+        agent: "testing"
+        comment: "✅ FLUXO COMPLETO TESTADO: 1) Criação de demanda com novos campos (estado: MS, comissão: 35.5%) - SUCESSO 201. 2) Visualização de propostas - SUCESSO, encontradas 2 propostas. 3) Aceitação de proposta - SUCESSO 200 'Proposta aceita com sucesso'. 4) Verificação de notificações - SUCESSO 200. Todos os endpoints obrigatórios funcionando perfeitamente."
 
 metadata:
   created_by: "main_agent"
