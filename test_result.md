@@ -152,7 +152,7 @@ backend:
 
   - task: "Create Property"
     implemented: true
-    working: "NA"
+    working: true
     file: "routes/property_routes.py"
     stuck_count: 0
     priority: "high"
@@ -164,6 +164,9 @@ backend:
       - working: "NA"
         agent: "testing"
         comment: "Não testado - foco nos testes obrigatórios de listagem e detalhes. Endpoint existe e está implementado."
+      - working: true
+        agent: "testing"
+        comment: "✅ FASE 2: POST /api/properties/with-images funcionando. Testado com usuário particular - VENDA bloqueada com 403 (correto), ALUGUEL criado com sucesso (201)."
 
   - task: "Get Current User"
     implemented: true
