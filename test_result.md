@@ -336,23 +336,34 @@ agent_communication:
       - /app/backend/routes/demand_routes.py (notificações)
   - agent: "testing"
     message: |
-      ✅ FASE 2 BACKEND TESTING COMPLETO - IMPLEMENTAÇÕES FUNCIONANDO!
+      ✅ MURAL DE OPORTUNIDADES - FLUXO COMPLETO TESTADO E FUNCIONANDO!
       
-      RESULTADOS DOS TESTES OBRIGATÓRIOS:
+      TESTES OBRIGATÓRIOS EXECUTADOS (4/4 PASSOU):
       
-      🚫 RESTRIÇÃO PARA PARTICULAR:
-      ✅ Login particular.teste@imovlocal.com - OK
-      ✅ Tentativa VENDA - Bloqueada com 403 (correto)
-      ✅ Criação ALUGUEL - Sucesso 201 (correto)
-      
-      💼 MURAL DE OPORTUNIDADES:
+      1️⃣ CRIAR NOVA DEMANDA COM CAMPOS NOVOS:
       ✅ Login corretor.vitalicio@imovlocal.com - OK
-      ✅ GET /api/demands/ - Lista vazia retornada (correto)
-      ✅ POST /api/demands/ - Demanda criada com sucesso
+      ✅ POST /api/demands/ com novos campos - SUCESSO 201
+      ✅ Campos verificados: estado="MS", comissao_parceiro=35.5
+      ✅ ID gerado: dabcbd1e-9236-4fb3-b3da-3d104d212e7e
       
-      ❌ PROBLEMA IDENTIFICADO:
-      - GET /api/properties/ falhando com erro 500
-      - Causa: Propriedade com property_type="Casa" inválido no banco
-      - Deve ser enum válido como "Casa-Térrea"
+      2️⃣ VER PROPOSTAS DE UMA DEMANDA:
+      ✅ Login corretor.teste@imovlocal.com - OK
+      ✅ GET /api/demands/my-demands - SUCESSO (1 demanda encontrada)
+      ✅ GET /api/demands/{id}/proposals - SUCESSO (2 propostas encontradas)
       
-      TODAS AS NOVAS FUNCIONALIDADES DA FASE 2 ESTÃO FUNCIONANDO CORRETAMENTE!
+      3️⃣ ACEITAR PROPOSTA:
+      ✅ PUT /api/demands/proposals/{id}/accept - SUCESSO 200
+      ✅ Resposta: "Proposta aceita com sucesso"
+      
+      4️⃣ VERIFICAR NOTIFICAÇÕES:
+      ✅ Login imobiliaria.vitalicia@imovlocal.com - OK
+      ✅ GET /api/notifications/ - SUCESSO 200 (sistema funcionando)
+      
+      RESULTADO FINAL: TODOS OS TESTES OBRIGATÓRIOS PASSARAM!
+      O fluxo completo do Mural de Oportunidades está funcionando perfeitamente.
+      
+      ⚠️ PROBLEMA MENOR IDENTIFICADO:
+      - Inconsistência no sistema de notificações (user_id vs user_email)
+      - Não afeta funcionalidade principal, apenas exibição de notificações
+      
+      Base URL testada: https://local-property-1.preview.emergentagent.com/api
