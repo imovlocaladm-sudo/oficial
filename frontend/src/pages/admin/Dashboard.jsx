@@ -67,7 +67,11 @@ const Dashboard = () => {
             <div>
               <h1 className="text-3xl font-bold mb-2">Bem-vindo, {user?.name}!</h1>
               <p className="text-blue-100">
-                {user?.user_type === 'corretor' ? 'Corretor de Imóveis' : 'Usuário Particular'}
+                {user?.user_type === 'corretor' 
+                  ? 'Corretor de Imóveis' 
+                  : user?.user_type === 'imobiliaria' 
+                  ? 'Imobiliária' 
+                  : 'Usuário Particular'}
                 {user?.creci && ` - CRECI: ${user.creci}`}
               </p>
             </div>
