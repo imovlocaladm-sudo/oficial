@@ -34,7 +34,7 @@ const DetalheDemanda = () => {
   const fetchDemandDetails = async () => {
     try {
       setLoading(true);
-      const data = await demandsAPI.getDemandById(id);
+      const data = await demandsAPI.getDemand(id);
       setDemand(data);
       
       // Verificar se já fez proposta
