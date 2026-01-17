@@ -371,9 +371,9 @@ class Proposal(BaseModel):
     """Modelo completo de proposta"""
     id: str
     demand_id: str
-    property_id: str
-    property_title: str  # Título do imóvel (cache)
-    property_price: float  # Preço do imóvel (cache)
+    property_id: Optional[str] = None
+    property_title: Optional[str] = None  # Título do imóvel (cache)
+    property_price: Optional[float] = None  # Preço do imóvel (cache)
     ofertante_id: str  # ID do corretor que fez a proposta
     ofertante_name: str  # Nome do corretor ofertante
     ofertante_phone: str  # Telefone do ofertante
