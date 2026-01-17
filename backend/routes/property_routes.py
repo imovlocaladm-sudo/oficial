@@ -194,6 +194,9 @@ async def create_property_with_images(
     if features:
         features_list = [f.strip() for f in features.split(',') if f.strip()]
     
+    # Geocodificar endereço automaticamente
+    geo_result = await geocode_address(neighborhood, city, state)
+    
     # Create property document
     property_dict = {
         'id': property_id,
@@ -202,9 +205,12 @@ async def create_property_with_images(
         'property_type': property_type,
         'purpose': purpose.upper(),
         'price': price,
+        'address': None,  # Pode ser preenchido depois
         'neighborhood': neighborhood,
         'city': city,
         'state': state.upper(),
+        'latitude': geo_result.get('latitude'),
+        'longitude': geo_result.get('longitude'),
         'bedrooms': bedrooms,
         'bathrooms': bathrooms,
         'area': area,
