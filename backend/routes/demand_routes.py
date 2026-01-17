@@ -300,7 +300,7 @@ async def create_proposal(
 ):
     """
     Criar uma proposta para uma demanda
-    Ofertante envia imóvel compatível para o demandante
+    Ofertante pode enviar com ou sem imóvel vinculado
     """
     # Verificar se demanda existe
     demand = await demands_collection.find_one({"id": demand_id})
@@ -312,11 +312,6 @@ async def create_proposal(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Esta demanda não está mais ativa"
         )
-    
-    # Verificar se imóvel existe
-    property_doc = await properties_collection.find_one({"id": proposal.property_id})
-    if not property_doc:
-        raise HTTPException(status_code=404, detail="Imóvel não encontrado")
     
     # Get ofertante info
     user = await users_collection.find_one({"email": current_user_email})
@@ -337,31 +332,41 @@ async def create_proposal(
             detail="Você não pode fazer propostas para suas próprias demandas"
         )
     
-    # Verificar se já fez proposta com este imóvel
+    # Verificar se já fez proposta para esta demanda
     existing = await proposals_collection.find_one({
         "demand_id": demand_id,
-        "property_id": proposal.property_id,
         "ofertante_id": user["id"]
     })
     if existing:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Você já fez uma proposta com este imóvel para esta demanda"
+            detail="Você já fez uma proposta para esta demanda"
         )
+    
+    # Buscar imóvel se fornecido
+    property_doc = None
+    property_title = None
+    property_price = None
+    
+    if proposal.imovel_id:
+        property_doc = await properties_collection.find_one({"id": proposal.imovel_id})
+        if property_doc:
+            property_title = property_doc.get("title")
+            property_price = property_doc.get("price")
     
     # Create proposal
     proposal_id = str(uuid.uuid4())
     proposal_dict = {
         "id": proposal_id,
         "demand_id": demand_id,
-        "property_id": proposal.property_id,
-        "property_title": property_doc["title"],
-        "property_price": property_doc["preco"],
+        "property_id": proposal.imovel_id,
+        "property_title": property_title,
+        "property_price": property_price,
         "ofertante_id": user["id"],
         "ofertante_name": user["name"],
         "ofertante_phone": user["phone"],
         "ofertante_creci": user.get("creci"),
-        "message": proposal.message,
+        "message": proposal.mensagem,
         "status": ProposalStatus.pending.value,
         "created_at": datetime.utcnow(),
         "updated_at": None
@@ -375,18 +380,20 @@ async def create_proposal(
         {"$inc": {"propostas_count": 1}}
     )
     
-    # Notificar o demandante
-    await create_notification(
-        user_email=demand["corretor_id"],  # Notifica usando ID, mas precisa buscar email
-        notification_type=NotificationType.proposal.value,
-        title="📩 Nova Proposta Recebida!",
-        message=f"{user['name']} enviou uma proposta para sua demanda",
-        data={
-            "demand_id": demand_id,
-            "proposal_id": proposal_id,
-            "property_title": property_doc["title"]
-        }
-    )
+    # Notificar o demandante - buscar email do corretor
+    demandante = await users_collection.find_one({"id": demand["corretor_id"]})
+    if demandante:
+        await create_notification(
+            user_email=demandante["email"],
+            notification_type=NotificationType.proposal.value,
+            title="📩 Nova Proposta Recebida!",
+            message=f"{user['name']} enviou uma proposta para sua demanda no Mural de Oportunidades",
+            data={
+                "demand_id": demand_id,
+                "proposal_id": proposal_id,
+                "property_title": property_title
+            }
+        )
     
     logger.info(f"Proposal created: {proposal_id} for demand {demand_id}")
     
