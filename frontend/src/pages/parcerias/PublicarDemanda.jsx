@@ -120,12 +120,51 @@ const PublicarDemanda = () => {
     });
   };
 
+  // Função para formatar valor monetário
+  const formatCurrencyInput = (value) => {
+    // Remove tudo que não é número
+    const numericValue = value.replace(/\D/g, '');
+    // Converte para número
+    const number = parseInt(numericValue, 10) || 0;
+    return number;
+  };
+
+  // Função para exibir valor formatado
+  const displayCurrency = (value) => {
+    if (!value) return '';
+    return new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    }).format(value);
+  };
+
+  const handleValorChange = (field, value) => {
+    const numericValue = formatCurrencyInput(value);
+    setFormData({ ...formData, [field]: numericValue });
+  };
+
+  // Quando muda o estado, atualiza as cidades disponíveis
+  const handleEstadoChange = (estado) => {
+    setFormData({
+      ...formData,
+      estado: estado,
+      cidade: cidadesPorEstado[estado]?.[0] || ''
+    });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Validações
     if (!formData.tipo_imovel) {
       toast.error('Selecione o tipo de imóvel');
+      return;
+    }
+
+    if (!formData.estado) {
+      toast.error('Selecione o estado');
       return;
     }
 
@@ -154,6 +193,7 @@ const PublicarDemanda = () => {
 
       const demandData = {
         tipo_imovel: formData.tipo_imovel,
+        estado: formData.estado,
         cidade: formData.cidade,
         bairros_interesse: formData.bairros_interesse,
         valor_minimo: parseFloat(formData.valor_minimo),
