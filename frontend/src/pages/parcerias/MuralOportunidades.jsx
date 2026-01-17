@@ -98,11 +98,41 @@ const MuralOportunidades = () => {
   const [demands, setDemands] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState({
+    estado: '',
+    cidade: '',
     tipo_imovel: '',
     bairro: '',
     valor_min: '',
     valor_max: ''
   });
+
+  const estados = [
+    { sigla: 'MS', nome: 'Mato Grosso do Sul' },
+    { sigla: 'SP', nome: 'São Paulo' },
+    { sigla: 'RJ', nome: 'Rio de Janeiro' },
+    { sigla: 'MG', nome: 'Minas Gerais' },
+    { sigla: 'PR', nome: 'Paraná' },
+    { sigla: 'RS', nome: 'Rio Grande do Sul' },
+    { sigla: 'BA', nome: 'Bahia' },
+    { sigla: 'GO', nome: 'Goiás' },
+    { sigla: 'SC', nome: 'Santa Catarina' },
+    { sigla: 'PE', nome: 'Pernambuco' },
+    { sigla: 'CE', nome: 'Ceará' }
+  ];
+
+  const cidadesPorEstado = {
+    'MS': ['Campo Grande', 'Dourados', 'Três Lagoas', 'Corumbá', 'Ponta Porã'],
+    'SP': ['São Paulo', 'Campinas', 'Santos', 'Ribeirão Preto', 'Sorocaba'],
+    'RJ': ['Rio de Janeiro', 'Niterói', 'Petrópolis', 'Campos dos Goytacazes'],
+    'MG': ['Belo Horizonte', 'Uberlândia', 'Contagem', 'Juiz de Fora'],
+    'PR': ['Curitiba', 'Londrina', 'Maringá', 'Ponta Grossa'],
+    'RS': ['Porto Alegre', 'Caxias do Sul', 'Pelotas', 'Canoas'],
+    'BA': ['Salvador', 'Feira de Santana', 'Vitória da Conquista'],
+    'GO': ['Goiânia', 'Aparecida de Goiânia', 'Anápolis'],
+    'SC': ['Florianópolis', 'Joinville', 'Blumenau'],
+    'PE': ['Recife', 'Jaboatão dos Guararapes', 'Olinda'],
+    'CE': ['Fortaleza', 'Caucaia', 'Juazeiro do Norte']
+  };
 
   useEffect(() => {
     fetchDemands();
@@ -123,6 +153,8 @@ const MuralOportunidades = () => {
 
   const handleFilter = () => {
     const appliedFilters = {};
+    if (filters.estado) appliedFilters.estado = filters.estado;
+    if (filters.cidade) appliedFilters.cidade = filters.cidade;
     if (filters.tipo_imovel) appliedFilters.tipo_imovel = filters.tipo_imovel;
     if (filters.bairro) appliedFilters.bairro = filters.bairro;
     if (filters.valor_min) appliedFilters.valor_min = parseFloat(filters.valor_min);
@@ -132,8 +164,12 @@ const MuralOportunidades = () => {
   };
 
   const handleClearFilters = () => {
-    setFilters({ tipo_imovel: '', bairro: '', valor_min: '', valor_max: '' });
+    setFilters({ estado: '', cidade: '', tipo_imovel: '', bairro: '', valor_min: '', valor_max: '' });
     fetchDemands();
+  };
+
+  const handleEstadoChange = (estado) => {
+    setFilters({ ...filters, estado: estado, cidade: '' });
   };
 
   const handleDemandClick = (demand) => {
