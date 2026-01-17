@@ -47,21 +47,24 @@ async def find_compatible_properties(demand_dict: dict) -> List[dict]:
     Sistema de Matchmaking: Encontra imóveis compatíveis com a demanda
     """
     query = {
-        "tipo": demand_dict["tipo_imovel"],
-        "preco": {
+        "property_type": demand_dict["tipo_imovel"],
+        "price": {
             "$gte": demand_dict["valor_minimo"],
             "$lte": demand_dict["valor_maximo"]
         },
-        "bairro": {"$in": demand_dict["bairros_interesse"]},
-        "status": "active"  # Apenas imóveis ativos
+        "neighborhood": {"$in": demand_dict["bairros_interesse"]}
     }
+    
+    # Adicionar filtro de cidade se disponível
+    if demand_dict.get("cidade"):
+        query["city"] = demand_dict["cidade"]
     
     # Filtros opcionais
     if demand_dict.get("dormitorios_min"):
-        query["dormitorios"] = {"$gte": demand_dict["dormitorios_min"]}
+        query["bedrooms"] = {"$gte": demand_dict["dormitorios_min"]}
     
     if demand_dict.get("vagas_garagem_min"):
-        query["vagas"] = {"$gte": demand_dict["vagas_garagem_min"]}
+        query["garage"] = {"$gte": demand_dict["vagas_garagem_min"]}
     
     if demand_dict.get("area_util_min"):
         query["area"] = {"$gte": demand_dict["area_util_min"]}
