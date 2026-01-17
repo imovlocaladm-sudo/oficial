@@ -124,29 +124,32 @@ async def create_demand(
     await demands_collection.insert_one(demand_dict)
     logger.info(f"Demand created: {demand_id} by {current_user_email}")
     
-    # MATCHMAKING: Buscar imóveis compatíveis e notificar corretores
+    # MATCHMAKING: Buscar imóveis compatíveis e notificar proprietários
     try:
         compatible_properties = await find_compatible_properties(demand_dict)
         
-        # Notificar corretores que têm imóveis compatíveis
-        notified_corretores = set()  # Evitar duplicatas
+        # Notificar proprietários que têm imóveis compatíveis
+        notified_users = set()  # Evitar duplicatas
         for property_doc in compatible_properties:
-            corretor_email = property_doc.get("owner_email")
-            if corretor_email and corretor_email not in notified_corretores and corretor_email != current_user_email:
-                await create_notification(
-                    user_email=corretor_email,
-                    notification_type=NotificationType.opportunity.value,
-                    title="🎯 Nova Oportunidade de Parceria!",
-                    message=f"Seu imóvel '{property_doc['title']}' é compatível com uma nova demanda no Mural!",
-                    data={
-                        "demand_id": demand_id,
-                        "property_id": property_doc["id"],
-                        "comissao": demand_dict["comissao_parceiro"]
-                    }
-                )
-                notified_corretores.add(corretor_email)
+            owner_id = property_doc.get("owner_id")
+            if owner_id and owner_id not in notified_users and owner_id != user["id"]:
+                # Buscar dados do proprietário
+                owner = await users_collection.find_one({"id": owner_id})
+                if owner:
+                    await create_notification(
+                        user_email=owner["email"],
+                        notification_type=NotificationType.opportunity.value,
+                        title="🎯 Nova Oportunidade de Parceria!",
+                        message=f"Seu imóvel '{property_doc['title']}' é compatível com uma nova demanda no Mural de Oportunidades! Comissão oferecida: {demand_dict['comissao_parceiro']}%",
+                        data={
+                            "demand_id": demand_id,
+                            "property_id": property_doc["id"],
+                            "comissao": demand_dict["comissao_parceiro"]
+                        }
+                    )
+                    notified_users.add(owner_id)
         
-        logger.info(f"Notified {len(notified_corretores)} corretores about new demand {demand_id}")
+        logger.info(f"Notified {len(notified_users)} users about new demand {demand_id}")
     except Exception as e:
         logger.error(f"Error in matchmaking: {e}")
         # Não falha a criação da demanda se o matchmaking falhar
