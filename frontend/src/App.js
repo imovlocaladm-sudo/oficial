@@ -37,6 +37,7 @@ import PublicarDemanda from "./pages/parcerias/PublicarDemanda.jsx";
 import MuralOportunidades from "./pages/parcerias/MuralOportunidades.jsx";
 import MinhasDemandas from "./pages/parcerias/MinhasDemandas.jsx";
 import DetalheDemanda from "./pages/parcerias/DetalheDemanda.jsx";
+import VerPropostas from "./pages/parcerias/VerPropostas.jsx";
 
 import { Toaster } from "./components/ui/sonner";
 
