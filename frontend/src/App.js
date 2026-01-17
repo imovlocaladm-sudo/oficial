@@ -92,6 +92,11 @@ function App() {
                 <Notificacoes />
               </ProtectedRoute>
             } />
+            <Route path="/admin/visitas" element={
+              <ProtectedRoute>
+                <MinhasVisitas />
+              </ProtectedRoute>
+            } />
             
             {/* Parcerias Routes */}
             <Route path="/admin/parcerias" element={
