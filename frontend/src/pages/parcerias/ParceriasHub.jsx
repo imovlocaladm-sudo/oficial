@@ -60,6 +60,16 @@ const ParceriasHub = () => {
       <Header />
       
       <div className="container mx-auto px-4 py-8">
+        {/* Botão Voltar ao Dashboard */}
+        <Button
+          variant="ghost"
+          onClick={() => navigate('/admin/dashboard')}
+          className="mb-4"
+        >
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          Voltar ao Painel de Controle
+        </Button>
+
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2" data-testid="page-title">
