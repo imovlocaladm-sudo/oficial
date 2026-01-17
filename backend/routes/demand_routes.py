@@ -459,7 +459,7 @@ async def accept_proposal(
     if ofertante_user:
         await create_notification(
             user_email=ofertante_user["email"],
-            notification_type=NotificationType.success.value,
+            notification_type=NotificationType.proposal_accepted.value,
             title="🎉 Proposta Aceita!",
             message=f"Sua proposta foi aceita por {user['name']}! Entre em contato: {user['phone']}",
             data={
