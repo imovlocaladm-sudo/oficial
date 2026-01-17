@@ -5,7 +5,7 @@ import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import { Button } from '../../components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card';
-import { Plus, List, TrendingUp, Handshake, Users, ArrowRight } from 'lucide-react';
+import { Plus, List, TrendingUp, Handshake, Users, ArrowRight, ArrowLeft, LayoutDashboard } from 'lucide-react';
 import { demandsAPI } from '../../services/api';
 import { toast } from 'sonner';
 
