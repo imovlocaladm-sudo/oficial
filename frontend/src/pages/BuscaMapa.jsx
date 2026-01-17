@@ -70,10 +70,12 @@ const BuscaMapa = () => {
     const fetchProperties = async () => {
       try {
         const data = await propertiesAPI.list({ limit: 100 });
-        // Add coordinates to properties based on city
+        // Usar coordenadas reais se disponíveis, senão usar aproximação por cidade
         const propertiesWithCoords = data.map(prop => ({
           ...prop,
-          coordinates: cityCoordinates[prop.city] || cityCoordinates['default']
+          coordinates: (prop.latitude && prop.longitude) 
+            ? [prop.latitude, prop.longitude]
+            : cityCoordinates[prop.city] || cityCoordinates['default']
         }));
         setProperties(propertiesWithCoords);
       } catch (error) {
