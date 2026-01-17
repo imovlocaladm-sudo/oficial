@@ -2,52 +2,124 @@ import React, { useState } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { Button } from '../components/ui/button';
-import { Send, MapPin, Home, DollarSign } from 'lucide-react';
+import { Send, MapPin, Home, DollarSign, Loader2, CheckCircle } from 'lucide-react';
 import { toast } from 'sonner';
+import api from '../services/api';
 
 const SolicitarImovel = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: '',
-    propertyType: '',
+    property_type: '',
     purpose: 'VENDA',
     city: '',
     neighborhood: '',
-    minPrice: '',
-    maxPrice: '',
+    min_price: '',
+    max_price: '',
     bedrooms: '',
     description: ''
   });
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // In a real app, this would send to backend
-    toast.success('Solicitação enviada com sucesso!', {
-      description: 'Entraremos em contato em breve.',
-    });
+    // Validações básicas
+    if (!formData.name || formData.name.trim().length < 2) {
+      toast.error('Por favor, informe seu nome');
+      return;
+    }
+    
+    if (!formData.email || !formData.email.includes('@')) {
+      toast.error('Por favor, informe um email válido');
+      return;
+    }
+    
+    if (!formData.phone || formData.phone.replace(/\D/g, '').length < 10) {
+      toast.error('Por favor, informe um telefone válido');
+      return;
+    }
+    
+    setLoading(true);
+    
+    try {
+      const requestData = {
+        name: formData.name.trim(),
+        email: formData.email.trim(),
+        phone: formData.phone.trim(),
+        property_type: formData.property_type || null,
+        purpose: formData.purpose,
+        city: formData.city || null,
+        neighborhood: formData.neighborhood || null,
+        min_price: formData.min_price ? parseFloat(formData.min_price) : null,
+        max_price: formData.max_price ? parseFloat(formData.max_price) : null,
+        bedrooms: formData.bedrooms ? parseInt(formData.bedrooms) : null,
+        description: formData.description || null
+      };
+      
+      await api.post('/properties/requests/solicitar', requestData);
+      
+      setSuccess(true);
+      toast.success('Solicitação enviada com sucesso!', {
+        description: 'Nossa equipe entrará em contato em breve.',
+      });
 
-    // Reset form
-    setFormData({
-      name: '',
-      email: '',
-      phone: '',
-      propertyType: '',
-      purpose: 'VENDA',
-      city: '',
-      neighborhood: '',
-      minPrice: '',
-      maxPrice: '',
-      bedrooms: '',
-      description: ''
-    });
+      // Reset form
+      setFormData({
+        name: '',
+        email: '',
+        phone: '',
+        property_type: '',
+        purpose: 'VENDA',
+        city: '',
+        neighborhood: '',
+        min_price: '',
+        max_price: '',
+        bedrooms: '',
+        description: ''
+      });
+    } catch (error) {
+      console.error('Error submitting request:', error);
+      toast.error('Erro ao enviar solicitação', {
+        description: error.response?.data?.detail || 'Tente novamente mais tarde.'
+      });
+    } finally {
+      setLoading(false);
+    }
   };
+
+  if (success) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <Header />
+        <div className="container mx-auto px-4 py-16">
+          <div className="max-w-lg mx-auto text-center">
+            <CheckCircle className="mx-auto h-16 w-16 text-green-500 mb-6" />
+            <h2 className="text-3xl font-bold text-gray-800 mb-4">Solicitação Enviada!</h2>
+            <p className="text-gray-600 mb-6">
+              Obrigado pelo seu interesse! Nossa equipe analisará sua solicitação e entrará em contato em breve.
+            </p>
+            <div className="space-x-4">
+              <Button onClick={() => setSuccess(false)} variant="outline">
+                Nova Solicitação
+              </Button>
+              <Button onClick={() => window.location.href = '/'}>
+                Voltar ao Início
+              </Button>
+            </div>
+          </div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
