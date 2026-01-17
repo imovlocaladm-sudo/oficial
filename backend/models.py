@@ -140,9 +140,12 @@ class PropertyBase(BaseModel):
     property_type: PropertyType
     purpose: PropertyPurpose
     price: float
+    address: Optional[str] = None  # Endereço completo (rua, número)
     neighborhood: str
     city: str
     state: str
+    latitude: Optional[float] = None  # Coordenada latitude
+    longitude: Optional[float] = None  # Coordenada longitude
     bedrooms: Optional[int] = None
     bathrooms: Optional[int] = None
     area: Optional[float] = None
