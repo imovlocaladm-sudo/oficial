@@ -346,7 +346,7 @@ def test_user_login_silent(user: Dict) -> Optional[str]:
 
 def main():
     """Main test execution"""
-    print("🚀 Starting ImovLocal Backend API Tests")
+    print("🚀 Starting ImovLocal Backend API Tests - FASE 2")
     print(f"Base URL: {BASE_URL}")
     print("="*60)
     
@@ -376,6 +376,17 @@ def main():
     
     # Test 5: Property details
     test_property_details(results, properties)
+    
+    # ===== FASE 2 TESTS =====
+    print("\n" + "="*60)
+    print("🔥 STARTING FASE 2 SPECIFIC TESTS")
+    print("="*60)
+    
+    # Test 6: Particular user restriction for VENDA
+    test_particular_restriction(results)
+    
+    # Test 7: Mural de Oportunidades APIs
+    test_mural_oportunidades(results)
     
     # Final summary
     success = results.summary()
