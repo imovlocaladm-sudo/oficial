@@ -234,7 +234,7 @@ def test_particular_restriction(results: TestResults):
     venda_data = {
         "title": "Casa de Teste Venda",
         "description": "Teste de restrição para venda",
-        "property_type": "Casa",
+        "property_type": "Casa-Térrea",  # Use valid enum value
         "purpose": "VENDA",
         "price": "300000",
         "neighborhood": "Centro",
@@ -260,7 +260,7 @@ def test_particular_restriction(results: TestResults):
     aluguel_data = {
         "title": "Casa de Teste Aluguel",
         "description": "Teste de permissão para aluguel",
-        "property_type": "Casa", 
+        "property_type": "Casa-Térrea",  # Use valid enum value
         "purpose": "ALUGUEL",
         "price": "2500",
         "neighborhood": "Centro",
