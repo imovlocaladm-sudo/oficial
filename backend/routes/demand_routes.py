@@ -167,6 +167,8 @@ async def create_demand(
 
 @router.get("/", response_model=List[Demand])
 async def list_demands(
+    estado: Optional[str] = None,
+    cidade: Optional[str] = None,
     tipo_imovel: Optional[str] = None,
     bairro: Optional[str] = None,
     valor_min: Optional[float] = None,
@@ -192,6 +194,10 @@ async def list_demands(
     query = {}
     if status:
         query["status"] = status
+    if estado:
+        query["estado"] = estado
+    if cidade:
+        query["cidade"] = cidade
     if tipo_imovel:
         query["tipo_imovel"] = tipo_imovel
     if bairro:
