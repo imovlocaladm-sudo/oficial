@@ -45,11 +45,21 @@ const NovoImovel = () => {
   const [loading, setLoading] = useState(false);
   const [imageFiles, setImageFiles] = useState([]);  // Store actual File objects
   const [imagePreviews, setImagePreviews] = useState([]);  // Store preview URLs
+  
+  // Define o valor inicial de purpose baseado no tipo de usuário
+  // Particulares não podem vender, então o padrão é ALUGUEL
+  const getInitialPurpose = () => {
+    if (user?.user_type === 'particular') {
+      return 'ALUGUEL';
+    }
+    return 'VENDA';
+  };
+
   const [formData, setFormData] = useState({
     title: '',
     description: '',
     property_type: 'Apartamento',
-    purpose: 'VENDA',
+    purpose: getInitialPurpose(),
     price: '',
     neighborhood: '',
     city: '',
