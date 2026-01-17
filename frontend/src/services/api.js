@@ -254,6 +254,18 @@ export const visitsAPI = {
     const response = await api.put(`/visits/${visitId}/status?new_status=${newStatus}`);
     return response.data;
   },
+
+  // Confirmar uma visita
+  confirmVisit: async (visitId) => {
+    const response = await api.put(`/visits/${visitId}/status?new_status=confirmed`);
+    return response.data;
+  },
+
+  // Cancelar uma visita
+  cancelVisit: async (visitId) => {
+    const response = await api.put(`/visits/${visitId}/status?new_status=cancelled`);
+    return response.data;
+  },
 };
 
 // Notifications API - Sistema de Notificações
