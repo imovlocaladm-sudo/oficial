@@ -311,11 +311,12 @@ class DemandStatus(str, Enum):
 class DemandCreate(BaseModel):
     """Dados para criar uma demanda"""
     tipo_imovel: PropertyType
+    estado: Optional[str] = Field(None, min_length=2, max_length=2, description="Sigla do estado (UF)")
     cidade: str = Field(..., min_length=2, max_length=100, description="Cidade de interesse")
     bairros_interesse: List[str] = Field(..., min_items=1, description="Lista de bairros de interesse")
     valor_minimo: float = Field(..., gt=0, description="Valor mínimo em reais")
     valor_maximo: float = Field(..., gt=0, description="Valor máximo em reais")
-    comissao_parceiro: int = Field(..., ge=10, le=100, description="Percentual de comissão para o parceiro")
+    comissao_parceiro: float = Field(..., ge=0, le=100, description="Percentual de comissão para o parceiro")
     dormitorios_min: Optional[int] = Field(None, ge=0)
     vagas_garagem_min: Optional[int] = Field(None, ge=0)
     area_util_min: Optional[float] = Field(None, gt=0, description="Área útil mínima em m²")
@@ -323,11 +324,12 @@ class DemandCreate(BaseModel):
 
 class DemandUpdate(BaseModel):
     """Dados para atualizar uma demanda"""
+    estado: Optional[str] = None
     cidade: Optional[str] = None
     bairros_interesse: Optional[List[str]] = None
     valor_minimo: Optional[float] = None
     valor_maximo: Optional[float] = None
-    comissao_parceiro: Optional[int] = None
+    comissao_parceiro: Optional[float] = None
     dormitorios_min: Optional[int] = None
     vagas_garagem_min: Optional[int] = None
     area_util_min: Optional[float] = None
@@ -342,11 +344,12 @@ class Demand(BaseModel):
     corretor_phone: str  # Telefone do corretor
     corretor_creci: Optional[str] = None  # CRECI do corretor
     tipo_imovel: PropertyType
+    estado: Optional[str] = None  # Sigla do estado
     cidade: Optional[str] = None  # Cidade de interesse (opcional para compatibilidade)
     bairros_interesse: List[str]
     valor_minimo: float
     valor_maximo: float
-    comissao_parceiro: int
+    comissao_parceiro: float
     dormitorios_min: Optional[int] = None
     vagas_garagem_min: Optional[int] = None
     area_util_min: Optional[float] = None
