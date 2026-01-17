@@ -118,6 +118,11 @@ function App() {
                 <DetalheDemanda />
               </ProtectedRoute>
             } />
+            <Route path="/admin/parcerias/propostas/:demandId" element={
+              <ProtectedRoute>
+                <VerPropostas />
+              </ProtectedRoute>
+            } />
 
             {/* Master Admin Routes */}
             <Route path="/admin/master" element={
