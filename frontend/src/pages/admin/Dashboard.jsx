@@ -134,7 +134,7 @@ const Dashboard = () => {
         {/* Quick Actions */}
         <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
           <h2 className="text-xl font-bold text-gray-800 mb-4">Ações Rápidas</h2>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
             <Link to="/admin/imoveis/novo">
               <Button className="w-full bg-orange-500 hover:bg-orange-600">
                 <Plus size={18} className="mr-2" />
@@ -145,6 +145,12 @@ const Dashboard = () => {
               <Button className="w-full" variant="outline">
                 <List size={18} className="mr-2" />
                 Gerenciar Imóveis
+              </Button>
+            </Link>
+            <Link to="/admin/visitas">
+              <Button className="w-full bg-purple-600 hover:bg-purple-700 text-white">
+                <Calendar size={18} className="mr-2" />
+                Minhas Visitas
               </Button>
             </Link>
             {(user?.user_type === 'corretor' || user?.user_type === 'imobiliaria') && (
