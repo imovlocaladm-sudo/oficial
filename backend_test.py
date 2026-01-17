@@ -282,9 +282,156 @@ def test_particular_restriction(results: TestResults):
         )
 
 
+def test_mural_oportunidades_complete_flow(results: TestResults):
+    """Test COMPLETE Mural de Oportunidades Flow as requested"""
+    print(f"\n💼 Testing COMPLETE Mural de Oportunidades Flow...")
+    
+    # ===== TEST 1: CREATE NEW DEMAND WITH NEW FIELDS =====
+    print("\n1️⃣ CRIAR NOVA DEMANDA COM CAMPOS NOVOS")
+    corretor_user = {"email": "corretor.vitalicio@imovlocal.com", "password": "Vitalicio@2026"}
+    token_vitalicio = test_user_login_silent(corretor_user)
+    
+    if not token_vitalicio:
+        results.add_failure("Mural Flow - Login Vitalicio", "Failed to login as corretor.vitalicio@imovlocal.com")
+        return
+    
+    headers_vitalicio = {"Authorization": f"Bearer {token_vitalicio}"}
+    
+    # Create demand with new fields (estado, comissao_parceiro)
+    demand_data = {
+        "tipo_imovel": "Apartamento",
+        "estado": "MS",
+        "cidade": "Dourados", 
+        "bairros_interesse": ["Centro", "Vila Industrial"],
+        "valor_minimo": 150000,
+        "valor_maximo": 300000,
+        "comissao_parceiro": 35.5
+    }
+    
+    print(f"  Creating demand with data: {demand_data}")
+    success, data, status = make_request("POST", "/demands/", demand_data, headers_vitalicio)
+    
+    if success and status == 201:
+        if "id" in data and "estado" in data and "comissao_parceiro" in data:
+            demand_id = data["id"]
+            results.add_success(
+                "CREATE Demand with New Fields", 
+                f"✅ Created demand ID: {demand_id}, Estado: {data.get('estado')}, Comissão: {data.get('comissao_parceiro')}%"
+            )
+        else:
+            results.add_failure("CREATE Demand with New Fields", f"Missing required fields in response: {data}")
+            return
+    else:
+        results.add_failure("CREATE Demand with New Fields", f"Status: {status}, Error: {data}")
+        return
+    
+    # ===== TEST 2: VIEW PROPOSALS FOR A DEMAND =====
+    print("\n2️⃣ VER PROPOSTAS DE UMA DEMANDA")
+    corretor_teste_user = {"email": "corretor.teste@imovlocal.com", "password": "Teste@123"}
+    token_teste = test_user_login_silent(corretor_teste_user)
+    
+    if not token_teste:
+        results.add_failure("Mural Flow - Login Teste", "Failed to login as corretor.teste@imovlocal.com")
+        return
+    
+    headers_teste = {"Authorization": f"Bearer {token_teste}"}
+    
+    # Get my demands first
+    print("  Getting my-demands...")
+    success, my_demands, status = make_request("GET", "/demands/my-demands", headers=headers_teste)
+    
+    if success and status == 200 and isinstance(my_demands, list):
+        if len(my_demands) > 0:
+            first_demand_id = my_demands[0]["id"]
+            results.add_success(
+                "GET My Demands", 
+                f"✅ Found {len(my_demands)} demands, using first: {first_demand_id}"
+            )
+            
+            # Get proposals for this demand
+            print(f"  Getting proposals for demand: {first_demand_id}")
+            success, proposals, status = make_request("GET", f"/demands/{first_demand_id}/proposals", headers=headers_teste)
+            
+            if success and status == 200:
+                results.add_success(
+                    "GET Demand Proposals", 
+                    f"✅ Retrieved {len(proposals)} proposals for demand {first_demand_id}"
+                )
+                
+                # Store for next test
+                test_demand_id = first_demand_id
+                test_proposals = proposals
+            else:
+                results.add_failure("GET Demand Proposals", f"Status: {status}, Error: {proposals}")
+                test_demand_id = None
+                test_proposals = []
+        else:
+            results.add_success("GET My Demands", "✅ No existing demands found (empty list is valid)")
+            test_demand_id = None
+            test_proposals = []
+    else:
+        results.add_failure("GET My Demands", f"Status: {status}, Error: {my_demands}")
+        test_demand_id = None
+        test_proposals = []
+    
+    # ===== TEST 3: ACCEPT PROPOSAL (if available) =====
+    print("\n3️⃣ ACEITAR PROPOSTA")
+    if test_demand_id and test_proposals and len(test_proposals) > 0:
+        # Find a pending proposal
+        pending_proposal = None
+        for proposal in test_proposals:
+            if proposal.get("status") == "pending":
+                pending_proposal = proposal
+                break
+        
+        if pending_proposal:
+            proposal_id = pending_proposal["id"]
+            print(f"  Accepting proposal: {proposal_id}")
+            success, response, status = make_request("PUT", f"/demands/proposals/{proposal_id}/accept", headers=headers_teste)
+            
+            if success and status == 200:
+                results.add_success(
+                    "ACCEPT Proposal", 
+                    f"✅ Proposal {proposal_id} accepted successfully: {response.get('message', 'OK')}"
+                )
+            else:
+                results.add_failure("ACCEPT Proposal", f"Status: {status}, Error: {response}")
+        else:
+            results.add_success("ACCEPT Proposal", "ℹ️ No pending proposals found to accept (this is normal)")
+    else:
+        results.add_success("ACCEPT Proposal", "ℹ️ No demands/proposals available to test acceptance (this is normal)")
+    
+    # ===== TEST 4: VERIFY NOTIFICATIONS =====
+    print("\n4️⃣ VERIFICAR NOTIFICAÇÕES")
+    imobiliaria_user = {"email": "imobiliaria.vitalicia@imovlocal.com", "password": "Vitalicio@2026"}
+    token_imobiliaria = test_user_login_silent(imobiliaria_user)
+    
+    if not token_imobiliaria:
+        results.add_failure("Mural Flow - Login Imobiliaria", "Failed to login as imobiliaria.vitalicia@imovlocal.com")
+        return
+    
+    headers_imobiliaria = {"Authorization": f"Bearer {token_imobiliaria}"}
+    
+    print("  Getting notifications...")
+    success, notifications, status = make_request("GET", "/notifications/", headers=headers_imobiliaria)
+    
+    if success and status == 200:
+        if isinstance(notifications, list):
+            # Look for proposal accepted notifications
+            proposal_notifications = [n for n in notifications if n.get("type") == "proposal_accepted"]
+            results.add_success(
+                "GET Notifications", 
+                f"✅ Retrieved {len(notifications)} total notifications, {len(proposal_notifications)} proposal-related"
+            )
+        else:
+            results.add_failure("GET Notifications", f"Expected list, got: {type(notifications)}")
+    else:
+        results.add_failure("GET Notifications", f"Status: {status}, Error: {notifications}")
+
+
 def test_mural_oportunidades(results: TestResults):
-    """Test Mural de Oportunidades (Demands API)"""
-    print(f"\n💼 Testing Mural de Oportunidades...")
+    """Test Basic Mural de Oportunidades (Demands API) - Legacy Test"""
+    print(f"\n💼 Testing Basic Mural de Oportunidades...")
     
     # Login as corretor
     corretor_user = {"email": "corretor.vitalicio@imovlocal.com", "password": "Vitalicio@2026"}
