@@ -308,15 +308,29 @@ agent_communication:
       - Aviso em amarelo informando a restrição
       - Backend já possui validação de segurança (linhas 44-51, 96-102 property_routes.py)
       
-      📝 Mural de Oportunidades:
-      - Já estava implementado no backend (demand_routes.py)
-      - Fluxo: Corretor cria demanda → Outros corretores veem → Fazem propostas → Demandante aceita/rejeita
+      📝 Mural de Oportunidades - FLUXO 100% IMPLEMENTADO:
+      - ✅ Publicar Demanda com campos Estado, Cidade, Tipo, Bairros, Valores, Comissão
+      - ✅ Ver Mural - listagem com filtros e botão "Ver Detalhes e Fazer Proposta"
+      - ✅ Fazer Proposta - formulário com mensagem e vinculação de imóvel
+      - ✅ Ver Propostas - página com lista de propostas recebidas
+      - ✅ Aceitar/Recusar Proposta - com notificações
+      - ✅ Contato liberado após aceite
+      - ✅ Notificações automáticas para imóveis compatíveis
+      - ✅ Botões de navegação (Dashboard, Hub de Parcerias)
+      - ✅ Campo de Estado adicionado
+      - ✅ Formatação de valores corrigida (R$ com ponto)
+      - ✅ Comissão com valores quebrados (0, 0.5, 1, 1.5, etc)
       
       ARQUIVOS MODIFICADOS:
       - /app/frontend/src/pages/admin/Dashboard.jsx
       - /app/frontend/src/pages/admin/NovoImovel.jsx
-      
-      PRÓXIMO PASSO: Testar as alterações com usuário PARTICULAR
+      - /app/frontend/src/pages/parcerias/PublicarDemanda.jsx
+      - /app/frontend/src/pages/parcerias/MuralOportunidades.jsx
+      - /app/frontend/src/pages/parcerias/DetalheDemanda.jsx (novo)
+      - /app/frontend/src/pages/parcerias/VerPropostas.jsx (novo)
+      - /app/frontend/src/App.js (novas rotas)
+      - /app/backend/models.py (campo estado, comissao float)
+      - /app/backend/routes/demand_routes.py (notificações)
   - agent: "testing"
     message: |
       ✅ FASE 2 BACKEND TESTING COMPLETO - IMPLEMENTAÇÕES FUNCIONANDO!
