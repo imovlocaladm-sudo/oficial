@@ -147,14 +147,23 @@ const MuralOportunidades = () => {
       <div className="container mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <Button
-              variant="ghost"
-              onClick={() => navigate('/admin/parcerias')}
-              className="mb-2"
-            >
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Voltar
-            </Button>
+            <div className="flex gap-2 mb-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => navigate('/admin/dashboard')}
+              >
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Dashboard
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => navigate('/admin/parcerias')}
+              >
+                Hub de Parcerias
+              </Button>
+            </div>
             <h1 className="text-3xl font-bold text-gray-900">Mural de Oportunidades</h1>
             <p className="text-gray-600 mt-1">Encontre demandas compatíveis com seus imóveis</p>
           </div>
