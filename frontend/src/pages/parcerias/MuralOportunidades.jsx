@@ -181,11 +181,13 @@ const MuralOportunidades = () => {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="Apartamento">Apartamento</SelectItem>
-                    <SelectItem value="Casa">Casa</SelectItem>
-                    <SelectItem value="Terreno">Terreno</SelectItem>
-                    <SelectItem value="Comercial">Comercial</SelectItem>
-                    <SelectItem value="Kitnet">Kitnet</SelectItem>
+                    <SelectItem value="Casa-Térrea">Casa Térrea</SelectItem>
+                    <SelectItem value="Casa-Térrea-Condomínio">Casa Condomínio</SelectItem>
                     <SelectItem value="Sobrado">Sobrado</SelectItem>
+                    <SelectItem value="Kitnet">Kitnet</SelectItem>
+                    <SelectItem value="Terreno">Terreno</SelectItem>
+                    <SelectItem value="Imóvel Comercial">Comercial</SelectItem>
+                    <SelectItem value="Apto. Cobertura / Duplex">Cobertura</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
