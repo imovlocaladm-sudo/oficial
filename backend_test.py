@@ -466,6 +466,7 @@ def test_mural_oportunidades(results: TestResults):
     print("  Testing POST /api/demands/...")
     demand_data = {
         "tipo_imovel": "Apartamento",
+        "cidade": "São Paulo",
         "bairros_interesse": ["Centro", "Jardim"],
         "valor_minimo": 100000,
         "valor_maximo": 500000,
