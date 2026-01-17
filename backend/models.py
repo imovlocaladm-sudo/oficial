@@ -168,9 +168,12 @@ class PropertyUpdate(BaseModel):
     property_type: Optional[PropertyType] = None
     purpose: Optional[PropertyPurpose] = None
     price: Optional[float] = None
+    address: Optional[str] = None
     neighborhood: Optional[str] = None
     city: Optional[str] = None
     state: Optional[str] = None
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
     bedrooms: Optional[int] = None
     bathrooms: Optional[int] = None
     area: Optional[float] = None
