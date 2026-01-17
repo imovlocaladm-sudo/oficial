@@ -230,11 +230,10 @@ metadata:
 
 test_plan:
   current_focus:
-    - "User Login"
+    - "Particular User Restriction"
+    - "Mural de Oportunidades"
+  stuck_tasks: 
     - "List Properties"
-    - "Get Current User"
-    - "Get Property Details"
-  stuck_tasks: []
   test_all: false
   test_priority: "high_first"
 
