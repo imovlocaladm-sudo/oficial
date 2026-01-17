@@ -83,7 +83,7 @@ const DemandCard = ({ demand, onClick }) => {
             </span>
           </div>
 
-          <Button className="w-full" size="sm">
+          <Button className="w-full" size="sm" onClick={(e) => { e.stopPropagation(); onClick(); }}>
             Ver Detalhes e Fazer Proposta
           </Button>
         </div>
