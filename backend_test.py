@@ -67,6 +67,10 @@ def make_request(method: str, endpoint: str, data: Dict = None, headers: Dict = 
                 response = requests.post(url, data=data, headers=headers, timeout=timeout)
             else:
                 response = requests.post(url, json=data, headers=headers, timeout=timeout)
+        elif method.upper() == "PUT":
+            response = requests.put(url, json=data, headers=headers, timeout=timeout)
+        elif method.upper() == "DELETE":
+            response = requests.delete(url, headers=headers, timeout=timeout)
         else:
             return False, f"Unsupported method: {method}", 0
         
