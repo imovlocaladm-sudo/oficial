@@ -263,24 +263,45 @@ const PublicarDemanda = () => {
                 </Select>
               </div>
 
-              {/* Cidade */}
-              <div>
-                <Label htmlFor="cidade">Cidade *</Label>
-                <Select
-                  value={formData.cidade}
-                  onValueChange={(value) => setFormData({ ...formData, cidade: value })}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecione a cidade" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {cidades.map((cidade) => (
-                      <SelectItem key={cidade} value={cidade}>
-                        {cidade}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+              {/* Estado e Cidade */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="estado">Estado *</Label>
+                  <Select
+                    value={formData.estado}
+                    onValueChange={handleEstadoChange}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione o estado" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {estados.map((estado) => (
+                        <SelectItem key={estado.sigla} value={estado.sigla}>
+                          {estado.sigla} - {estado.nome}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label htmlFor="cidade">Cidade *</Label>
+                  <Select
+                    value={formData.cidade}
+                    onValueChange={(value) => setFormData({ ...formData, cidade: value })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione a cidade" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {(cidadesPorEstado[formData.estado] || []).map((cidade) => (
+                        <SelectItem key={cidade} value={cidade}>
+                          {cidade}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
 
               {/* Bairros de Interesse */}
