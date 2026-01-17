@@ -210,6 +210,140 @@ def test_property_details(results: TestResults, properties: list):
     else:
         results.add_failure("Property Details", f"Status: {status}, Error: {data}")
 
+
+def test_particular_restriction(results: TestResults):
+    """Test restriction for 'Particular' users - cannot create properties for VENDA"""
+    print(f"\n🚫 Testing Particular user restriction...")
+    
+    # Login as particular user
+    particular_user = {"email": "particular.teste@imovlocal.com", "password": "Teste@456"}
+    token = test_user_login_silent(particular_user)
+    
+    if not token:
+        results.add_failure("Particular Restriction Test", "Failed to login as particular user")
+        return
+    
+    headers = {"Authorization": f"Bearer {token}"}
+    
+    # Test 1: Try to create property with purpose="VENDA" - should fail with 403
+    print("  Testing VENDA restriction...")
+    venda_data = {
+        "title": "Casa de Teste Venda",
+        "description": "Teste de restrição para venda",
+        "property_type": "Casa",
+        "purpose": "VENDA",
+        "price": 300000,
+        "neighborhood": "Centro",
+        "city": "São Paulo",
+        "state": "SP"
+    }
+    
+    success, data, status = make_request("POST", "/properties/with-images", venda_data, headers)
+    
+    if status == 403 and "Particular" in str(data) and "Venda" in str(data):
+        results.add_success(
+            "Particular VENDA Restriction", 
+            "Correctly blocked VENDA for particular user with 403 error"
+        )
+    else:
+        results.add_failure(
+            "Particular VENDA Restriction", 
+            f"Expected 403 with restriction message, got Status: {status}, Response: {data}"
+        )
+    
+    # Test 2: Try to create property with purpose="ALUGUEL" - should succeed
+    print("  Testing ALUGUEL permission...")
+    aluguel_data = {
+        "title": "Casa de Teste Aluguel",
+        "description": "Teste de permissão para aluguel",
+        "property_type": "Casa", 
+        "purpose": "ALUGUEL",
+        "price": 2500,
+        "neighborhood": "Centro",
+        "city": "São Paulo",
+        "state": "SP"
+    }
+    
+    success, data, status = make_request("POST", "/properties/with-images", aluguel_data, headers)
+    
+    if success and status == 201:
+        results.add_success(
+            "Particular ALUGUEL Permission", 
+            f"Successfully created ALUGUEL property: {data.get('title', 'N/A')}"
+        )
+    else:
+        results.add_failure(
+            "Particular ALUGUEL Permission", 
+            f"Failed to create ALUGUEL property - Status: {status}, Error: {data}"
+        )
+
+
+def test_mural_oportunidades(results: TestResults):
+    """Test Mural de Oportunidades (Demands API)"""
+    print(f"\n💼 Testing Mural de Oportunidades...")
+    
+    # Login as corretor
+    corretor_user = {"email": "corretor.vitalicio@imovlocal.com", "password": "Vitalicio@2026"}
+    token = test_user_login_silent(corretor_user)
+    
+    if not token:
+        results.add_failure("Mural Test", "Failed to login as corretor user")
+        return
+    
+    headers = {"Authorization": f"Bearer {token}"}
+    
+    # Test 1: GET /api/demands - should return list (can be empty)
+    print("  Testing GET /api/demands...")
+    success, data, status = make_request("GET", "/demands", headers=headers)
+    
+    if success and status == 200:
+        if isinstance(data, list):
+            results.add_success(
+                "Mural GET Demands", 
+                f"Successfully retrieved demands list with {len(data)} items"
+            )
+        else:
+            results.add_failure("Mural GET Demands", f"Expected list, got: {type(data)}")
+    else:
+        results.add_failure("Mural GET Demands", f"Status: {status}, Error: {data}")
+    
+    # Test 2: POST /api/demands - create test demand
+    print("  Testing POST /api/demands...")
+    demand_data = {
+        "tipo_imovel": "Apartamento",
+        "bairros_interesse": ["Centro", "Jardim"],
+        "valor_minimo": 100000,
+        "valor_maximo": 500000,
+        "comissao_parceiro": 50
+    }
+    
+    success, data, status = make_request("POST", "/demands", demand_data, headers)
+    
+    if success and status == 201:
+        if "id" in data and "tipo_imovel" in data:
+            results.add_success(
+                "Mural CREATE Demand", 
+                f"Successfully created demand: {data.get('tipo_imovel', 'N/A')} - ID: {data.get('id', 'N/A')}"
+            )
+        else:
+            results.add_failure("Mural CREATE Demand", "Invalid demand response format")
+    else:
+        results.add_failure("Mural CREATE Demand", f"Status: {status}, Error: {data}")
+
+
+def test_user_login_silent(user: Dict) -> Optional[str]:
+    """Test user login silently and return access token if successful"""
+    login_data = {
+        "email": user["email"],
+        "password": user["password"]
+    }
+    
+    success, data, status = make_request("POST", "/auth/login", login_data)
+    
+    if success and status == 200 and "access_token" in data:
+        return data["access_token"]
+    return None
+
 def main():
     """Main test execution"""
     print("🚀 Starting ImovLocal Backend API Tests")
