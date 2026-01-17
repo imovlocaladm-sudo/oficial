@@ -236,13 +236,13 @@ def test_particular_restriction(results: TestResults):
         "description": "Teste de restrição para venda",
         "property_type": "Casa",
         "purpose": "VENDA",
-        "price": 300000,
+        "price": "300000",
         "neighborhood": "Centro",
         "city": "São Paulo",
         "state": "SP"
     }
     
-    success, data, status = make_request("POST", "/properties/with-images", venda_data, headers)
+    success, data, status = make_request("POST", "/properties/with-images", venda_data, headers, form_data=True)
     
     if status == 403 and "Particular" in str(data) and "Venda" in str(data):
         results.add_success(
@@ -262,13 +262,13 @@ def test_particular_restriction(results: TestResults):
         "description": "Teste de permissão para aluguel",
         "property_type": "Casa", 
         "purpose": "ALUGUEL",
-        "price": 2500,
+        "price": "2500",
         "neighborhood": "Centro",
         "city": "São Paulo",
         "state": "SP"
     }
     
-    success, data, status = make_request("POST", "/properties/with-images", aluguel_data, headers)
+    success, data, status = make_request("POST", "/properties/with-images", aluguel_data, headers, form_data=True)
     
     if success and status == 201:
         results.add_success(
