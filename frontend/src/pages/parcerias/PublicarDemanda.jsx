@@ -19,6 +19,7 @@ const PublicarDemanda = () => {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     tipo_imovel: '',
+    estado: 'MS',
     cidade: 'Campo Grande',
     bairros_interesse: [],
     valor_minimo: '',
@@ -32,17 +33,54 @@ const PublicarDemanda = () => {
 
   const [bairroInput, setBairroInput] = useState('');
 
-  const cidades = [
-    'Campo Grande',
-    'Dourados',
-    'Três Lagoas',
-    'Corumbá',
-    'Ponta Porã',
-    'Naviraí',
-    'Nova Andradina',
-    'Aquidauana',
-    'Sidrolândia',
-    'Paranaíba'
+  const estados = [
+    { sigla: 'AC', nome: 'Acre' },
+    { sigla: 'AL', nome: 'Alagoas' },
+    { sigla: 'AP', nome: 'Amapá' },
+    { sigla: 'AM', nome: 'Amazonas' },
+    { sigla: 'BA', nome: 'Bahia' },
+    { sigla: 'CE', nome: 'Ceará' },
+    { sigla: 'DF', nome: 'Distrito Federal' },
+    { sigla: 'ES', nome: 'Espírito Santo' },
+    { sigla: 'GO', nome: 'Goiás' },
+    { sigla: 'MA', nome: 'Maranhão' },
+    { sigla: 'MT', nome: 'Mato Grosso' },
+    { sigla: 'MS', nome: 'Mato Grosso do Sul' },
+    { sigla: 'MG', nome: 'Minas Gerais' },
+    { sigla: 'PA', nome: 'Pará' },
+    { sigla: 'PB', nome: 'Paraíba' },
+    { sigla: 'PR', nome: 'Paraná' },
+    { sigla: 'PE', nome: 'Pernambuco' },
+    { sigla: 'PI', nome: 'Piauí' },
+    { sigla: 'RJ', nome: 'Rio de Janeiro' },
+    { sigla: 'RN', nome: 'Rio Grande do Norte' },
+    { sigla: 'RS', nome: 'Rio Grande do Sul' },
+    { sigla: 'RO', nome: 'Rondônia' },
+    { sigla: 'RR', nome: 'Roraima' },
+    { sigla: 'SC', nome: 'Santa Catarina' },
+    { sigla: 'SP', nome: 'São Paulo' },
+    { sigla: 'SE', nome: 'Sergipe' },
+    { sigla: 'TO', nome: 'Tocantins' }
+  ];
+
+  const cidadesPorEstado = {
+    'MS': ['Campo Grande', 'Dourados', 'Três Lagoas', 'Corumbá', 'Ponta Porã', 'Naviraí', 'Nova Andradina', 'Aquidauana', 'Sidrolândia', 'Paranaíba'],
+    'SP': ['São Paulo', 'Campinas', 'Santos', 'Ribeirão Preto', 'Sorocaba'],
+    'RJ': ['Rio de Janeiro', 'Niterói', 'Petrópolis', 'Campos dos Goytacazes'],
+    'MG': ['Belo Horizonte', 'Uberlândia', 'Contagem', 'Juiz de Fora'],
+    'PR': ['Curitiba', 'Londrina', 'Maringá', 'Ponta Grossa'],
+    'RS': ['Porto Alegre', 'Caxias do Sul', 'Pelotas', 'Canoas'],
+    'BA': ['Salvador', 'Feira de Santana', 'Vitória da Conquista'],
+    'GO': ['Goiânia', 'Aparecida de Goiânia', 'Anápolis'],
+    'SC': ['Florianópolis', 'Joinville', 'Blumenau'],
+    'PE': ['Recife', 'Jaboatão dos Guararapes', 'Olinda'],
+    'CE': ['Fortaleza', 'Caucaia', 'Juazeiro do Norte']
+  };
+
+  // Lista de comissões com valores quebrados
+  const comissaoOptions = [
+    0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5,
+    10, 12.5, 15, 17.5, 20, 22.5, 25, 27.5, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100
   ];
 
   const tiposImovel = [
