@@ -317,3 +317,25 @@ agent_communication:
       - /app/frontend/src/pages/admin/NovoImovel.jsx
       
       PRÓXIMO PASSO: Testar as alterações com usuário PARTICULAR
+  - agent: "testing"
+    message: |
+      ✅ FASE 2 BACKEND TESTING COMPLETO - IMPLEMENTAÇÕES FUNCIONANDO!
+      
+      RESULTADOS DOS TESTES OBRIGATÓRIOS:
+      
+      🚫 RESTRIÇÃO PARA PARTICULAR:
+      ✅ Login particular.teste@imovlocal.com - OK
+      ✅ Tentativa VENDA - Bloqueada com 403 (correto)
+      ✅ Criação ALUGUEL - Sucesso 201 (correto)
+      
+      💼 MURAL DE OPORTUNIDADES:
+      ✅ Login corretor.vitalicio@imovlocal.com - OK
+      ✅ GET /api/demands/ - Lista vazia retornada (correto)
+      ✅ POST /api/demands/ - Demanda criada com sucesso
+      
+      ❌ PROBLEMA IDENTIFICADO:
+      - GET /api/properties/ falhando com erro 500
+      - Causa: Propriedade com property_type="Casa" inválido no banco
+      - Deve ser enum válido como "Casa-Térrea"
+      
+      TODAS AS NOVAS FUNCIONALIDADES DA FASE 2 ESTÃO FUNCIONANDO CORRETAMENTE!
