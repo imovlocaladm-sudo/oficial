@@ -344,46 +344,64 @@ const PublicarDemanda = () => {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="valor_minimo">Valor Mínimo *</Label>
-                  <Input
-                    id="valor_minimo"
-                    type="number"
-                    value={formData.valor_minimo}
-                    onChange={(e) => setFormData({ ...formData, valor_minimo: e.target.value })}
-                    placeholder="R$ 200.000"
-                    step="1000"
-                  />
+                  <div className="relative">
+                    <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">R$</span>
+                    <Input
+                      id="valor_minimo"
+                      type="text"
+                      value={formData.valor_minimo ? formData.valor_minimo.toLocaleString('pt-BR') : ''}
+                      onChange={(e) => handleValorChange('valor_minimo', e.target.value)}
+                      placeholder="200.000"
+                      className="pl-10"
+                    />
+                  </div>
+                  {formData.valor_minimo > 0 && (
+                    <p className="text-xs text-gray-500 mt-1">{displayCurrency(formData.valor_minimo)}</p>
+                  )}
                 </div>
                 <div>
                   <Label htmlFor="valor_maximo">Valor Máximo *</Label>
-                  <Input
-                    id="valor_maximo"
-                    type="number"
-                    value={formData.valor_maximo}
-                    onChange={(e) => setFormData({ ...formData, valor_maximo: e.target.value })}
-                    placeholder="R$ 350.000"
-                    step="1000"
-                  />
+                  <div className="relative">
+                    <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">R$</span>
+                    <Input
+                      id="valor_maximo"
+                      type="text"
+                      value={formData.valor_maximo ? formData.valor_maximo.toLocaleString('pt-BR') : ''}
+                      onChange={(e) => handleValorChange('valor_maximo', e.target.value)}
+                      placeholder="500.000"
+                      className="pl-10"
+                    />
+                  </div>
+                  {formData.valor_maximo > 0 && (
+                    <p className="text-xs text-gray-500 mt-1">{displayCurrency(formData.valor_maximo)}</p>
+                  )}
                 </div>
               </div>
 
               {/* Comissão */}
               <div>
-                <Label htmlFor="comissao_parceiro">Comissão para o Parceiro * ({formData.comissao_parceiro}%)</Label>
-                <Input
-                  id="comissao_parceiro"
-                  type="range"
-                  min="10"
-                  max="100"
-                  step="5"
-                  value={formData.comissao_parceiro}
-                  onChange={(e) => setFormData({ ...formData, comissao_parceiro: e.target.value })}
-                  className="w-full"
-                />
-                <div className="flex justify-between text-xs text-gray-500 mt-1">
-                  <span>10%</span>
-                  <span>50%</span>
-                  <span>100%</span>
-                </div>
+                <Label htmlFor="comissao_parceiro">
+                  Comissão para o Parceiro * 
+                  <span className="ml-2 text-blue-600 font-bold text-lg">{formData.comissao_parceiro}%</span>
+                </Label>
+                <Select
+                  value={String(formData.comissao_parceiro)}
+                  onValueChange={(value) => setFormData({ ...formData, comissao_parceiro: parseFloat(value) })}
+                >
+                  <SelectTrigger className="mt-2">
+                    <SelectValue placeholder="Selecione a comissão" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {comissaoOptions.map((valor) => (
+                      <SelectItem key={valor} value={String(valor)}>
+                        {valor}%
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <p className="text-xs text-gray-500 mt-1">
+                  Percentual da comissão total que será repassada ao parceiro
+                </p>
               </div>
 
               {/* Campos Opcionais */}
