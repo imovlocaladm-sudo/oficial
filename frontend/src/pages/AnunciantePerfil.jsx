@@ -261,12 +261,21 @@ const AnunciantePerfil = () => {
               <div className="flex-1">
                 <div className="flex flex-wrap items-center gap-3 mb-2">
                   <h1 className="text-2xl md:text-3xl font-bold text-gray-800">{profile.name}</h1>
-                  {profile.user_type === 'corretor' && (
-                    <span className="px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-700">
-                      <Award size={12} className="inline mr-1" />
-                      Corretor
-                    </span>
-                  )}
+                </div>
+                
+                {/* Tipo de Usuário - Exibição Principal */}
+                <div className="mb-3">
+                  <span className={`inline-flex items-center px-4 py-2 rounded-lg text-sm font-bold ${
+                    profile.user_type === 'corretor'
+                      ? 'bg-blue-600 text-white'
+                      : profile.user_type === 'imobiliaria'
+                      ? 'bg-orange-600 text-white'
+                      : 'bg-green-600 text-white'
+                  }`}>
+                    {profile.user_type === 'corretor' && '👔 CORRETOR DE IMÓVEIS'}
+                    {profile.user_type === 'imobiliaria' && '🏢 IMOBILIÁRIA'}
+                    {profile.user_type === 'particular' && '👤 PARTICULAR'}
+                  </span>
                 </div>
 
                 {profile.company && (
