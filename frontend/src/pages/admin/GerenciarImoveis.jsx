@@ -291,7 +291,6 @@ const GerenciarImoveis = () => {
                         <Trash2 size={16} className="mr-1" />
                         {deleting === property.id ? 'Excluindo...' : 'Excluir'}
                       </Button>
-                      </Button>
                     </div>
                   </div>
                 </div>
