@@ -4,8 +4,9 @@ import { useAuth } from '../../context/AuthContext';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import { Button } from '../../components/ui/button';
-import { Home, Plus, List, User, LogOut, Settings, BarChart3, Handshake, Calendar } from 'lucide-react';
+import { Home, Plus, List, User, LogOut, Settings, BarChart3, Handshake, Calendar, AlertCircle, CreditCard } from 'lucide-react';
 import { propertiesAPI } from '../../services/api';
+import api from '../../services/api';
 import PropertyCard from '../../components/PropertyCard';
 
 const Dashboard = () => {
@@ -13,6 +14,7 @@ const Dashboard = () => {
   const { user, logout } = useAuth();
   const [myProperties, setMyProperties] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [limits, setLimits] = useState(null);
   const [stats, setStats] = useState({
     total: 0,
     venda: 0,
@@ -31,7 +33,17 @@ const Dashboard = () => {
       return;
     }
     fetchMyProperties();
+    fetchLimits();
   }, [user, navigate]);
+
+  const fetchLimits = async () => {
+    try {
+      const response = await api.get('/properties/my-limits');
+      setLimits(response.data);
+    } catch (error) {
+      console.error('Error fetching limits:', error);
+    }
+  };
 
   const fetchMyProperties = async () => {
     try {
