@@ -1,8 +1,16 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Facebook, Instagram, Mail, Phone, MapPin } from 'lucide-react';
+import { Facebook, Instagram, Mail, Phone, MapPin, MessageCircle } from 'lucide-react';
 
 const Footer = () => {
+  // Links das redes sociais
+  const socialLinks = {
+    facebook: "https://facebook.com/imovlocal",
+    instagram: "https://instagram.com/imovlocal",
+    whatsapp: "https://wa.me/5567982288883?text=Olá! Vim pelo site ImovLocal e gostaria de mais informações.",
+    email: "mailto:imovlocaladm@gmail.com"
+  };
+
   return (
     <footer className="bg-gray-900 text-gray-300">
       <div className="container mx-auto px-4 py-8 md:py-12">
@@ -14,6 +22,7 @@ const Footer = () => {
               <li><Link to="/" className="hover:text-red-400 transition-colors">Página inicial</Link></li>
               <li><Link to="/cadastro" className="hover:text-red-400 transition-colors">Cadastre-se</Link></li>
               <li><Link to="/login" className="hover:text-red-400 transition-colors">Área administrativa</Link></li>
+              <li><Link to="/planos" className="hover:text-red-400 transition-colors">Planos e Preços</Link></li>
             </ul>
           </div>
 
@@ -47,11 +56,15 @@ const Footer = () => {
               </li>
               <li className="flex items-center gap-2">
                 <Phone size={14} className="flex-shrink-0" />
-                <span>(67) 99999-9999</span>
+                <a href="tel:+5567982288883" className="hover:text-red-400 transition-colors">
+                  (67) 98228-8883
+                </a>
               </li>
               <li className="flex items-center gap-2">
                 <Mail size={14} className="flex-shrink-0" />
-                <span>contato@imovlocal.com</span>
+                <a href={socialLinks.email} className="hover:text-red-400 transition-colors">
+                  imovlocaladm@gmail.com
+                </a>
               </li>
             </ul>
           </div>
@@ -63,13 +76,38 @@ const Footer = () => {
             <div className="text-center md:text-left">
               <h4 className="text-white font-semibold mb-3 text-sm md:text-base">Acompanhe o ImovLocal</h4>
               <div className="flex gap-4 justify-center md:justify-start">
-                <a href="#" className="hover:text-red-400 transition-colors p-2 bg-gray-800 rounded-full">
+                <a 
+                  href={socialLinks.facebook}
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="hover:text-blue-500 transition-colors p-2 bg-gray-800 rounded-full hover:bg-gray-700"
+                  title="Facebook"
+                >
                   <Facebook size={20} className="md:w-6 md:h-6" />
                 </a>
-                <a href="#" className="hover:text-red-400 transition-colors p-2 bg-gray-800 rounded-full">
+                <a 
+                  href={socialLinks.instagram}
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="hover:text-pink-500 transition-colors p-2 bg-gray-800 rounded-full hover:bg-gray-700"
+                  title="Instagram"
+                >
                   <Instagram size={20} className="md:w-6 md:h-6" />
                 </a>
-                <a href="#" className="hover:text-red-400 transition-colors p-2 bg-gray-800 rounded-full">
+                <a 
+                  href={socialLinks.whatsapp}
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="hover:text-green-500 transition-colors p-2 bg-gray-800 rounded-full hover:bg-gray-700"
+                  title="WhatsApp"
+                >
+                  <MessageCircle size={20} className="md:w-6 md:h-6" />
+                </a>
+                <a 
+                  href={socialLinks.email}
+                  className="hover:text-red-400 transition-colors p-2 bg-gray-800 rounded-full hover:bg-gray-700"
+                  title="Email"
+                >
                   <Mail size={20} className="md:w-6 md:h-6" />
                 </a>
               </div>
