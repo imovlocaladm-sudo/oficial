@@ -20,6 +20,99 @@ UPLOAD_DIR = Path(__file__).parent.parent / "uploads"
 UPLOAD_DIR.mkdir(exist_ok=True)
 
 # ==========================================
+# LIMITES DE ANÚNCIOS E FOTOS POR PLANO
+# ==========================================
+
+PLAN_LIMITS = {
+    # Planos pagos
+    "particular_trimestral": {"max_properties": 1, "max_photos": 20},
+    "corretor_trimestral": {"max_properties": 50, "max_photos": 20},
+    "imobiliaria_anual": {"max_properties": 150, "max_photos": 20},
+    # Planos genéricos (para compatibilidade)
+    "trimestral": {"max_properties": 50, "max_photos": 20},
+    "anual": {"max_properties": 150, "max_photos": 20},
+    # Plano gratuito (limitado)
+    "free": {"max_properties": 1, "max_photos": 5},
+    # Plano vitalício (para usuários especiais)
+    "lifetime": {"max_properties": 999, "max_photos": 20},
+}
+
+# Limite padrão de fotos por imóvel
+MAX_PHOTOS_PER_PROPERTY = 20
+
+
+async def get_user_property_count(user_id: str) -> int:
+    """Conta quantos imóveis ativos o usuário possui"""
+    count = await properties_collection.count_documents({
+        "owner_id": user_id,
+        "status": {"$ne": "deleted"}
+    })
+    return count
+
+
+async def check_property_limit(user: dict) -> dict:
+    """
+    Verifica se o usuário pode criar mais anúncios
+    Retorna: {"can_create": bool, "current": int, "limit": int, "message": str}
+    """
+    user_type = user.get("user_type", "particular")
+    plan_type = user.get("plan_type", "free")
+    
+    # Admins não têm limite
+    if user_type in ["admin", "admin_senior"]:
+        return {"can_create": True, "current": 0, "limit": 999, "message": "Admin sem limite"}
+    
+    # Determinar limite baseado no plano
+    if plan_type == "lifetime":
+        limits = PLAN_LIMITS["lifetime"]
+    elif plan_type in PLAN_LIMITS:
+        limits = PLAN_LIMITS[plan_type]
+    else:
+        # Plano baseado no tipo de usuário
+        if user_type == "particular":
+            limits = PLAN_LIMITS.get("particular_trimestral", PLAN_LIMITS["free"])
+        elif user_type == "corretor":
+            limits = PLAN_LIMITS.get("corretor_trimestral", PLAN_LIMITS["free"])
+        elif user_type == "imobiliaria":
+            limits = PLAN_LIMITS.get("imobiliaria_anual", PLAN_LIMITS["free"])
+        else:
+            limits = PLAN_LIMITS["free"]
+    
+    # Verificar se plano está ativo (não expirou)
+    plan_expires_at = user.get("plan_expires_at")
+    if plan_expires_at and plan_type != "lifetime":
+        if datetime.utcnow() > plan_expires_at:
+            # Plano expirou, usar limite free
+            limits = PLAN_LIMITS["free"]
+    
+    # Se não tem plano pago, usar free
+    if plan_type == "free":
+        limits = PLAN_LIMITS["free"]
+    
+    max_properties = limits["max_properties"]
+    current_count = await get_user_property_count(user["id"])
+    
+    can_create = current_count < max_properties
+    
+    return {
+        "can_create": can_create,
+        "current": current_count,
+        "limit": max_properties,
+        "message": f"Você possui {current_count} de {max_properties} anúncios permitidos" if can_create 
+                   else f"Limite de {max_properties} anúncios atingido. Faça upgrade do seu plano!"
+    }
+
+
+def get_max_photos_for_user(user: dict) -> int:
+    """Retorna o limite de fotos por imóvel para o usuário"""
+    plan_type = user.get("plan_type", "free")
+    
+    if plan_type in PLAN_LIMITS:
+        return PLAN_LIMITS[plan_type]["max_photos"]
+    
+    return MAX_PHOTOS_PER_PROPERTY
+
+# ==========================================
 # GEOCODIFICAÇÃO COM NOMINATIM (OpenStreetMap)
 # ==========================================
 
