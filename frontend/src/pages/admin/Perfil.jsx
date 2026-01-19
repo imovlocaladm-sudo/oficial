@@ -280,26 +280,46 @@ const Perfil = () => {
               <div className="flex-1">
                 <h2 className="text-2xl font-bold text-gray-800">{user?.name}</h2>
                 <p className="text-gray-600">{user?.email}</p>
-                <div className="flex flex-wrap gap-2 mt-2">
-                  <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                
+                {/* Tipo de Usuário - Exibição Principal */}
+                <div className="mt-3 mb-2">
+                  <span className={`inline-flex items-center px-4 py-2 rounded-lg text-sm font-bold ${
                     user?.user_type === 'corretor'
-                      ? 'bg-blue-100 text-blue-700'
+                      ? 'bg-blue-600 text-white'
                       : user?.user_type === 'imobiliaria'
-                      ? 'bg-orange-100 text-orange-700'
-                      : 'bg-gray-100 text-gray-700'
+                      ? 'bg-orange-600 text-white'
+                      : 'bg-green-600 text-white'
                   }`}>
-                    {user?.user_type === 'corretor' ? 'Corretor' : user?.user_type === 'imobiliaria' ? 'Imobiliária' : 'Particular'}
+                    {user?.user_type === 'corretor' && '👔 CORRETOR DE IMÓVEIS'}
+                    {user?.user_type === 'imobiliaria' && '🏢 IMOBILIÁRIA'}
+                    {user?.user_type === 'particular' && '👤 PARTICULAR'}
                   </span>
+                </div>
+                
+                {/* Badges Adicionais */}
+                <div className="flex flex-wrap gap-2">
                   {user?.creci && (
                     <span className="px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700">
-                      CRECI: {user.creci}
+                      ✓ CRECI: {user.creci}
                     </span>
                   )}
                   {user?.plan_type === 'lifetime' && (
                     <span className="px-3 py-1 rounded-full text-xs font-semibold bg-purple-100 text-purple-700">
-                      ⭐ Vitalício
+                      ⭐ Plano Vitalício
                     </span>
                   )}
+                  {user?.plan_type === 'free' && (
+                    <span className="px-3 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-700">
+                      Plano Gratuito
+                    </span>
+                  )}
+                  <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                    user?.status === 'active' 
+                      ? 'bg-green-100 text-green-700' 
+                      : 'bg-yellow-100 text-yellow-700'
+                  }`}>
+                    {user?.status === 'active' ? '✓ Conta Ativa' : '⏳ Pendente'}
+                  </span>
                 </div>
               </div>
               
