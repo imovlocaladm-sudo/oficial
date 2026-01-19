@@ -244,31 +244,13 @@ const NovoImovel = () => {
 
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-8">
-          {/* Alerta de Limites */}
-          {limits && !limits.can_create && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-              <div className="flex items-start gap-3">
-                <AlertCircle className="text-red-600 flex-shrink-0 mt-0.5" size={24} />
-                <div>
-                  <h3 className="font-bold text-red-800">Limite de Anúncios Atingido</h3>
-                  <p className="text-red-700 text-sm mt-1">{limits.message}</p>
-                  <Link to="/planos">
-                    <Button className="mt-3 bg-red-600 hover:bg-red-700">
-                      Fazer Upgrade do Plano
-                    </Button>
-                  </Link>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Alerta de Limites */}
+          {/* Alerta de Acesso Bloqueado */}
           {limits && !limits.can_create && (
             <div className="mb-6 p-6 bg-red-50 border border-red-200 rounded-lg">
               <div className="flex items-start gap-3">
                 <AlertCircle className="text-red-600 flex-shrink-0 mt-0.5" size={28} />
                 <div>
-                  <h3 className="font-bold text-red-800 text-lg">Acesso Bloqueado</h3>
+                  <h3 className="font-bold text-red-800 text-lg">🚫 Acesso Bloqueado</h3>
                   <p className="text-red-700 mt-1">{limits.message}</p>
                   <p className="text-red-600 text-sm mt-2">
                     Para publicar imóveis no ImovLocal, você precisa assinar um plano e ter o pagamento aprovado pelo administrador.
