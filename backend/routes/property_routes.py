@@ -210,6 +210,14 @@ async def create_property(property_data: PropertyCreate, email: str = Depends(ge
             detail="User not found"
         )
     
+    # Verificar limite de anúncios
+    limit_check = await check_property_limit(user)
+    if not limit_check["can_create"]:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=limit_check["message"]
+        )
+    
     # Validação: Usuário "particular" só pode anunciar Aluguel e Aluguel por Temporada
     if user.get('user_type') == 'particular':
         purpose = property_data.purpose.upper() if isinstance(property_data.purpose, str) else property_data.purpose.value
