@@ -406,7 +406,44 @@ async def admin_pending_count(email: str = Depends(get_current_user_email)):
     return {"pending_count": count}
 
 
-@router.get("/admin/{payment_id}", response_model=Payment)
+@router.get("/admin/stats")
+async def admin_payment_stats(email: str = Depends(get_current_user_email)):
+    """[ADMIN] Estatísticas de pagamentos"""
+    user = await users_collection.find_one({"email": email})
+    if not user or user.get("user_type") not in ["admin", "admin_senior"]:
+        raise HTTPException(status_code=403, detail="Acesso negado")
+    
+    # Contar por status
+    stats = {
+        "pending": await payments_collection.count_documents({"status": "pending"}),
+        "awaiting_approval": await payments_collection.count_documents({"status": "awaiting_approval"}),
+        "approved": await payments_collection.count_documents({"status": "approved"}),
+        "rejected": await payments_collection.count_documents({"status": "rejected"}),
+        "expired": await payments_collection.count_documents({"status": "expired"}),
+        "cancelled": await payments_collection.count_documents({"status": "cancelled"})
+    }
+    
+    # Total arrecadado
+    approved_payments = await payments_collection.find({"status": "approved"}).to_list(1000)
+    total_revenue = sum(p.get("amount", 0) for p in approved_payments)
+    
+    # Últimos 30 dias
+    thirty_days_ago = datetime.utcnow() - timedelta(days=30)
+    recent_approved = await payments_collection.find({
+        "status": "approved",
+        "approved_at": {"$gte": thirty_days_ago}
+    }).to_list(1000)
+    monthly_revenue = sum(p.get("amount", 0) for p in recent_approved)
+    
+    return {
+        "by_status": stats,
+        "total_revenue": total_revenue,
+        "monthly_revenue": monthly_revenue,
+        "total_payments": sum(stats.values())
+    }
+
+
+@router.get("/admin/payment/{payment_id}", response_model=Payment)
 async def admin_get_payment(
     payment_id: str,
     email: str = Depends(get_current_user_email)
@@ -423,7 +460,7 @@ async def admin_get_payment(
     return Payment(**payment)
 
 
-@router.post("/admin/{payment_id}/approve")
+@router.post("/admin/payment/{payment_id}/approve")
 async def admin_approve_payment(
     payment_id: str,
     approval: PaymentApproval,
