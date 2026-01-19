@@ -4,9 +4,20 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import WhatsAppButton from '../components/WhatsAppButton';
 import { propertiesAPI, visitsAPI } from '../services/api';
-import { MapPin, Bed, Bath, Square, Calendar, Phone, Mail, Share2, Heart, ArrowLeft, User, CheckCircle, AlertCircle, Copy, X, Facebook, Twitter, MessageCircle, Check } from 'lucide-react';
+import { MapPin, Bed, Bath, Square, Calendar, Phone, Mail, Share2, Heart, ArrowLeft, User, CheckCircle, AlertCircle, Copy, X, Facebook, Twitter, MessageCircle, Check, Map } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { toast } from 'sonner';
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
+import L from 'leaflet';
+
+// Fix for default markers
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
+  iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+  shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+});
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
