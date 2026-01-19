@@ -15,6 +15,8 @@ import BuscaMapa from "./pages/BuscaMapa.jsx";
 import Anunciar from "./pages/Anunciar.jsx";
 import SolicitarImovel from "./pages/SolicitarImovel.jsx";
 import AnunciantePerfil from "./pages/AnunciantePerfil.jsx";
+import Planos from "./pages/Planos.jsx";
+import Checkout from "./pages/Checkout.jsx";
 
 // User Admin Pages
 import Dashboard from "./pages/admin/Dashboard.jsx";
@@ -33,6 +35,7 @@ import AdminGerenciarImoveis from "./pages/admin/AdminGerenciarImoveis.jsx";
 import AdminGerenciarBanners from "./pages/admin/AdminGerenciarBanners.jsx";
 import AdminMuralOportunidades from "./pages/admin/MuralOportunidades.jsx";
 import AdminEnviarNotificacoes from "./pages/admin/AdminEnviarNotificacoes.jsx";
+import AdminPagamentos from "./pages/admin/AdminPagamentos.jsx";
 
 // Parcerias Pages
 import ParceriasHub from "./pages/parcerias/ParceriasHub.jsx";
