@@ -139,6 +139,26 @@ const AdminSeniorDashboard = () => {
                 </Button>
               </div>
             </Link>
+
+            {/* Enviar Notificações */}
+            <Link to="/admin/senior/notificacoes">
+              <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-xl transition-shadow cursor-pointer border-2 border-transparent hover:border-orange-500">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="bg-orange-100 p-3 rounded-full">
+                    <Bell className="text-orange-600" size={24} />
+                  </div>
+                  <span className="text-3xl font-bold text-gray-800">📢</span>
+                </div>
+                <h4 className="text-lg font-semibold text-gray-800 mb-2">Enviar Notificações</h4>
+                <p className="text-sm text-gray-600 mb-4">
+                  Enviar comunicados segmentados para usuários da plataforma.
+                </p>
+                <Button className="w-full bg-orange-600 hover:bg-orange-700">
+                  <Bell size={18} className="mr-2" />
+                  Enviar Notificações
+                </Button>
+              </div>
+            </Link>
           </div>
         </div>
 
