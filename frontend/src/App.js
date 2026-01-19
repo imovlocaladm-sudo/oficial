@@ -184,6 +184,16 @@ function App() {
                 <AdminEnviarNotificacoes />
               </ProtectedRoute>
             } />
+            <Route path="/admin/master/pagamentos" element={
+              <ProtectedRoute>
+                <AdminPagamentos />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/senior/pagamentos" element={
+              <ProtectedRoute>
+                <AdminPagamentos />
+              </ProtectedRoute>
+            } />
           </Routes>
           <Toaster />
         </BrowserRouter>
