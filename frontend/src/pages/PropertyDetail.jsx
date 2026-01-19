@@ -402,6 +402,86 @@ const PropertyDetail = () => {
                   </div>
                 </div>
               </div>
+
+              {/* Seção de Localização com Botão "Ver no Mapa" */}
+              <div className="mt-6 pt-6 border-t border-gray-200">
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-xl font-bold text-gray-800">Localização</h2>
+                  <Button
+                    variant="outline"
+                    onClick={() => setShowMap(!showMap)}
+                    className="flex items-center gap-2 text-blue-600 border-blue-600 hover:bg-blue-50"
+                    data-testid="btn-ver-mapa"
+                  >
+                    <Map size={18} />
+                    {showMap ? 'Ocultar Mapa' : 'Ver no Mapa'}
+                  </Button>
+                </div>
+                
+                <div className="flex items-center gap-2 text-gray-600 mb-4">
+                  <MapPin size={18} className="text-red-500" />
+                  <span>{property.neighborhood} - {property.city}/{property.state}</span>
+                </div>
+
+                {/* Mapa Expandível */}
+                {showMap && property.latitude && property.longitude && (
+                  <div className="rounded-lg overflow-hidden border border-gray-200 shadow-md" data-testid="map-container">
+                    <MapContainer
+                      center={[property.latitude, property.longitude]}
+                      zoom={15}
+                      style={{ height: '300px', width: '100%' }}
+                      scrollWheelZoom={false}
+                    >
+                      <TileLayer
+                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                      />
+                      <Marker position={[property.latitude, property.longitude]}>
+                        <Popup>
+                          <div className="text-center">
+                            <strong>{property.title}</strong>
+                            <br />
+                            <span className="text-sm text-gray-600">{property.neighborhood}</span>
+                          </div>
+                        </Popup>
+                      </Marker>
+                    </MapContainer>
+                    
+                    {/* Botão para abrir no Google Maps */}
+                    <div className="bg-gray-50 p-3 flex justify-center">
+                      <a
+                        href={`https://www.google.com/maps?q=${property.latitude},${property.longitude}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2 text-blue-600 hover:text-blue-800 text-sm font-medium"
+                        data-testid="link-google-maps"
+                      >
+                        <Map size={16} />
+                        Abrir no Google Maps
+                      </a>
+                    </div>
+                  </div>
+                )}
+
+                {/* Mensagem caso não tenha coordenadas */}
+                {showMap && (!property.latitude || !property.longitude) && (
+                  <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 text-center">
+                    <MapPin size={32} className="mx-auto text-yellow-500 mb-2" />
+                    <p className="text-yellow-700 text-sm">
+                      Localização exata não disponível para este imóvel.
+                    </p>
+                    <a
+                      href={`https://www.google.com/maps/search/${encodeURIComponent(`${property.neighborhood}, ${property.city}, ${property.state}`)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-800 text-sm font-medium mt-2"
+                    >
+                      <Map size={16} />
+                      Buscar região no Google Maps
+                    </a>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 
