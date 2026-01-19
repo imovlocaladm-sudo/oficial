@@ -66,6 +66,12 @@ function App() {
             <Route path="/busca-mapa" element={<BuscaMapa />} />
             <Route path="/anunciar" element={<Anunciar />} />
             <Route path="/solicitar" element={<SolicitarImovel />} />
+            <Route path="/planos" element={<Planos />} />
+            <Route path="/checkout/:planId" element={
+              <ProtectedRoute>
+                <Checkout />
+              </ProtectedRoute>
+            } />
             
             {/* Protected User Routes */}
             <Route path="/admin/dashboard" element={
