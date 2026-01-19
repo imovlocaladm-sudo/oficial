@@ -612,7 +612,12 @@ ${messageForm.message}
                   </Button>
                 )}
                 
-                <Button variant="outline" className="w-full flex items-center justify-center gap-2">
+                <Button 
+                  variant="outline" 
+                  className="w-full flex items-center justify-center gap-2"
+                  onClick={() => setShowMessageModal(true)}
+                  data-testid="btn-send-message"
+                >
                   <Mail size={18} />
                   Enviar mensagem
                 </Button>
