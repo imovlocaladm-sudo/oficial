@@ -885,6 +885,107 @@ ${messageForm.message}
         </div>
       </div>
 
+      {/* Modal de Enviar Mensagem */}
+      {showMessageModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6">
+              {/* Header do Modal */}
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <h2 className="text-xl font-bold text-gray-800">Enviar Mensagem</h2>
+                  <p className="text-sm text-gray-500">Entre em contato com o anunciante</p>
+                </div>
+                <button 
+                  onClick={() => setShowMessageModal(false)}
+                  className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                >
+                  <X size={24} className="text-gray-500" />
+                </button>
+              </div>
+
+              {/* Info do Imóvel */}
+              <div className="bg-gray-50 rounded-lg p-4 mb-6">
+                <p className="font-medium text-gray-800 text-sm">{property?.title}</p>
+                <p className="text-xs text-gray-500">{property?.neighborhood} - {property?.city}/{property?.state}</p>
+              </div>
+
+              {/* Formulário */}
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Seu Nome <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={messageForm.name}
+                    onChange={(e) => setMessageForm({...messageForm, name: e.target.value})}
+                    placeholder="Digite seu nome"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    data-testid="message-name"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Seu Telefone
+                  </label>
+                  <input
+                    type="tel"
+                    value={messageForm.phone}
+                    onChange={(e) => setMessageForm({...messageForm, phone: e.target.value})}
+                    placeholder="(00) 00000-0000"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    data-testid="message-phone"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Seu Email
+                  </label>
+                  <input
+                    type="email"
+                    value={messageForm.email}
+                    onChange={(e) => setMessageForm({...messageForm, email: e.target.value})}
+                    placeholder="seu@email.com"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    data-testid="message-email"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Mensagem <span className="text-red-500">*</span>
+                  </label>
+                  <textarea
+                    value={messageForm.message}
+                    onChange={(e) => setMessageForm({...messageForm, message: e.target.value})}
+                    placeholder="Olá! Tenho interesse neste imóvel e gostaria de mais informações..."
+                    rows={4}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                    data-testid="message-content"
+                  />
+                </div>
+
+                <Button 
+                  onClick={handleSendMessage}
+                  className="w-full bg-green-600 hover:bg-green-700 flex items-center justify-center gap-2 py-6"
+                  data-testid="btn-submit-message"
+                >
+                  <MessageCircle size={20} />
+                  Enviar via WhatsApp
+                </Button>
+
+                <p className="text-xs text-gray-500 text-center">
+                  Sua mensagem será enviada diretamente para o WhatsApp do anunciante
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       <Footer />
     </div>
   );
