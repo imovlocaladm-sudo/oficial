@@ -166,6 +166,12 @@ const AdminMasterDashboard = () => {
                 Enviar Notificações
               </Button>
             </Link>
+            <Link to="/admin/master/pagamentos">
+              <Button className="w-full bg-green-600 hover:bg-green-700">
+                <CreditCard size={18} className="mr-2" />
+                Gerenciar Pagamentos
+              </Button>
+            </Link>
           </div>
         </div>
 
