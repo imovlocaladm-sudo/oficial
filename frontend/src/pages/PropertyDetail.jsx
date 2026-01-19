@@ -188,6 +188,52 @@ const PropertyDetail = () => {
     setShowShareMenu(false);
   };
 
+  // Função para enviar mensagem via WhatsApp
+  const handleSendMessage = () => {
+    if (!messageForm.name.trim()) {
+      toast.error('Por favor, informe seu nome');
+      return;
+    }
+    if (!messageForm.phone.trim() && !messageForm.email.trim()) {
+      toast.error('Por favor, informe seu telefone ou email');
+      return;
+    }
+    if (!messageForm.message.trim()) {
+      toast.error('Por favor, escreva sua mensagem');
+      return;
+    }
+
+    // Montar mensagem para WhatsApp
+    const propertyUrl = getPropertyUrl();
+    const whatsappMessage = `Olá! Vi o imóvel "${property?.title}" no ImovLocal e gostaria de mais informações.
+
+📋 *Meus dados:*
+👤 Nome: ${messageForm.name}
+📱 Telefone: ${messageForm.phone || 'Não informado'}
+📧 Email: ${messageForm.email || 'Não informado'}
+
+💬 *Mensagem:*
+${messageForm.message}
+
+🔗 Link do imóvel: ${propertyUrl}`;
+
+    const encodedMessage = encodeURIComponent(whatsappMessage);
+    const phoneNumber = property?.owner_phone?.replace(/\D/g, '') || '';
+    
+    // Abrir WhatsApp
+    if (phoneNumber) {
+      window.open(`https://wa.me/55${phoneNumber}?text=${encodedMessage}`, '_blank');
+    } else {
+      // Se não tiver telefone, abrir WhatsApp genérico
+      window.open(`https://wa.me/?text=${encodedMessage}`, '_blank');
+    }
+
+    // Limpar formulário e fechar modal
+    setMessageForm({ name: '', email: '', phone: '', message: '' });
+    setShowMessageModal(false);
+    toast.success('Redirecionando para o WhatsApp...');
+  };
+
   const handleNativeShare = async () => {
     if (navigator.share) {
       try {
