@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import { Button } from '../../components/ui/button';
-import { ArrowLeft, Save, Upload, X } from 'lucide-react';
+import { ArrowLeft, Save, Upload, X, AlertCircle, Info } from 'lucide-react';
 import { propertiesAPI } from '../../services/api';
+import api from '../../services/api';
 import { toast } from 'sonner';
 import { propertyTypes } from '../../data/mock';
 
