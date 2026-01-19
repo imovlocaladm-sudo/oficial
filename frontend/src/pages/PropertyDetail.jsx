@@ -53,6 +53,7 @@ const PropertyDetail = () => {
   const [visitFormErrors, setVisitFormErrors] = useState({});
   const [submittingVisit, setSubmittingVisit] = useState(false);
   const [visitSuccess, setVisitSuccess] = useState(false);
+  const [showMap, setShowMap] = useState(false);
 
   useEffect(() => {
     const fetchProperty = async () => {
