@@ -89,6 +89,7 @@ const Header = () => {
               <Link to="/destaques" className="text-gray-700 hover:text-red-600 transition-colors font-medium">Destaques</Link>
               <Link to="/lancamentos" className="text-gray-700 hover:text-red-600 transition-colors font-medium">Lançamentos</Link>
               <Link to="/busca-detalhada" className="text-gray-700 hover:text-red-600 transition-colors font-medium">Busca Detalhada</Link>
+              <Link to="/planos" className="text-blue-600 hover:text-blue-700 transition-colors font-semibold">Planos</Link>
               <Link to="/anunciar" className="text-red-600 hover:text-red-700 transition-colors font-semibold">Anunciar</Link>
               <Link to="/solicitar" className="text-gray-700 hover:text-red-600 transition-colors font-medium">Solicite um imóvel</Link>
             </nav>
