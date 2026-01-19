@@ -146,8 +146,16 @@ const NovoImovel = () => {
 
   const handleImageUpload = (e) => {
     const files = Array.from(e.target.files);
+    const maxPhotos = limits?.max_photos_per_property || 20;
     
     if (files.length > 0) {
+      // Verificar limite de fotos
+      const totalPhotos = imageFiles.length + files.length;
+      if (totalPhotos > maxPhotos) {
+        toast.error(`Máximo de ${maxPhotos} fotos permitidas. Você já tem ${imageFiles.length}.`);
+        return;
+      }
+      
       // Store actual File objects
       setImageFiles(prev => [...prev, ...files]);
       
@@ -155,7 +163,7 @@ const NovoImovel = () => {
       const newPreviews = files.map(file => URL.createObjectURL(file));
       setImagePreviews(prev => [...prev, ...newPreviews]);
       
-      toast.success(`${files.length} imagem(ns) adicionada(s)`);
+      toast.success(`${files.length} imagem(ns) adicionada(s). Total: ${totalPhotos}/${maxPhotos}`);
     }
   };
 
