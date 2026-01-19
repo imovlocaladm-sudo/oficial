@@ -104,6 +104,50 @@ const Dashboard = () => {
       </div>
 
       <div className="container mx-auto px-4 py-8">
+        {/* Alerta para usuários sem plano */}
+        {limits && !limits.can_create && (
+          <div className="mb-8 p-6 bg-amber-50 border border-amber-200 rounded-lg">
+            <div className="flex items-start gap-4">
+              <div className="bg-amber-100 p-3 rounded-full">
+                <AlertCircle className="text-amber-600" size={28} />
+              </div>
+              <div className="flex-1">
+                <h3 className="font-bold text-amber-800 text-lg mb-2">⚠️ Ative seu Plano para Publicar</h3>
+                <p className="text-amber-700 mb-3">
+                  Seu cadastro está ativo, mas você precisa assinar um plano para publicar imóveis no ImovLocal.
+                </p>
+                <p className="text-amber-600 text-sm mb-4">
+                  Escolha o plano ideal para você, faça o pagamento via Pix e aguarde a aprovação do administrador.
+                </p>
+                <div className="flex gap-3">
+                  <Link to="/planos">
+                    <Button className="bg-amber-600 hover:bg-amber-700">
+                      <CreditCard size={18} className="mr-2" />
+                      Ver Planos e Preços
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Plano Ativo */}
+        {limits && limits.can_create && (
+          <div className="mb-8 p-4 bg-green-50 border border-green-200 rounded-lg">
+            <div className="flex items-center gap-3">
+              <div className="bg-green-100 p-2 rounded-full">
+                <CreditCard className="text-green-600" size={20} />
+              </div>
+              <div>
+                <p className="text-green-800 font-medium">
+                  ✅ Plano Ativo - {limits.current_properties} de {limits.max_properties} anúncios utilizados
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <div className="bg-white rounded-lg shadow-lg p-6">
