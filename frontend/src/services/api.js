@@ -302,6 +302,22 @@ export const notificationsAPI = {
     const response = await api.delete(`/notifications/${notificationId}`);
     return response.data;
   },
+
+  // ADMIN: Enviar notificação segmentada
+  sendAdminNotification: async (title, message, targetUserTypes) => {
+    const response = await api.post('/notifications/admin/send', {
+      title,
+      message,
+      target_user_types: targetUserTypes
+    });
+    return response.data;
+  },
+
+  // ADMIN: Obter estatísticas de notificações
+  getAdminStats: async () => {
+    const response = await api.get('/notifications/admin/stats');
+    return response.data;
+  },
 };
 
 // Banners API - Sistema de Banners Publicitários
