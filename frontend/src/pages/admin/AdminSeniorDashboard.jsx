@@ -5,7 +5,7 @@ import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import { Button } from '../../components/ui/button';
 import { 
-  Home, Users, Building, Shield, LogOut
+  Home, Users, Building, Shield, LogOut, Bell
 } from 'lucide-react';
 
 const AdminSeniorDashboard = () => {
