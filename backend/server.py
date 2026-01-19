@@ -44,6 +44,7 @@ api_router.include_router(visit_router)
 api_router.include_router(notifications_router)
 api_router.include_router(banner_router)
 api_router.include_router(demand_router)
+api_router.include_router(payment_router)
 
 # Include the router in the main app
 app.include_router(api_router)
