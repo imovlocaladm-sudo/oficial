@@ -31,8 +31,8 @@ PLAN_LIMITS = {
     # Planos genéricos (para compatibilidade)
     "trimestral": {"max_properties": 50, "max_photos": 20},
     "anual": {"max_properties": 150, "max_photos": 20},
-    # Plano gratuito (limitado)
-    "free": {"max_properties": 1, "max_photos": 5},
+    # Plano gratuito - SEM DIREITO A ANÚNCIOS
+    "free": {"max_properties": 0, "max_photos": 0},
     # Plano vitalício (para usuários especiais)
     "lifetime": {"max_properties": 999, "max_photos": 20},
 }
@@ -53,59 +53,92 @@ async def get_user_property_count(user_id: str) -> int:
 async def check_property_limit(user: dict) -> dict:
     """
     Verifica se o usuário pode criar mais anúncios
+    REGRA: Usuário só pode publicar se tiver plano PAGO e APROVADO
     Retorna: {"can_create": bool, "current": int, "limit": int, "message": str}
     """
     user_type = user.get("user_type", "particular")
     plan_type = user.get("plan_type", "free")
+    plan_expires_at = user.get("plan_expires_at")
     
     # Admins não têm limite
     if user_type in ["admin", "admin_senior"]:
         return {"can_create": True, "current": 0, "limit": 999, "message": "Admin sem limite"}
     
-    # Determinar limite baseado no plano
+    # Usuários com plano vitalício (lifetime)
     if plan_type == "lifetime":
+        current_count = await get_user_property_count(user["id"])
         limits = PLAN_LIMITS["lifetime"]
-    elif plan_type in PLAN_LIMITS:
-        limits = PLAN_LIMITS[plan_type]
-    else:
-        # Plano baseado no tipo de usuário
-        if user_type == "particular":
-            limits = PLAN_LIMITS.get("particular_trimestral", PLAN_LIMITS["free"])
-        elif user_type == "corretor":
-            limits = PLAN_LIMITS.get("corretor_trimestral", PLAN_LIMITS["free"])
-        elif user_type == "imobiliaria":
-            limits = PLAN_LIMITS.get("imobiliaria_anual", PLAN_LIMITS["free"])
-        else:
-            limits = PLAN_LIMITS["free"]
+        return {
+            "can_create": current_count < limits["max_properties"],
+            "current": current_count,
+            "limit": limits["max_properties"],
+            "message": f"Plano Vitalício: {current_count} de {limits['max_properties']} anúncios"
+        }
     
-    # Verificar se plano está ativo (não expirou)
-    plan_expires_at = user.get("plan_expires_at")
-    if plan_expires_at and plan_type != "lifetime":
+    # Verificar se usuário tem plano FREE (não pagou)
+    if plan_type == "free" or plan_type is None:
+        return {
+            "can_create": False,
+            "current": await get_user_property_count(user["id"]),
+            "limit": 0,
+            "message": "Você precisa assinar um plano para publicar imóveis. Acesse a página de Planos!"
+        }
+    
+    # Verificar se o plano está ativo (não expirou)
+    if plan_expires_at:
         if datetime.utcnow() > plan_expires_at:
-            # Plano expirou, usar limite free
-            limits = PLAN_LIMITS["free"]
+            # Plano expirou
+            return {
+                "can_create": False,
+                "current": await get_user_property_count(user["id"]),
+                "limit": 0,
+                "message": "Seu plano expirou! Renove para continuar publicando imóveis."
+            }
+    else:
+        # Não tem data de expiração = não tem plano ativo
+        return {
+            "can_create": False,
+            "current": await get_user_property_count(user["id"]),
+            "limit": 0,
+            "message": "Você precisa assinar um plano para publicar imóveis. Acesse a página de Planos!"
+        }
     
-    # Se não tem plano pago, usar free
-    if plan_type == "free":
-        limits = PLAN_LIMITS["free"]
+    # Plano pago e ativo - verificar limites
+    # Determinar limite baseado no tipo de usuário + plano
+    if user_type == "particular":
+        limits = PLAN_LIMITS.get("particular_trimestral", {"max_properties": 1, "max_photos": 20})
+    elif user_type == "corretor":
+        limits = PLAN_LIMITS.get("corretor_trimestral", {"max_properties": 50, "max_photos": 20})
+    elif user_type == "imobiliaria":
+        limits = PLAN_LIMITS.get("imobiliaria_anual", {"max_properties": 150, "max_photos": 20})
+    else:
+        limits = {"max_properties": 1, "max_photos": 20}
     
     max_properties = limits["max_properties"]
     current_count = await get_user_property_count(user["id"])
     
     can_create = current_count < max_properties
     
+    if can_create:
+        message = f"Você possui {current_count} de {max_properties} anúncios permitidos"
+    else:
+        message = f"Limite de {max_properties} anúncios atingido!"
+    
     return {
         "can_create": can_create,
         "current": current_count,
         "limit": max_properties,
-        "message": f"Você possui {current_count} de {max_properties} anúncios permitidos" if can_create 
-                   else f"Limite de {max_properties} anúncios atingido. Faça upgrade do seu plano!"
+        "message": message
     }
 
 
 def get_max_photos_for_user(user: dict) -> int:
     """Retorna o limite de fotos por imóvel para o usuário"""
     plan_type = user.get("plan_type", "free")
+    
+    # Sem plano = sem fotos
+    if plan_type == "free" or plan_type is None:
+        return 0
     
     if plan_type in PLAN_LIMITS:
         return PLAN_LIMITS[plan_type]["max_photos"]
