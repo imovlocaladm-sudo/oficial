@@ -46,6 +46,23 @@ const NovoImovel = () => {
   const [loading, setLoading] = useState(false);
   const [imageFiles, setImageFiles] = useState([]);  // Store actual File objects
   const [imagePreviews, setImagePreviews] = useState([]);  // Store preview URLs
+  const [limits, setLimits] = useState(null);
+  const [loadingLimits, setLoadingLimits] = useState(true);
+
+  // Buscar limites do usuário
+  useEffect(() => {
+    const fetchLimits = async () => {
+      try {
+        const response = await api.get('/properties/my-limits');
+        setLimits(response.data);
+      } catch (error) {
+        console.error('Error fetching limits:', error);
+      } finally {
+        setLoadingLimits(false);
+      }
+    };
+    fetchLimits();
+  }, []);
   
   // Define o valor inicial de purpose baseado no tipo de usuário
   // Particulares não podem vender, então o padrão é ALUGUEL
