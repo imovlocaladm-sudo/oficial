@@ -160,6 +160,12 @@ const AdminMasterDashboard = () => {
                 Mural de Oportunidades
               </Button>
             </Link>
+            <Link to="/admin/master/notificacoes">
+              <Button className="w-full bg-orange-600 hover:bg-orange-700">
+                <AlertCircle size={18} className="mr-2" />
+                Enviar Notificações
+              </Button>
+            </Link>
           </div>
         </div>
 
