@@ -5,8 +5,8 @@ import { Facebook, Instagram, Mail, Phone, MapPin, MessageCircle } from 'lucide-
 const Footer = () => {
   // Links das redes sociais
   const socialLinks = {
-    facebook: "https://facebook.com/imovlocal",
-    instagram: "https://instagram.com/imovlocal",
+    facebook: "https://www.facebook.com/share/1DwRJv17bF/",
+    instagram: "https://www.instagram.com/imovlocal?utm_source=qr&igsh=MXNzcjQ3cnFlaGdnaQ==",
     whatsapp: "https://wa.me/5567982288883?text=Olá! Vim pelo site ImovLocal e gostaria de mais informações.",
     email: "mailto:imovlocaladm@gmail.com"
   };
