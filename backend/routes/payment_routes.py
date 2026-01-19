@@ -508,7 +508,7 @@ async def admin_approve_payment(
             }
         )
         
-        # Atualizar plano do usuário
+        # Atualizar plano e STATUS do usuário para ACTIVE
         plan_type = "trimestral" if "trimestral" in payment["plan_type"] else "anual"
         await users_collection.update_one(
             {"id": payment["user_id"]},
@@ -516,6 +516,7 @@ async def admin_approve_payment(
                 "$set": {
                     "plan_type": plan_type,
                     "plan_expires_at": plan_expires_at,
+                    "status": "active",  # Ativar usuário após pagamento aprovado
                     "updated_at": now
                 }
             }
