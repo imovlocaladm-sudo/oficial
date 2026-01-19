@@ -244,6 +244,39 @@ const NovoImovel = () => {
 
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-8">
+          {/* Alerta de Limites */}
+          {limits && !limits.can_create && (
+            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+              <div className="flex items-start gap-3">
+                <AlertCircle className="text-red-600 flex-shrink-0 mt-0.5" size={24} />
+                <div>
+                  <h3 className="font-bold text-red-800">Limite de Anúncios Atingido</h3>
+                  <p className="text-red-700 text-sm mt-1">{limits.message}</p>
+                  <Link to="/planos">
+                    <Button className="mt-3 bg-red-600 hover:bg-red-700">
+                      Fazer Upgrade do Plano
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Info de Limites */}
+          {limits && limits.can_create && (
+            <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+              <div className="flex items-start gap-3">
+                <Info className="text-blue-600 flex-shrink-0 mt-0.5" size={20} />
+                <div>
+                  <p className="text-blue-800 text-sm">
+                    <strong>Seus limites:</strong> {limits.current_properties} de {limits.max_properties} anúncios utilizados 
+                    | Máximo de {limits.max_photos_per_property} fotos por imóvel
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Basic Info */}
             <div>
@@ -257,7 +290,8 @@ const NovoImovel = () => {
                     value={formData.title}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    disabled={limits && !limits.can_create}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
                     placeholder="Ex: Apartamento moderno no centro"
                   />
                 </div>
