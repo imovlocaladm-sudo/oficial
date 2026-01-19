@@ -88,6 +88,11 @@ async def register(user: UserCreate):
     if 'plan_type' not in user_dict or user_dict['plan_type'] is None:
         user_dict['plan_type'] = PlanType.free.value
     
+    # Novos usuários começam com status ACTIVE para poder fazer login
+    # Mas só podem publicar imóveis após pagamento aprovado
+    if 'status' not in user_dict or user_dict['status'] is None:
+        user_dict['status'] = 'active'
+    
     # Insert into database
     await users_collection.insert_one(user_dict)
     
