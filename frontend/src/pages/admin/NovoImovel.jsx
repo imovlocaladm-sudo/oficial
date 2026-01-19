@@ -289,16 +289,20 @@ const NovoImovel = () => {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Preço (R$) *</label>
-                  <input
-                    type="number"
-                    name="price"
-                    value={formData.price}
-                    onChange={handleChange}
-                    required
-                    step="0.01"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="0.00"
-                  />
+                  <div className="relative">
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 font-medium">R$</span>
+                    <input
+                      type="text"
+                      name="price"
+                      value={formData.priceDisplay}
+                      onChange={handlePriceChange}
+                      required
+                      className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="0,00"
+                      data-testid="input-price"
+                    />
+                  </div>
+                  <p className="text-xs text-gray-500 mt-1">Digite apenas números. Ex: 350000 para R$ 350.000,00</p>
                 </div>
               </div>
             </div>
