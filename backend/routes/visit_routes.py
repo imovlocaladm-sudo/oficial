@@ -402,3 +402,150 @@ async def delete_notification(
     await notifications_collection.delete_one({"id": notification_id})
     
     return {"message": "Notificação excluída"}
+
+
+# ==========================================
+# NOTIFICAÇÕES ADMIN - ENVIO SEGMENTADO
+# ==========================================
+
+from pydantic import BaseModel
+from typing import List as TypingList
+
+class AdminNotificationCreate(BaseModel):
+    """Modelo para criação de notificação pelo admin"""
+    title: str
+    message: str
+    target_user_types: TypingList[str]  # Lista de tipos: ["particular", "corretor", "imobiliaria"]
+
+
+@notifications_router.post("/admin/send")
+async def send_admin_notification(
+    notification_data: AdminNotificationCreate,
+    email: str = Depends(get_current_user_email)
+):
+    """
+    Enviar notificação segmentada para grupos de usuários
+    Apenas Admin Master e Admin Sênior podem usar
+    
+    target_user_types pode incluir: "particular", "corretor", "imobiliaria", "all"
+    """
+    # Verificar se é admin
+    user = await users_collection.find_one({"email": email})
+    if not user:
+        raise HTTPException(status_code=404, detail="Usuário não encontrado")
+    
+    if user.get('user_type') not in ['admin', 'admin_senior']:
+        raise HTTPException(
+            status_code=403, 
+            detail="Apenas administradores podem enviar notificações em massa"
+        )
+    
+    # Validar título e mensagem
+    if not notification_data.title or len(notification_data.title.strip()) < 3:
+        raise HTTPException(status_code=400, detail="Título deve ter pelo menos 3 caracteres")
+    
+    if not notification_data.message or len(notification_data.message.strip()) < 10:
+        raise HTTPException(status_code=400, detail="Mensagem deve ter pelo menos 10 caracteres")
+    
+    # Determinar os tipos de usuário alvo
+    target_types = notification_data.target_user_types
+    
+    # Se "all" estiver na lista, enviar para todos os tipos
+    if "all" in target_types:
+        target_types = ["particular", "corretor", "imobiliaria"]
+    
+    # Validar tipos permitidos
+    allowed_types = ["particular", "corretor", "imobiliaria"]
+    invalid_types = [t for t in target_types if t not in allowed_types]
+    if invalid_types:
+        raise HTTPException(
+            status_code=400, 
+            detail=f"Tipos de usuário inválidos: {invalid_types}. Permitidos: {allowed_types}"
+        )
+    
+    # Buscar usuários dos tipos selecionados (apenas ativos)
+    query = {
+        "user_type": {"$in": target_types},
+        "status": "active"
+    }
+    
+    target_users = await users_collection.find(query, {"id": 1, "user_type": 1}).to_list(10000)
+    
+    if not target_users:
+        return {
+            "success": True,
+            "message": "Nenhum usuário encontrado para os tipos selecionados",
+            "notifications_sent": 0
+        }
+    
+    # Criar notificações para cada usuário
+    notifications_to_insert = []
+    for target_user in target_users:
+        notification = {
+            "id": str(uuid.uuid4()),
+            "user_id": target_user['id'],
+            "type": NotificationType.system.value,
+            "title": notification_data.title.strip(),
+            "message": notification_data.message.strip(),
+            "data": {
+                "sent_by": user['id'],
+                "sent_by_name": user.get('name', 'Admin'),
+                "target_type": target_user.get('user_type'),
+                "is_admin_broadcast": True
+            },
+            "read": False,
+            "created_at": datetime.utcnow()
+        }
+        notifications_to_insert.append(notification)
+    
+    # Inserir todas as notificações de uma vez
+    if notifications_to_insert:
+        await notifications_collection.insert_many(notifications_to_insert)
+    
+    # Contar por tipo
+    counts_by_type = {}
+    for t in target_types:
+        counts_by_type[t] = sum(1 for u in target_users if u.get('user_type') == t)
+    
+    logger.info(f"Admin {user.get('email')} sent broadcast notification to {len(notifications_to_insert)} users")
+    
+    return {
+        "success": True,
+        "message": f"Notificação enviada com sucesso para {len(notifications_to_insert)} usuários",
+        "notifications_sent": len(notifications_to_insert),
+        "breakdown_by_type": counts_by_type
+    }
+
+
+@notifications_router.get("/admin/stats")
+async def get_notification_stats(email: str = Depends(get_current_user_email)):
+    """
+    Obter estatísticas de notificações para o admin
+    """
+    # Verificar se é admin
+    user = await users_collection.find_one({"email": email})
+    if not user:
+        raise HTTPException(status_code=404, detail="Usuário não encontrado")
+    
+    if user.get('user_type') not in ['admin', 'admin_senior']:
+        raise HTTPException(status_code=403, detail="Acesso negado")
+    
+    # Contar usuários por tipo
+    user_counts = {}
+    for user_type in ["particular", "corretor", "imobiliaria"]:
+        count = await users_collection.count_documents({
+            "user_type": user_type,
+            "status": "active"
+        })
+        user_counts[user_type] = count
+    
+    # Total de notificações enviadas pelo sistema
+    total_notifications = await notifications_collection.count_documents({
+        "data.is_admin_broadcast": True
+    })
+    
+    return {
+        "active_users_by_type": user_counts,
+        "total_active_users": sum(user_counts.values()),
+        "total_admin_notifications_sent": total_notifications
+    }
