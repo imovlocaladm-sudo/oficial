@@ -262,14 +262,35 @@ const NovoImovel = () => {
             </div>
           )}
 
-          {/* Info de Limites */}
-          {limits && limits.can_create && (
-            <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+          {/* Alerta de Limites */}
+          {limits && !limits.can_create && (
+            <div className="mb-6 p-6 bg-red-50 border border-red-200 rounded-lg">
               <div className="flex items-start gap-3">
-                <Info className="text-blue-600 flex-shrink-0 mt-0.5" size={20} />
+                <AlertCircle className="text-red-600 flex-shrink-0 mt-0.5" size={28} />
                 <div>
-                  <p className="text-blue-800 text-sm">
-                    <strong>Seus limites:</strong> {limits.current_properties} de {limits.max_properties} anúncios utilizados 
+                  <h3 className="font-bold text-red-800 text-lg">Acesso Bloqueado</h3>
+                  <p className="text-red-700 mt-1">{limits.message}</p>
+                  <p className="text-red-600 text-sm mt-2">
+                    Para publicar imóveis no ImovLocal, você precisa assinar um plano e ter o pagamento aprovado pelo administrador.
+                  </p>
+                  <Link to="/planos">
+                    <Button className="mt-4 bg-red-600 hover:bg-red-700">
+                      Ver Planos e Preços
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Info de Limites - Quando pode criar */}
+          {limits && limits.can_create && (
+            <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+              <div className="flex items-start gap-3">
+                <Info className="text-green-600 flex-shrink-0 mt-0.5" size={20} />
+                <div>
+                  <p className="text-green-800 text-sm">
+                    <strong>✅ Plano Ativo!</strong> Você possui {limits.current_properties} de {limits.max_properties} anúncios utilizados 
                     | Máximo de {limits.max_photos_per_property} fotos por imóvel
                   </p>
                 </div>
@@ -277,6 +298,13 @@ const NovoImovel = () => {
             </div>
           )}
 
+          {/* Se não pode criar, não mostra o formulário */}
+          {limits && !limits.can_create ? (
+            <div className="text-center py-12 bg-gray-50 rounded-lg">
+              <AlertCircle size={64} className="mx-auto text-gray-300 mb-4" />
+              <p className="text-gray-500">Formulário bloqueado até a ativação do plano</p>
+            </div>
+          ) : (
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Basic Info */}
             <div>
@@ -290,8 +318,7 @@ const NovoImovel = () => {
                     value={formData.title}
                     onChange={handleChange}
                     required
-                    disabled={limits && !limits.can_create}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="Ex: Apartamento moderno no centro"
                   />
                 </div>
