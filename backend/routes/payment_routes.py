@@ -48,21 +48,27 @@ PLANS = {
         "price": 47.90,
         "duration_days": 90,
         "user_type": "particular",
-        "description": "Acesso completo por 3 meses para usuários particulares"
+        "max_properties": 1,
+        "max_photos": 20,
+        "description": "1 anúncio de imóvel + 20 fotos por 3 meses"
     },
     "corretor_trimestral": {
         "name": "Plano Corretor Trimestral", 
         "price": 197.90,
         "duration_days": 90,
         "user_type": "corretor",
-        "description": "Acesso completo por 3 meses para corretores"
+        "max_properties": 50,
+        "max_photos": 20,
+        "description": "Até 50 anúncios + 20 fotos cada por 3 meses"
     },
     "imobiliaria_anual": {
         "name": "Plano Imobiliária Anual",
         "price": 497.90,
         "duration_days": 365,
         "user_type": "imobiliaria",
-        "description": "Acesso completo por 1 ano para imobiliárias"
+        "max_properties": 150,
+        "max_photos": 20,
+        "description": "Até 150 anúncios + 20 fotos cada por 1 ano"
     }
 }
 
