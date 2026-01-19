@@ -165,6 +165,16 @@ function App() {
                 <AdminMuralOportunidades />
               </ProtectedRoute>
             } />
+            <Route path="/admin/master/notificacoes" element={
+              <ProtectedRoute>
+                <AdminEnviarNotificacoes />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/senior/notificacoes" element={
+              <ProtectedRoute>
+                <AdminEnviarNotificacoes />
+              </ProtectedRoute>
+            } />
           </Routes>
           <Toaster />
         </BrowserRouter>
