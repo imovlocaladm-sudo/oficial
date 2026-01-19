@@ -76,36 +76,36 @@ const Planos = () => {
   };
 
   const getPlanFeatures = (planId) => {
-    const baseFeatures = [
-      'Cadastro de imóveis ilimitado',
-      'Fotos em alta resolução',
-      'Contato direto via WhatsApp',
-      'Suporte por email'
-    ];
-
     if (planId.includes('particular')) {
       return [
-        ...baseFeatures,
+        '1 anúncio de imóvel',
+        'Até 20 fotos por imóvel',
         'Anúncios de Aluguel',
         'Aluguel por Temporada',
-        'Perfil verificado'
+        'Contato direto via WhatsApp',
+        'Perfil verificado',
+        'Suporte por email'
       ];
     }
     
     if (planId.includes('corretor')) {
       return [
-        ...baseFeatures,
+        'Até 50 anúncios de imóveis',
+        'Até 20 fotos por imóvel',
         'Venda, Aluguel e Temporada',
         'Destaque nos resultados',
         'Hub de Parcerias',
         'Mural de Oportunidades',
-        'Badge de Corretor verificado'
+        'Contato direto via WhatsApp',
+        'Badge de Corretor verificado',
+        'Suporte prioritário'
       ];
     }
     
     if (planId.includes('imobiliaria')) {
       return [
-        ...baseFeatures,
+        'Até 150 anúncios de imóveis',
+        'Até 20 fotos por imóvel',
         'Venda, Aluguel e Temporada',
         'Destaque premium nos resultados',
         'Hub de Parcerias completo',
@@ -113,11 +113,15 @@ const Planos = () => {
         'Múltiplos corretores vinculados',
         'Relatórios de desempenho',
         'Badge de Imobiliária verificada',
-        'Suporte prioritário'
+        'Suporte VIP'
       ];
     }
     
-    return baseFeatures;
+    return [
+      'Cadastro de imóveis',
+      'Fotos em alta resolução',
+      'Contato via WhatsApp'
+    ];
   };
 
   const isCurrentUserPlan = (planId) => {
