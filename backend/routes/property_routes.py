@@ -270,6 +270,22 @@ async def create_property_with_images(
             detail="User not found"
         )
     
+    # Verificar limite de anúncios
+    limit_check = await check_property_limit(user)
+    if not limit_check["can_create"]:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=limit_check["message"]
+        )
+    
+    # Verificar limite de fotos
+    max_photos = get_max_photos_for_user(user)
+    if len(images) > max_photos:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Máximo de {max_photos} fotos permitidas por imóvel. Você enviou {len(images)} fotos."
+        )
+    
     # Validação: Usuário "particular" só pode anunciar Aluguel e Aluguel por Temporada
     if user.get('user_type') == 'particular':
         if purpose.upper() == 'VENDA':
