@@ -61,6 +61,7 @@ const NovoImovel = () => {
     property_type: 'Apartamento',
     purpose: getInitialPurpose(),
     price: '',
+    priceDisplay: '', // Campo para exibição formatada
     neighborhood: '',
     city: '',
     state: 'MS',
@@ -70,10 +71,52 @@ const NovoImovel = () => {
     garage: '',
     year_built: '',
     condominio: '',
+    condominioDisplay: '',
     iptu: '',
+    iptuDisplay: '',
     features: '',
     is_launch: false
   });
+
+  // Função para formatar valor em moeda brasileira
+  const formatCurrency = (value) => {
+    if (!value) return '';
+    // Remove tudo que não é número
+    const numericValue = value.toString().replace(/\D/g, '');
+    if (!numericValue) return '';
+    
+    // Converte para número e formata
+    const number = parseInt(numericValue, 10) / 100;
+    return number.toLocaleString('pt-BR', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+  };
+
+  // Função para converter valor formatado para número
+  const parseCurrency = (value) => {
+    if (!value) return '';
+    // Remove pontos e substitui vírgula por ponto
+    const cleanValue = value.replace(/\./g, '').replace(',', '.');
+    return cleanValue;
+  };
+
+  // Handler especial para campos de preço
+  const handlePriceChange = (e) => {
+    const { name, value } = e.target;
+    const displayFieldName = `${name}Display`;
+    
+    // Formata o valor para exibição
+    const formattedValue = formatCurrency(value);
+    // Converte para valor numérico para o backend
+    const numericValue = parseCurrency(formattedValue);
+    
+    setFormData(prev => ({
+      ...prev,
+      [name]: numericValue,
+      [displayFieldName]: formattedValue
+    }));
+  };
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
