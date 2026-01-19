@@ -82,6 +82,63 @@ class User(UserBase):
 
 
 # ==========================================
+# PAYMENT MODELS - Sistema de Pagamentos Pix
+# ==========================================
+
+class PaymentStatus(str, Enum):
+    pending = "pending"           # Aguardando pagamento
+    awaiting_approval = "awaiting_approval"  # Comprovante enviado, aguardando aprovação
+    approved = "approved"         # Pagamento aprovado
+    rejected = "rejected"         # Pagamento rejeitado
+    expired = "expired"           # Pagamento expirado
+    cancelled = "cancelled"       # Pagamento cancelado
+
+class PlanInfo(BaseModel):
+    """Informações do plano"""
+    plan_type: str  # particular_trimestral, corretor_trimestral, imobiliaria_anual
+    name: str
+    price: float
+    duration_days: int
+    user_type: str  # particular, corretor, imobiliaria
+
+class PaymentCreate(BaseModel):
+    """Criar novo pagamento"""
+    plan_type: str  # particular_trimestral, corretor_trimestral, imobiliaria_anual
+
+class Payment(BaseModel):
+    """Modelo completo de pagamento"""
+    id: str
+    user_id: str
+    user_email: str
+    user_name: str
+    user_type: str
+    plan_type: str  # particular_trimestral, corretor_trimestral, imobiliaria_anual
+    plan_name: str
+    amount: float
+    duration_days: int
+    status: PaymentStatus = PaymentStatus.pending
+    pix_key: str
+    pix_key_type: str
+    beneficiary_name: str
+    receipt_url: Optional[str] = None  # URL do comprovante enviado
+    admin_notes: Optional[str] = None  # Notas do admin
+    approved_by: Optional[str] = None  # ID do admin que aprovou
+    approved_at: Optional[datetime] = None
+    expires_at: datetime  # Data de expiração do pagamento (48h)
+    plan_expires_at: Optional[datetime] = None  # Data de expiração do plano após aprovação
+    created_at: datetime
+    updated_at: Optional[datetime] = None
+
+    class Config:
+        from_attributes = True
+
+class PaymentApproval(BaseModel):
+    """Aprovar ou rejeitar pagamento"""
+    approved: bool
+    admin_notes: Optional[str] = None
+
+
+# ==========================================
 # SISTEMA DE BANNERS PUBLICITÁRIOS
 # ==========================================
 
