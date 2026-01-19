@@ -199,6 +199,28 @@ async def save_upload_file(upload_file: UploadFile, property_id: str) -> str:
     # Return relative path for the API
     return f"/api/uploads/{unique_filename}"
 
+
+@router.get("/my-limits")
+async def get_my_property_limits(email: str = Depends(get_current_user_email)):
+    """Retorna os limites de anúncios e fotos do usuário"""
+    user = await users_collection.find_one({"email": email})
+    if not user:
+        raise HTTPException(status_code=404, detail="Usuário não encontrado")
+    
+    limit_check = await check_property_limit(user)
+    max_photos = get_max_photos_for_user(user)
+    
+    return {
+        "can_create": limit_check["can_create"],
+        "current_properties": limit_check["current"],
+        "max_properties": limit_check["limit"],
+        "max_photos_per_property": max_photos,
+        "plan_type": user.get("plan_type", "free"),
+        "user_type": user.get("user_type"),
+        "message": limit_check["message"]
+    }
+
+
 @router.post("/", response_model=Property, status_code=status.HTTP_201_CREATED)
 async def create_property(property_data: PropertyCreate, email: str = Depends(get_current_user_email)):
     """Create a new property (authenticated users only)"""
