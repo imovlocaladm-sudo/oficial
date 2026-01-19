@@ -55,7 +55,7 @@ const AdminPagamentos = () => {
   const handleApprove = async (paymentId, approved) => {
     setApproving(true);
     try {
-      await api.post(`/payments/admin/${paymentId}/approve`, {
+      await api.post(`/payments/admin/payment/${paymentId}/approve`, {
         approved,
         admin_notes: adminNotes
       });
