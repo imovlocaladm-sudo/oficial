@@ -54,6 +54,14 @@ const PropertyDetail = () => {
   const [submittingVisit, setSubmittingVisit] = useState(false);
   const [visitSuccess, setVisitSuccess] = useState(false);
   const [showMap, setShowMap] = useState(false);
+  const [showMessageModal, setShowMessageModal] = useState(false);
+  const [messageForm, setMessageForm] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    message: ''
+  });
+  const [sendingMessage, setSendingMessage] = useState(false);
 
   useEffect(() => {
     const fetchProperty = async () => {
