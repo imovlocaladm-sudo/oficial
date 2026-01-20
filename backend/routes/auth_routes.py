@@ -95,13 +95,17 @@ async def register(user: UserCreate):
     # Insert into database
     await users_collection.insert_one(user_dict)
     
-    # Retornar mensagem informando que precisa aguardar aprovação
-    # NÃO criar token nem logar automaticamente
-    return {
-        "message": "Cadastro realizado com sucesso! Aguarde a aprovação do administrador para acessar sua conta.",
-        "status": "pending",
-        "user_email": user.email
-    }
+    # Criar token de acesso para permitir que o usuário vá direto para pagamento
+    access_token = create_access_token(data={"sub": user.email})
+    
+    # Return user and token (mesmo com status pending, permite acesso ao checkout)
+    user_response = User(**{k: v for k, v in user_dict.items() if k != 'hashed_password'})
+    
+    return Token(
+        access_token=access_token,
+        token_type="bearer",
+        user=user_response
+    )
 
 @router.post("/login", response_model=Token)
 async def login(credentials: UserLogin):
