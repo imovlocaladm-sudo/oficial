@@ -88,20 +88,20 @@ async def register(user: UserCreate):
     if 'plan_type' not in user_dict or user_dict['plan_type'] is None:
         user_dict['plan_type'] = PlanType.free.value
     
+    # IMPORTANTE: Novos usuários ficam com status 'pending' aguardando aprovação do admin
+    # O admin deve aprovar o pagamento antes de liberar o acesso
+    user_dict['status'] = 'pending'
+    
     # Insert into database
     await users_collection.insert_one(user_dict)
     
-    # Create access token
-    access_token = create_access_token(data={"sub": user.email})
-    
-    # Return user and token
-    user_response = User(**{k: v for k, v in user_dict.items() if k != 'hashed_password'})
-    
-    return Token(
-        access_token=access_token,
-        token_type="bearer",
-        user=user_response
-    )
+    # Retornar mensagem informando que precisa aguardar aprovação
+    # NÃO criar token nem logar automaticamente
+    return {
+        "message": "Cadastro realizado com sucesso! Aguarde a aprovação do administrador para acessar sua conta.",
+        "status": "pending",
+        "user_email": user.email
+    }
 
 @router.post("/login", response_model=Token)
 async def login(credentials: UserLogin):
