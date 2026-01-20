@@ -109,28 +109,23 @@ const Register = () => {
         password: formData.password
       });
 
-      // Verificar se o cadastro está pendente de aprovação
-      if (response.status === 'pending') {
-        toast.success('Cadastro realizado com sucesso!', {
-          description: 'Agora escolha um plano para ativar sua conta.',
-          duration: 5000,
-        });
-
-        // Redirecionar para a página de planos após 2 segundos
-        setTimeout(() => {
-          navigate('/planos');
-        }, 2000);
-        return;
-      }
-
-      // Cadastro aprovado automaticamente (não deve acontecer mais)
+      // Cadastro realizado - redirecionar para checkout do plano correspondente
+      const planMap = {
+        'particular': 'particular_trimestral',
+        'corretor': 'corretor_trimestral',
+        'imobiliaria': 'imobiliaria_anual'
+      };
+      
+      const planId = planMap[userType] || 'particular_trimestral';
+      
       toast.success('Cadastro realizado com sucesso!', {
-        description: 'Bem-vindo ao ImovLocal!',
+        description: 'Agora complete seu pagamento para ativar sua conta.',
+        duration: 5000,
       });
 
-      // Redirect to dashboard
+      // Redirecionar direto para o checkout com o plano selecionado
       setTimeout(() => {
-        navigate('/admin/dashboard');
+        navigate(`/checkout?plan=${planId}`);
       }, 1500);
     } catch (error) {
       console.error('Registration error:', error);
