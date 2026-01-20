@@ -112,14 +112,14 @@ const Register = () => {
       // Verificar se o cadastro está pendente de aprovação
       if (response.status === 'pending') {
         toast.success('Cadastro realizado com sucesso!', {
-          description: 'Aguarde a aprovação do administrador para acessar sua conta. Você receberá uma notificação quando sua conta for aprovada.',
-          duration: 8000,
+          description: 'Agora escolha um plano para ativar sua conta.',
+          duration: 5000,
         });
 
-        // Redirecionar para a página de login após 3 segundos
+        // Redirecionar para a página de planos após 2 segundos
         setTimeout(() => {
-          navigate('/login');
-        }, 3000);
+          navigate('/planos');
+        }, 2000);
         return;
       }
 
