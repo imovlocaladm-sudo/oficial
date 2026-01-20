@@ -320,6 +320,31 @@ async def get_my_payments(email: str = Depends(get_current_user_email)):
     
     return [PaymentResponse(**{k: v for k, v in p.items() if k != '_id'}) for p in payments]
 
+@router.get("/my-limits")
+async def get_my_limits(email: str = Depends(get_current_user_email)):
+    """Retorna os limites do plano do usuário"""
+    user = await db.users.find_one({"email": email})
+    if not user:
+        raise HTTPException(status_code=404, detail="Usuário não encontrado")
+    
+    user_type = user.get("user_type", "particular")
+    limits = PLAN_LIMITS.get(user_type, PLAN_LIMITS["free"])
+    
+    # Contar anúncios ativos
+    from database import properties_collection
+    current_count = await properties_collection.count_documents({"owner_id": user["id"]})
+    
+    return {
+        "user_type": user_type,
+        "status": user.get("status", "pending"),
+        "plan_type": user.get("plan_type", "free"),
+        "plan_expires_at": user.get("plan_expires_at"),
+        "max_anuncios": user.get("max_anuncios", limits["max_anuncios"]),
+        "max_fotos": limits["max_fotos"],
+        "anuncios_ativos": current_count,
+        "anuncios_restantes": max(0, user.get("max_anuncios", limits["max_anuncios"]) - current_count)
+    }
+
 @router.delete("/{payment_id}")
 async def cancel_payment(
     payment_id: str,
