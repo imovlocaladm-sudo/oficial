@@ -171,6 +171,11 @@ function App() {
                 <AdminMuralOportunidades />
               </ProtectedRoute>
             } />
+            <Route path="/admin/master/pagamentos" element={
+              <ProtectedRoute>
+                <AdminPagamentos />
+              </ProtectedRoute>
+            } />
           </Routes>
           <Toaster />
         </BrowserRouter>
