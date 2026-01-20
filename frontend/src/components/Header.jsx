@@ -114,6 +114,10 @@ const Header = () => {
                 <Link to="/destaques" className="text-gray-700 hover:text-red-600 transition-colors py-2">Destaques</Link>
                 <Link to="/lancamentos" className="text-gray-700 hover:text-red-600 transition-colors py-2">Lançamentos</Link>
                 <Link to="/busca-detalhada" className="text-gray-700 hover:text-red-600 transition-colors py-2">Busca Detalhada</Link>
+                <Link to="/planos" className="text-green-600 hover:text-green-700 transition-colors py-2 font-semibold flex items-center gap-1">
+                  <CreditCard size={16} />
+                  Planos e Preços
+                </Link>
                 <Link to="/anunciar" className="text-red-600 hover:text-red-700 transition-colors py-2 font-semibold">Anunciar</Link>
                 <Link to="/solicitar" className="text-gray-700 hover:text-red-600 transition-colors py-2">Solicite um imóvel</Link>
               </div>
