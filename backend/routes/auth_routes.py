@@ -95,6 +95,34 @@ async def register(user: UserCreate):
     # Insert into database
     await users_collection.insert_one(user_dict)
     
+    # Criar notificação para os administradores sobre novo cadastro
+    user_type_label = {
+        'particular': 'Particular',
+        'corretor': 'Corretor',
+        'imobiliaria': 'Imobiliária'
+    }.get(user.user_type, user.user_type)
+    
+    admin_notification = {
+        "id": str(uuid.uuid4()),
+        "user_id": "admin",  # Notificação para todos os admins
+        "type": "new_user_registration",
+        "title": "📋 Novo Cadastro de Usuário",
+        "message": f"Novo usuário cadastrado: {user.name} ({user.email}) - Tipo: {user_type_label} - Cidade: {user.city}/{user.state}. Aguardando pagamento para ativação.",
+        "data": {
+            "user_name": user.name,
+            "user_email": user.email,
+            "user_type": user.user_type,
+            "user_city": user.city,
+            "user_state": user.state,
+            "user_phone": user.phone
+        },
+        "read": False,
+        "created_at": datetime.utcnow()
+    }
+    await db.notifications.insert_one(admin_notification)
+    
+    logger.info(f"Novo usuário cadastrado: {user.email} - Notificação enviada para admins")
+    
     # Criar token de acesso para permitir que o usuário vá direto para pagamento
     access_token = create_access_token(data={"sub": user.email})
     
