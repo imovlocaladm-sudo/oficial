@@ -4,7 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import { Button } from '../../components/ui/button';
-import { Home, Plus, List, User, LogOut, Settings, BarChart3, Handshake, Calendar } from 'lucide-react';
+import { Home, Plus, List, User, LogOut, Settings, BarChart3, Handshake, Calendar, AlertTriangle, CreditCard } from 'lucide-react';
 import { propertiesAPI } from '../../services/api';
 import PropertyCard from '../../components/PropertyCard';
 
@@ -30,6 +30,13 @@ const Dashboard = () => {
       navigate('/admin/master');
       return;
     }
+    
+    // Se usuário está pendente, não carregar propriedades
+    if (user?.status === 'pending') {
+      setLoading(false);
+      return;
+    }
+    
     fetchMyProperties();
   }, [user, navigate]);
 
