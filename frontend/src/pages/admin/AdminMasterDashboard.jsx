@@ -160,6 +160,12 @@ const AdminMasterDashboard = () => {
                 Mural de Oportunidades
               </Button>
             </Link>
+            <Link to="/admin/master/pagamentos">
+              <Button className="w-full bg-emerald-600 hover:bg-emerald-700">
+                <CreditCard size={18} className="mr-2" />
+                Gerenciar Pagamentos
+              </Button>
+            </Link>
           </div>
         </div>
 
