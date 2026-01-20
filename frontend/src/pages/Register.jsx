@@ -164,7 +164,39 @@ const Register = () => {
               />
             </div>
             <h1 className="text-3xl font-bold text-gray-800 mb-2 text-center">Cadastre-se</h1>
-            <p className="text-gray-600 mb-8 text-center">Crie sua conta no ImovLocal</p>
+            <p className="text-gray-600 mb-6 text-center">Crie sua conta no ImovLocal</p>
+
+            {/* Pricing Preview */}
+            <div className="mb-8 p-4 bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-lg">
+              <h3 className="font-bold text-green-800 mb-3 text-center flex items-center justify-center gap-2">
+                <span className="text-lg">💰</span> Valores dos Planos
+              </h3>
+              <div className="grid grid-cols-3 gap-3 text-center">
+                <div className="bg-white p-3 rounded-lg shadow-sm">
+                  <p className="text-xs text-gray-500 mb-1">Particular</p>
+                  <p className="font-bold text-green-600">R$ 47,90</p>
+                  <p className="text-xs text-gray-400">trimestral</p>
+                </div>
+                <div className="bg-white p-3 rounded-lg shadow-sm">
+                  <p className="text-xs text-gray-500 mb-1">Corretor</p>
+                  <p className="font-bold text-green-600">R$ 197,90</p>
+                  <p className="text-xs text-gray-400">trimestral</p>
+                </div>
+                <div className="bg-white p-3 rounded-lg shadow-sm">
+                  <p className="text-xs text-gray-500 mb-1">Imobiliária</p>
+                  <p className="font-bold text-green-600">R$ 497,90</p>
+                  <p className="text-xs text-gray-400">anual</p>
+                </div>
+              </div>
+              <p className="text-center text-xs text-green-700 mt-3">
+                Após o cadastro, você será direcionado para escolher seu plano e realizar o pagamento via PIX
+              </p>
+              <div className="text-center mt-2">
+                <Link to="/planos" className="text-sm text-green-600 hover:text-green-800 underline font-medium">
+                  Ver detalhes dos planos →
+                </Link>
+              </div>
+            </div>
 
             {/* User Type Selection */}
             <div className="grid grid-cols-3 gap-3 mb-6">
