@@ -6,7 +6,7 @@ import Footer from '../../components/Footer';
 import { Button } from '../../components/ui/button';
 import { 
   Home, Users, Building, BarChart3, 
-  UserCheck, AlertCircle, TrendingUp, Shield, Image
+  UserCheck, AlertCircle, TrendingUp, Shield, Image, CreditCard
 } from 'lucide-react';
 import { adminAPIService } from '../../services/adminAPI';
 import { toast } from 'sonner';
