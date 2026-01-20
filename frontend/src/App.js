@@ -32,6 +32,11 @@ import AdminGerenciarUsuarios from "./pages/admin/AdminGerenciarUsuarios.jsx";
 import AdminGerenciarImoveis from "./pages/admin/AdminGerenciarImoveis.jsx";
 import AdminGerenciarBanners from "./pages/admin/AdminGerenciarBanners.jsx";
 import AdminMuralOportunidades from "./pages/admin/MuralOportunidades.jsx";
+import AdminPagamentos from "./pages/admin/AdminPagamentos.jsx";
+
+// Payment Pages
+import Planos from "./pages/Planos.jsx";
+import Checkout from "./pages/Checkout.jsx";
 
 // Parcerias Pages
 import ParceriasHub from "./pages/parcerias/ParceriasHub.jsx";
