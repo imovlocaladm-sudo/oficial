@@ -35,6 +35,14 @@ PIX_INFO = {
     "banco": "Banco Inter"
 }
 
+# Limites de anúncios por tipo de usuário/plano
+PLAN_LIMITS = {
+    "particular": {"max_anuncios": 1, "max_fotos": 20},
+    "corretor": {"max_anuncios": 50, "max_fotos": 20},
+    "imobiliaria": {"max_anuncios": 150, "max_fotos": 20},
+    "free": {"max_anuncios": 0, "max_fotos": 0}  # Usuário sem plano ativo
+}
+
 # Planos disponíveis
 PLANS = {
     "particular_trimestral": {
@@ -44,9 +52,12 @@ PLANS = {
         "periodo": "trimestral",
         "duracao_dias": 90,
         "valor": 47.90,
+        "max_anuncios": 1,
+        "max_fotos": 20,
         "descricao": "Plano trimestral para usuários particulares",
         "recursos": [
-            "Até 3 anúncios ativos",
+            "1 anúncio ativo",
+            "Até 20 fotos por anúncio",
             "Aluguel e Temporada",
             "Suporte por email",
             "Válido por 90 dias"
@@ -59,11 +70,13 @@ PLANS = {
         "periodo": "trimestral",
         "duracao_dias": 90,
         "valor": 197.90,
+        "max_anuncios": 50,
+        "max_fotos": 20,
         "descricao": "Plano trimestral para corretores",
         "recursos": [
-            "Até 20 anúncios ativos",
+            "Até 50 anúncios ativos",
+            "Até 20 fotos por anúncio",
             "Venda, Aluguel e Temporada",
-            "Destaque de imóveis (10)",
             "Hub de Parcerias",
             "Suporte prioritário",
             "Válido por 90 dias"
@@ -76,11 +89,13 @@ PLANS = {
         "periodo": "anual",
         "duracao_dias": 365,
         "valor": 497.90,
+        "max_anuncios": 150,
+        "max_fotos": 20,
         "descricao": "Plano anual para imobiliárias",
         "recursos": [
-            "Anúncios ilimitados",
+            "Até 150 anúncios ativos",
+            "Até 20 fotos por anúncio",
             "Venda, Aluguel e Temporada",
-            "Destaque de imóveis (20)",
             "Lançamentos exclusivos",
             "Hub de Parcerias",
             "Suporte VIP",
