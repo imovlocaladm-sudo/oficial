@@ -131,13 +131,8 @@ async def login(credentials: UserLogin):
             detail="Conta pausada. Entre em contato com o administrador."
         )
     
-    # Check if user is pending approval
-    if user.get('status') == 'pending':
-        logger.warning(f"User account is pending: {credentials.email}")
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Conta aguardando aprovação. Por favor, aguarde."
-        )
+    # Usuários pending podem fazer login para acessar checkout e fazer pagamento
+    # O controle de acesso às funcionalidades será feito no frontend
     
     # Verify password
     password_valid = verify_password(credentials.password, user['hashed_password'])
