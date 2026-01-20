@@ -94,7 +94,7 @@ const Register = () => {
 
     try {
       // Register user via API
-      await register({
+      const response = await register({
         name: formData.name,
         email: formData.email,
         phone: formData.phone,
@@ -109,6 +109,21 @@ const Register = () => {
         password: formData.password
       });
 
+      // Verificar se o cadastro está pendente de aprovação
+      if (response.status === 'pending') {
+        toast.success('Cadastro realizado com sucesso!', {
+          description: 'Aguarde a aprovação do administrador para acessar sua conta. Você receberá uma notificação quando sua conta for aprovada.',
+          duration: 8000,
+        });
+
+        // Redirecionar para a página de login após 3 segundos
+        setTimeout(() => {
+          navigate('/login');
+        }, 3000);
+        return;
+      }
+
+      // Cadastro aprovado automaticamente (não deve acontecer mais)
       toast.success('Cadastro realizado com sucesso!', {
         description: 'Bem-vindo ao ImovLocal!',
       });
