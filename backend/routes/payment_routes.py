@@ -440,9 +440,16 @@ async def admin_approve_payment(
             }
         )
         
-        # Atualizar usuário - ativar e definir plano
+        # Atualizar usuário - ativar e definir plano com limites
         plan = PLANS.get(payment["plan_id"])
         plan_type = "trimestral" if "trimestral" in payment["plan_id"] else "anual"
+        
+        # Buscar dados do usuário para a notificação
+        user_data = await db.users.find_one({"id": payment["user_id"]})
+        user_type = user_data.get("user_type", "particular") if user_data else "particular"
+        
+        # Definir limites baseado no plano
+        limits = PLAN_LIMITS.get(user_type, PLAN_LIMITS["free"])
         
         await db.users.update_one(
             {"id": payment["user_id"]},
@@ -451,19 +458,28 @@ async def admin_approve_payment(
                     "status": "active",
                     "plan_type": plan_type,
                     "plan_expires_at": expires_at,
+                    "max_anuncios": limits["max_anuncios"],
+                    "max_fotos": limits["max_fotos"],
                     "updated_at": datetime.utcnow()
                 }
             }
         )
         
-        # Notificar usuário
+        # Notificar usuário com mensagem completa
+        user_name = user_data.get("name", "Usuário") if user_data else "Usuário"
         notification = {
             "id": str(uuid.uuid4()),
             "user_id": payment["user_id"],
             "type": "payment_approved",
-            "title": "Pagamento Aprovado! 🎉",
-            "message": f"Seu pagamento do plano {payment['plan_nome']} foi aprovado! Seu plano está ativo até {expires_at.strftime('%d/%m/%Y')}.",
-            "data": {"payment_id": payment_id},
+            "title": "🎉 Pagamento Aprovado - Conta Ativada!",
+            "message": f"Olá {user_name}! Seu pagamento do plano {payment['plan_nome']} foi aprovado com sucesso! Sua conta está ativa até {expires_at.strftime('%d/%m/%Y')}. Agora você pode cadastrar até {limits['max_anuncios']} anúncio(s) com até {limits['max_fotos']} fotos cada. Bons negócios!",
+            "data": {
+                "payment_id": payment_id,
+                "plan_nome": payment['plan_nome'],
+                "expires_at": expires_at.isoformat(),
+                "max_anuncios": limits["max_anuncios"],
+                "max_fotos": limits["max_fotos"]
+            },
             "read": False,
             "created_at": datetime.utcnow()
         }
