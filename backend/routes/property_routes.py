@@ -177,6 +177,40 @@ async def create_property_with_images(
                 detail="Usuários do tipo 'Particular' não podem anunciar imóveis para Venda. Apenas Aluguel e Aluguel por Temporada são permitidos."
             )
     
+    # Verificar limite de anúncios do plano
+    # Limites: Particular = 1, Corretor = 50, Imobiliária = 150
+    PLAN_LIMITS = {
+        "particular": 1,
+        "corretor": 50,
+        "imobiliaria": 150,
+        "admin": 999999,
+        "admin_senior": 999999
+    }
+    
+    user_type = user.get('user_type', 'particular')
+    max_anuncios = user.get('max_anuncios', PLAN_LIMITS.get(user_type, 0))
+    
+    # Se usuário não tem max_anuncios definido, usar o padrão do tipo
+    if max_anuncios == 0:
+        max_anuncios = PLAN_LIMITS.get(user_type, 0)
+    
+    # Contar anúncios ativos do usuário
+    current_count = await properties_collection.count_documents({"owner_id": user['id']})
+    
+    if current_count >= max_anuncios:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=f"Você atingiu o limite de {max_anuncios} anúncio(s) do seu plano. Para cadastrar mais imóveis, faça upgrade do seu plano."
+        )
+    
+    # Verificar limite de fotos (máximo 20 por anúncio)
+    MAX_FOTOS = 20
+    if len(images) > MAX_FOTOS:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Limite de {MAX_FOTOS} fotos por anúncio excedido. Você enviou {len(images)} fotos."
+        )
+    
     property_id = str(uuid.uuid4())
     
     # Save uploaded images
