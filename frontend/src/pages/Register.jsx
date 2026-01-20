@@ -171,20 +171,23 @@ const Register = () => {
                   <p className="text-xs text-gray-500 mb-1">Particular</p>
                   <p className="font-bold text-green-600">R$ 47,90</p>
                   <p className="text-xs text-gray-400">trimestral</p>
+                  <p className="text-xs text-blue-600 font-medium mt-1">1 anúncio</p>
                 </div>
                 <div className="bg-white p-3 rounded-lg shadow-sm">
                   <p className="text-xs text-gray-500 mb-1">Corretor</p>
                   <p className="font-bold text-green-600">R$ 197,90</p>
                   <p className="text-xs text-gray-400">trimestral</p>
+                  <p className="text-xs text-blue-600 font-medium mt-1">50 anúncios</p>
                 </div>
                 <div className="bg-white p-3 rounded-lg shadow-sm">
                   <p className="text-xs text-gray-500 mb-1">Imobiliária</p>
                   <p className="font-bold text-green-600">R$ 497,90</p>
                   <p className="text-xs text-gray-400">anual</p>
+                  <p className="text-xs text-blue-600 font-medium mt-1">150 anúncios</p>
                 </div>
               </div>
               <p className="text-center text-xs text-green-700 mt-3">
-                Após o cadastro, você será direcionado para escolher seu plano e realizar o pagamento via PIX
+                📸 Todos os planos incluem até 20 fotos por anúncio
               </p>
               <div className="text-center mt-2">
                 <Link to="/planos" className="text-sm text-green-600 hover:text-green-800 underline font-medium">
