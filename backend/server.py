@@ -14,6 +14,7 @@ from routes.admin_routes import router as admin_router
 from routes.visit_routes import router as visit_router, notifications_router
 from routes.banner_routes import router as banner_router
 from routes.demand_routes import router as demand_router
+from routes.payment_routes import router as payment_router
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
