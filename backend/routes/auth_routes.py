@@ -35,7 +35,7 @@ class PasswordChange(BaseModel):
     new_password: str
     confirm_password: str
 
-@router.post("/register", response_model=Token, status_code=status.HTTP_201_CREATED)
+@router.post("/register", status_code=status.HTTP_201_CREATED)
 async def register(user: UserCreate):
     """Register a new user"""
     # Check if user already exists
