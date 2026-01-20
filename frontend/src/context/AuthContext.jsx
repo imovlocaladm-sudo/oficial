@@ -40,12 +40,7 @@ export const AuthProvider = ({ children }) => {
   const register = async (userData) => {
     const response = await authAPI.register(userData);
     
-    // Se o cadastro retornou status 'pending', não fazer login automático
-    if (response.status === 'pending') {
-      return response; // Retorna a mensagem de aguardar aprovação
-    }
-    
-    // Caso contrário (usuários pré-aprovados), fazer login automático
+    // Fazer login automático (mesmo para usuários pending)
     if (response.access_token) {
       localStorage.setItem('imovlocal_user', JSON.stringify(response));
       setUser(response.user);
