@@ -99,7 +99,41 @@ const Dashboard = () => {
       </div>
 
       <div className="container mx-auto px-4 py-8">
-        {/* Stats Cards */}
+        {/* Aviso para usuários pendentes */}
+        {user?.status === 'pending' && (
+          <div className="mb-8 bg-amber-50 border-2 border-amber-300 rounded-xl p-6 shadow-lg">
+            <div className="flex items-start gap-4">
+              <div className="bg-amber-100 p-3 rounded-full">
+                <AlertTriangle className="text-amber-600" size={32} />
+              </div>
+              <div className="flex-1">
+                <h2 className="text-xl font-bold text-amber-800 mb-2">
+                  ⚠️ Conta Pendente de Ativação
+                </h2>
+                <p className="text-amber-700 mb-4">
+                  Sua conta está aguardando a confirmação do pagamento. Para ativar sua conta e começar a anunciar seus imóveis, complete o pagamento do seu plano.
+                </p>
+                <div className="flex flex-wrap gap-3">
+                  <Link to={`/checkout?plan=${user.user_type === 'imobiliaria' ? 'imobiliaria_anual' : user.user_type === 'corretor' ? 'corretor_trimestral' : 'particular_trimestral'}`}>
+                    <Button className="bg-amber-600 hover:bg-amber-700 text-white">
+                      <CreditCard size={18} className="mr-2" />
+                      Realizar Pagamento
+                    </Button>
+                  </Link>
+                  <Link to="/planos">
+                    <Button variant="outline" className="border-amber-600 text-amber-700 hover:bg-amber-50">
+                      Ver Planos Disponíveis
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Stats Cards - Apenas para usuários ativos */}
+        {user?.status !== 'pending' && (
+          <>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <div className="bg-white rounded-lg shadow-lg p-6">
             <div className="flex items-center justify-between">
