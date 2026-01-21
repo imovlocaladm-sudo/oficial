@@ -280,6 +280,10 @@ class NotificationType(str, Enum):
     proposal = "proposal"                   # Nova proposta recebida
     proposal_accepted = "proposal_accepted" # Proposta aceita
     proposal_rejected = "proposal_rejected" # Proposta rejeitada
+    new_user_registration = "new_user_registration"  # Novo cadastro de usuário
+    payment_receipt = "payment_receipt"     # Comprovante de pagamento enviado
+    payment_approved = "payment_approved"   # Pagamento aprovado
+    payment_rejected = "payment_rejected"   # Pagamento rejeitado
 
 class NotificationCreate(BaseModel):
     """Dados para criar uma notificação"""
