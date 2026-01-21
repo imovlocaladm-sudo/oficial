@@ -362,18 +362,47 @@ const Register = () => {
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Email *
                 </label>
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all ${
-                    errors.email ? 'border-red-500' : 'border-gray-300'
-                  }`}
-                  placeholder="seu@email.com"
-                  data-testid="input-email"
-                />
-                {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
+                <div className="relative">
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    className={`w-full px-4 py-3 pr-12 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all ${
+                      errors.email ? 'border-red-500' : 
+                      emailValidation.valid === true ? 'border-green-500' :
+                      emailValidation.valid === false ? 'border-red-500' : 'border-gray-300'
+                    }`}
+                    placeholder="seu@email.com"
+                    data-testid="input-email"
+                  />
+                  {/* Indicador de validação */}
+                  <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                    {emailValidation.checking && (
+                      <Loader2 className="w-5 h-5 text-gray-400 animate-spin" />
+                    )}
+                    {!emailValidation.checking && emailValidation.valid === true && (
+                      <CheckCircle className="w-5 h-5 text-green-500" />
+                    )}
+                    {!emailValidation.checking && emailValidation.valid === false && (
+                      <XCircle className="w-5 h-5 text-red-500" />
+                    )}
+                  </div>
+                </div>
+                {/* Mensagens de feedback */}
+                {emailValidation.valid === true && (
+                  <p className="text-green-600 text-sm mt-1 flex items-center gap-1">
+                    <CheckCircle className="w-4 h-4" /> Email válido
+                  </p>
+                )}
+                {emailValidation.error && (
+                  <p className="text-red-500 text-sm mt-1 flex items-center gap-1">
+                    <XCircle className="w-4 h-4" /> {emailValidation.error}
+                  </p>
+                )}
+                {errors.email && !emailValidation.error && (
+                  <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+                )}
               </div>
 
               {/* Phone and CPF */}
