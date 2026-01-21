@@ -363,17 +363,57 @@ const NovoImovel = () => {
                   </select>
                 </div>
 
-                <div>
+                <div className="relative">
                   <label className="block text-sm font-medium text-gray-700 mb-2">Cidade *</label>
                   <input
                     type="text"
-                    name="city"
-                    value={formData.city}
-                    onChange={handleChange}
-                    required
+                    name="citySearch"
+                    value={citySearch}
+                    onChange={(e) => {
+                      setCitySearch(e.target.value);
+                      setShowCityDropdown(true);
+                      // Se o valor digitado for exatamente uma cidade válida, seleciona
+                      const exactMatch = cities.find(c => c.toLowerCase() === e.target.value.toLowerCase());
+                      if (exactMatch) {
+                        setFormData(prev => ({ ...prev, city: exactMatch }));
+                      } else {
+                        setFormData(prev => ({ ...prev, city: '' }));
+                      }
+                    }}
+                    onFocus={() => setShowCityDropdown(true)}
+                    onBlur={() => setTimeout(() => setShowCityDropdown(false), 200)}
+                    required={!formData.city}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="Ex: Campo Grande"
+                    placeholder={loadingCities ? "Carregando cidades..." : "Digite para buscar..."}
+                    disabled={loadingCities || cities.length === 0}
+                    autoComplete="off"
                   />
+                  {/* Dropdown de cidades */}
+                  {showCityDropdown && filteredCities.length > 0 && (
+                    <div className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                      {filteredCities.map((city, index) => (
+                        <button
+                          key={index}
+                          type="button"
+                          onClick={() => handleCitySelect(city)}
+                          className={`w-full px-4 py-2 text-left hover:bg-blue-50 ${
+                            formData.city === city ? 'bg-blue-100 font-medium' : ''
+                          }`}
+                        >
+                          {city}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                  {/* Indicador de cidade selecionada */}
+                  {formData.city && (
+                    <p className="text-xs text-green-600 mt-1">✓ Cidade selecionada: {formData.city}</p>
+                  )}
+                  {!formData.city && citySearch && !loadingCities && (
+                    <p className="text-xs text-red-500 mt-1">Selecione uma cidade válida da lista</p>
+                  )}
+                  {/* Campo hidden para o valor real */}
+                  <input type="hidden" name="city" value={formData.city} />
                 </div>
 
                 <div className="md:col-span-2">
