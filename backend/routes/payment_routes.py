@@ -32,7 +32,7 @@ PIX_INFO = {
     "chave": "8c6a9ecc-e143-47cb-8962-23594d4197fa",
     "beneficiario": "Rogério Alves Pereira Barcelos",
     "cnpj": "61.343.028/0001-16",
-    "banco": "Banco Inter"
+    "banco": "TON"
 }
 
 # Limites de anúncios por tipo de usuário/plano
