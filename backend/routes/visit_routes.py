@@ -367,7 +367,12 @@ async def mark_as_read(
     if not notification:
         raise HTTPException(status_code=404, detail="Notificação não encontrada")
     
-    if notification['user_id'] != user['id']:
+    # Admin pode marcar notificações destinadas a "admin"
+    is_admin = user.get('user_type') in ['admin', 'admin_senior']
+    is_own_notification = notification['user_id'] == user['id']
+    is_admin_notification = notification['user_id'] == 'admin' and is_admin
+    
+    if not is_own_notification and not is_admin_notification:
         raise HTTPException(status_code=403, detail="Você não tem permissão para acessar esta notificação")
     
     await notifications_collection.update_one(
@@ -385,8 +390,14 @@ async def mark_all_as_read(email: str = Depends(get_current_user_email)):
     if not user:
         raise HTTPException(status_code=404, detail="Usuário não encontrado")
     
+    # Admin também marca notificações gerais
+    if user.get('user_type') in ['admin', 'admin_senior']:
+        query = {"$or": [{"user_id": user['id']}, {"user_id": "admin"}], "read": False}
+    else:
+        query = {"user_id": user['id'], "read": False}
+    
     result = await notifications_collection.update_many(
-        {"user_id": user['id'], "read": False},
+        query,
         {"$set": {"read": True}}
     )
     
