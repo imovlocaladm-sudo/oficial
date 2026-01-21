@@ -1,17 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { Button } from '../components/ui/button';
-import { User, Mail, Phone, Lock, MapPin, Building, AlertTriangle, Info } from 'lucide-react';
+import { User, Mail, Phone, Lock, MapPin, Building, AlertTriangle, Info, CheckCircle, XCircle, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
+import axios from 'axios';
+
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const Register = () => {
   const navigate = useNavigate();
   const { register } = useAuth();
   const [userType, setUserType] = useState('particular'); // 'particular', 'corretor' ou 'imobiliaria'
   const [showParticularWarning, setShowParticularWarning] = useState(true);
+  const [emailValidation, setEmailValidation] = useState({ checking: false, valid: null, error: null });
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -40,12 +44,55 @@ const Register = () => {
     }
   };
 
+  // Validação de email em tempo real
+  const validateEmailDomain = useCallback(async (email) => {
+    if (!email || !email.includes('@')) {
+      setEmailValidation({ checking: false, valid: null, error: null });
+      return;
+    }
+
+    setEmailValidation({ checking: true, valid: null, error: null });
+
+    try {
+      const response = await axios.post(`${BACKEND_URL}/api/auth/validate-email`, { email });
+      setEmailValidation({
+        checking: false,
+        valid: response.data.valid,
+        error: response.data.error
+      });
+      
+      if (!response.data.valid) {
+        setErrors(prev => ({ ...prev, email: response.data.error }));
+      } else {
+        setErrors(prev => ({ ...prev, email: '' }));
+      }
+    } catch (error) {
+      setEmailValidation({ checking: false, valid: null, error: null });
+    }
+  }, []);
+
+  // Debounce para validação de email
+  const [emailTimeout, setEmailTimeout] = useState(null);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+    
     // Clear error when user starts typing
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: '' }));
+    }
+
+    // Validar email com debounce
+    if (name === 'email') {
+      if (emailTimeout) clearTimeout(emailTimeout);
+      setEmailValidation({ checking: false, valid: null, error: null });
+      
+      const timeout = setTimeout(() => {
+        validateEmailDomain(value);
+      }, 800); // Aguarda 800ms após parar de digitar
+      
+      setEmailTimeout(timeout);
     }
   };
 
