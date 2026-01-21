@@ -331,15 +331,15 @@ const NovoImovel = () => {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Preço (R$) *</label>
                   <input
-                    type="number"
-                    name="price"
-                    value={formData.price}
-                    onChange={handleChange}
+                    type="text"
+                    name="priceDisplay"
+                    value={formData.priceDisplay}
+                    onChange={(e) => handleCurrencyChange(e, 'price', 'priceDisplay')}
                     required
-                    step="0.01"
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="0.00"
+                    placeholder="0,00"
                   />
+                  <p className="text-xs text-gray-500 mt-1">Digite apenas números. Ex: 150000000 = R$ 1.500.000,00</p>
                 </div>
               </div>
             </div>
