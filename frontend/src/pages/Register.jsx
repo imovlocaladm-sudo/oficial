@@ -132,6 +132,14 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Verificar se email foi validado
+    if (emailValidation.valid === false) {
+      toast.error('Email inválido', {
+        description: emailValidation.error || 'Por favor, use um email válido.',
+      });
+      return;
+    }
+
     if (!validateForm()) {
       toast.error('Erro no cadastro', {
         description: 'Por favor, corrija os erros no formulário.',
