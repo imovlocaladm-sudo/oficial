@@ -478,11 +478,6 @@ const PropertyDetail = () => {
                   </Button>
                 )}
                 
-                <Button variant="outline" className="w-full flex items-center justify-center gap-2">
-                  <Mail size={18} />
-                  Enviar mensagem
-                </Button>
-                
                 {/* Botão de Compartilhar com Menu */}
                 <div className="relative">
                   <Button 
