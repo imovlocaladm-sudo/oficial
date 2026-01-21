@@ -36,6 +36,31 @@ class PasswordChange(BaseModel):
     new_password: str
     confirm_password: str
 
+class EmailValidation(BaseModel):
+    email: str
+
+@router.post("/validate-email")
+async def validate_email_endpoint(data: EmailValidation):
+    """
+    Valida se o email tem um domínio válido.
+    Útil para validação em tempo real no frontend.
+    """
+    is_valid, error_message = validate_email(data.email)
+    
+    # Verificar se email já está cadastrado
+    if is_valid:
+        existing = await users_collection.find_one({"email": data.email.lower()})
+        if existing:
+            return {
+                "valid": False,
+                "error": "Este email já está cadastrado"
+            }
+    
+    return {
+        "valid": is_valid,
+        "error": error_message if not is_valid else None
+    }
+
 @router.post("/register", response_model=Token, status_code=status.HTTP_201_CREATED)
 async def register(user: UserCreate):
     """Register a new user"""
