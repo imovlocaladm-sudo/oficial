@@ -323,7 +323,12 @@ async def get_notifications(
     if not user:
         raise HTTPException(status_code=404, detail="Usuário não encontrado")
     
-    query = {"user_id": user['id']}
+    # Admins também veem notificações destinadas a "admin"
+    if user.get('user_type') in ['admin', 'admin_senior']:
+        query = {"$or": [{"user_id": user['id']}, {"user_id": "admin"}]}
+    else:
+        query = {"user_id": user['id']}
+    
     if unread_only:
         query["read"] = False
     
@@ -338,7 +343,13 @@ async def get_unread_count(email: str = Depends(get_current_user_email)):
     if not user:
         raise HTTPException(status_code=404, detail="Usuário não encontrado")
     
-    count = await notifications_collection.count_documents({"user_id": user['id'], "read": False})
+    # Admins também contam notificações destinadas a "admin"
+    if user.get('user_type') in ['admin', 'admin_senior']:
+        query = {"$or": [{"user_id": user['id']}, {"user_id": "admin"}], "read": False}
+    else:
+        query = {"user_id": user['id'], "read": False}
+    
+    count = await notifications_collection.count_documents(query)
     return {"unread_count": count}
 
 
