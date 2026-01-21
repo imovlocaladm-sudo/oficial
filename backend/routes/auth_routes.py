@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException, status, Depends, UploadFile, File,
 from models import UserCreate, UserLogin, User, Token, UserInDB, PlanType
 from auth import get_password_hash, verify_password, create_access_token, get_current_user_email
 from database import users_collection, properties_collection, db
+from utils.email_validator import validate_email, get_email_validation_error
 from datetime import datetime
 from pydantic import BaseModel
 from typing import Optional
