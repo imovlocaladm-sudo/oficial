@@ -39,6 +39,15 @@ class PasswordChange(BaseModel):
 @router.post("/register", response_model=Token, status_code=status.HTTP_201_CREATED)
 async def register(user: UserCreate):
     """Register a new user"""
+    
+    # Validar domínio do email
+    is_valid, error_message = validate_email(user.email)
+    if not is_valid:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=error_message
+        )
+    
     # Check if user already exists
     existing_user = await users_collection.find_one({"email": user.email})
     if existing_user:
