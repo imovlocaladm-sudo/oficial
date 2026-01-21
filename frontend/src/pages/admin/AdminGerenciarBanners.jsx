@@ -64,14 +64,14 @@ const AdminGerenciarBanners = () => {
     image: null
   });
 
-  // Position options
+  // Position options with recommended dimensions
   const positionOptions = [
-    { value: 'home_topo', label: 'Home - Topo da Página' },
-    { value: 'home_meio', label: 'Home - Entre Destaques e Lançamentos' },
-    { value: 'busca_lateral', label: 'Busca Detalhada - Lateral' },
-    { value: 'busca_topo', label: 'Busca - Topo da Página' },
-    { value: 'imovel_lateral', label: 'Detalhes do Imóvel - Lateral' },
-    { value: 'rodape', label: 'Rodapé do Site' }
+    { value: 'home_topo', label: 'Home - Topo da Página', dimensions: 'Desktop: 1920x300px | Mobile: 800x400px' },
+    { value: 'home_meio', label: 'Home - Entre Destaques e Lançamentos', dimensions: 'Desktop: 1920x250px | Mobile: 800x300px' },
+    { value: 'busca_lateral', label: 'Busca Detalhada - Lateral', dimensions: '300x600px' },
+    { value: 'busca_topo', label: 'Busca - Topo da Página', dimensions: 'Desktop: 1200x200px | Mobile: 800x300px' },
+    { value: 'imovel_lateral', label: 'Detalhes do Imóvel - Lateral', dimensions: '300x600px' },
+    { value: 'rodape', label: 'Rodapé do Site', dimensions: 'Desktop: 1920x150px | Mobile: 800x200px' }
   ];
 
   useEffect(() => {
