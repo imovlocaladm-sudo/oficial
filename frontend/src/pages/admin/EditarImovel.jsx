@@ -50,12 +50,18 @@ const EditarImovel = () => {
   const [existingImages, setExistingImages] = useState([]);  // Server images (URLs)
   const [newImageFiles, setNewImageFiles] = useState([]);  // New File objects
   const [newImagePreviews, setNewImagePreviews] = useState([]);  // Preview URLs for new files
+  const [cities, setCities] = useState([]);  // Lista de cidades do estado
+  const [loadingCities, setLoadingCities] = useState(false);
+  const [citySearch, setCitySearch] = useState('');  // Busca de cidade
+  const [showCityDropdown, setShowCityDropdown] = useState(false);
+  
   const [formData, setFormData] = useState({
     title: '',
     description: '',
     property_type: 'Apartamento',
     purpose: 'VENDA',
     price: '',
+    priceDisplay: '',
     neighborhood: '',
     city: '',
     state: 'MS',
@@ -65,10 +71,90 @@ const EditarImovel = () => {
     garage: '',
     year_built: '',
     condominio: '',
+    condominioDisplay: '',
     iptu: '',
+    iptuDisplay: '',
     features: '',
     is_launch: false
   });
+
+  // Buscar cidades do IBGE quando o estado mudar
+  useEffect(() => {
+    const fetchCities = async () => {
+      if (!formData.state) {
+        setCities([]);
+        return;
+      }
+      
+      setLoadingCities(true);
+      try {
+        const response = await fetch(
+          `https://servicodados.ibge.gov.br/api/v1/localidades/estados/${formData.state}/municipios?orderBy=nome`
+        );
+        const data = await response.json();
+        setCities(data.map(city => city.nome));
+      } catch (error) {
+        console.error('Erro ao buscar cidades:', error);
+      } finally {
+        setLoadingCities(false);
+      }
+    };
+    
+    fetchCities();
+  }, [formData.state]);
+
+  // Função para formatar valor monetário
+  const formatCurrency = (value) => {
+    if (!value) return '';
+    const numericValue = value.toString().replace(/\D/g, '');
+    if (!numericValue) return '';
+    const number = parseInt(numericValue) / 100;
+    return number.toLocaleString('pt-BR', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+  };
+
+  // Função para converter valor formatado para número
+  const parseCurrency = (formattedValue) => {
+    if (!formattedValue) return '';
+    const numericString = formattedValue.replace(/\./g, '').replace(',', '.');
+    return parseFloat(numericString) || '';
+  };
+
+  // Função para formatar número como moeda para exibição inicial
+  const formatNumberAsCurrency = (num) => {
+    if (!num) return '';
+    return parseFloat(num).toLocaleString('pt-BR', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+  };
+
+  // Handler para campos de valor monetário
+  const handleCurrencyChange = (e, fieldName, displayFieldName) => {
+    const { value } = e.target;
+    const formatted = formatCurrency(value);
+    const numericValue = parseCurrency(formatted);
+    
+    setFormData(prev => ({
+      ...prev,
+      [fieldName]: numericValue,
+      [displayFieldName]: formatted
+    }));
+  };
+
+  // Handler para seleção de cidade
+  const handleCitySelect = (city) => {
+    setFormData(prev => ({ ...prev, city }));
+    setCitySearch(city);
+    setShowCityDropdown(false);
+  };
+
+  // Filtrar cidades baseado na busca
+  const filteredCities = cities.filter(city =>
+    city.toLowerCase().includes(citySearch.toLowerCase())
+  ).slice(0, 10);
 
   useEffect(() => {
     fetchProperty();
@@ -90,7 +176,8 @@ const EditarImovel = () => {
         description: property.description,
         property_type: property.property_type,
         purpose: property.purpose,
-        price: property.price.toString(),
+        price: property.price,
+        priceDisplay: formatNumberAsCurrency(property.price),
         neighborhood: property.neighborhood,
         city: property.city,
         state: property.state,
@@ -99,11 +186,16 @@ const EditarImovel = () => {
         area: property.area?.toString() || '',
         garage: property.garage?.toString() || '',
         year_built: property.year_built?.toString() || '',
-        condominio: property.condominio?.toString() || '',
-        iptu: property.iptu?.toString() || '',
+        condominio: property.condominio || '',
+        condominioDisplay: formatNumberAsCurrency(property.condominio),
+        iptu: property.iptu || '',
+        iptuDisplay: formatNumberAsCurrency(property.iptu),
         features: property.features?.join(', ') || '',
         is_launch: property.is_launch
       });
+      
+      // Set city search
+      setCitySearch(property.city || '');
       
       // Set existing images from server
       setExistingImages(property.images || []);
