@@ -5,7 +5,7 @@ import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import { Button } from '../../components/ui/button';
 import { 
-  Home, Users, Building, Shield, LogOut
+  Home, Users, Building, Shield, LogOut, CreditCard, Image
 } from 'lucide-react';
 
 const AdminSeniorDashboard = () => {
@@ -38,7 +38,7 @@ const AdminSeniorDashboard = () => {
               </div>
               <div>
                 <h1 className="text-3xl font-bold">Painel Admin Sênior</h1>
-                <p className="text-blue-100">Gerenciamento de Usuários e Imóveis - {user?.name}</p>
+                <p className="text-blue-100">Gerenciamento de Usuários, Imóveis e Pagamentos - {user?.name}</p>
               </div>
             </div>
             <div className="flex gap-3">
@@ -67,11 +67,11 @@ const AdminSeniorDashboard = () => {
         <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
           <h2 className="text-2xl font-bold text-gray-800 mb-2">Bem-vindo, {user?.name}!</h2>
           <p className="text-gray-600">
-            Você tem acesso às funcionalidades de gerenciamento de usuários e imóveis.
+            Você tem acesso às funcionalidades de gerenciamento de usuários, imóveis e pagamentos.
           </p>
           <div className="mt-4 p-4 bg-blue-50 border-l-4 border-blue-600 rounded">
             <p className="text-sm text-blue-800">
-              <strong>Suas Permissões:</strong> Gerenciar Usuários, Gerenciar Imóveis, Gerenciar Banners
+              <strong>Suas Permissões:</strong> Gerenciar Usuários, Gerenciar Imóveis, Gerenciar Banners, Gerenciar Pagamentos
             </p>
           </div>
         </div>
@@ -79,7 +79,7 @@ const AdminSeniorDashboard = () => {
         {/* Quick Actions */}
         <div className="mb-6">
           <h3 className="text-xl font-bold text-gray-800 mb-4">Ações Rápidas</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Gerenciar Usuários */}
             <Link to="/admin/master/users">
               <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-xl transition-shadow cursor-pointer border-2 border-transparent hover:border-blue-500">
@@ -87,15 +87,14 @@ const AdminSeniorDashboard = () => {
                   <div className="bg-blue-100 p-3 rounded-full">
                     <Users className="text-blue-600" size={24} />
                   </div>
-                  <span className="text-3xl font-bold text-gray-800">7</span>
                 </div>
                 <h4 className="text-lg font-semibold text-gray-800 mb-2">Gerenciar Usuários</h4>
                 <p className="text-sm text-gray-600 mb-4">
-                  Visualizar, adicionar, editar e gerenciar todos os usuários do sistema.
+                  Visualizar, adicionar, editar e gerenciar todos os usuários.
                 </p>
                 <Button className="w-full bg-blue-600 hover:bg-blue-700">
                   <Users size={18} className="mr-2" />
-                  Gerenciar Usuários
+                  Gerenciar
                 </Button>
               </div>
             </Link>
@@ -107,15 +106,33 @@ const AdminSeniorDashboard = () => {
                   <div className="bg-green-100 p-3 rounded-full">
                     <Building className="text-green-600" size={24} />
                   </div>
-                  <span className="text-3xl font-bold text-gray-800">14</span>
                 </div>
                 <h4 className="text-lg font-semibold text-gray-800 mb-2">Gerenciar Imóveis</h4>
                 <p className="text-sm text-gray-600 mb-4">
-                  Visualizar e gerenciar todos os imóveis cadastrados na plataforma.
+                  Visualizar e gerenciar todos os imóveis cadastrados.
                 </p>
                 <Button className="w-full bg-green-600 hover:bg-green-700">
                   <Building size={18} className="mr-2" />
-                  Gerenciar Imóveis
+                  Gerenciar
+                </Button>
+              </div>
+            </Link>
+
+            {/* Gerenciar Pagamentos - NOVO */}
+            <Link to="/admin/master/pagamentos">
+              <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-xl transition-shadow cursor-pointer border-2 border-transparent hover:border-emerald-500">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="bg-emerald-100 p-3 rounded-full">
+                    <CreditCard className="text-emerald-600" size={24} />
+                  </div>
+                </div>
+                <h4 className="text-lg font-semibold text-gray-800 mb-2">Gerenciar Pagamentos</h4>
+                <p className="text-sm text-gray-600 mb-4">
+                  Aprovar pagamentos e gerenciar assinaturas.
+                </p>
+                <Button className="w-full bg-emerald-600 hover:bg-emerald-700">
+                  <CreditCard size={18} className="mr-2" />
+                  Gerenciar
                 </Button>
               </div>
             </Link>
@@ -125,17 +142,16 @@ const AdminSeniorDashboard = () => {
               <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-xl transition-shadow cursor-pointer border-2 border-transparent hover:border-purple-500">
                 <div className="flex items-center justify-between mb-4">
                   <div className="bg-purple-100 p-3 rounded-full">
-                    <Shield className="text-purple-600" size={24} />
+                    <Image className="text-purple-600" size={24} />
                   </div>
-                  <span className="text-3xl font-bold text-gray-800">•••</span>
                 </div>
                 <h4 className="text-lg font-semibold text-gray-800 mb-2">Gerenciar Banners</h4>
                 <p className="text-sm text-gray-600 mb-4">
-                  Adicionar, editar e remover banners publicitários do site.
+                  Adicionar, editar e remover banners publicitários.
                 </p>
                 <Button className="w-full bg-purple-600 hover:bg-purple-700">
-                  <Shield size={18} className="mr-2" />
-                  Gerenciar Banners
+                  <Image size={18} className="mr-2" />
+                  Gerenciar
                 </Button>
               </div>
             </Link>
@@ -151,6 +167,7 @@ const AdminSeniorDashboard = () => {
               <li>✅ Gerenciar perfis de usuários</li>
               <li>✅ Moderar conteúdo de imóveis</li>
               <li>✅ Administrar banners publicitários</li>
+              <li>✅ Aprovar pagamentos e assinaturas</li>
             </ul>
           </div>
 
