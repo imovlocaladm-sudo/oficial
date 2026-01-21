@@ -45,6 +45,10 @@ const NovoImovel = () => {
   const [loading, setLoading] = useState(false);
   const [imageFiles, setImageFiles] = useState([]);  // Store actual File objects
   const [imagePreviews, setImagePreviews] = useState([]);  // Store preview URLs
+  const [cities, setCities] = useState([]);  // Lista de cidades do estado
+  const [loadingCities, setLoadingCities] = useState(false);
+  const [citySearch, setCitySearch] = useState('');  // Busca de cidade
+  const [showCityDropdown, setShowCityDropdown] = useState(false);
   
   // Define o valor inicial de purpose baseado no tipo de usuário
   // Particulares não podem vender, então o padrão é ALUGUEL
@@ -61,6 +65,7 @@ const NovoImovel = () => {
     property_type: 'Apartamento',
     purpose: getInitialPurpose(),
     price: '',
+    priceDisplay: '',  // Valor formatado para exibição
     neighborhood: '',
     city: '',
     state: 'MS',
@@ -70,10 +75,77 @@ const NovoImovel = () => {
     garage: '',
     year_built: '',
     condominio: '',
+    condominioDisplay: '',
     iptu: '',
+    iptuDisplay: '',
     features: '',
     is_launch: false
   });
+
+  // Buscar cidades do IBGE quando o estado mudar
+  useEffect(() => {
+    const fetchCities = async () => {
+      if (!formData.state) {
+        setCities([]);
+        return;
+      }
+      
+      setLoadingCities(true);
+      try {
+        const response = await fetch(
+          `https://servicodados.ibge.gov.br/api/v1/localidades/estados/${formData.state}/municipios?orderBy=nome`
+        );
+        const data = await response.json();
+        setCities(data.map(city => city.nome));
+      } catch (error) {
+        console.error('Erro ao buscar cidades:', error);
+        toast.error('Erro ao carregar lista de cidades');
+      } finally {
+        setLoadingCities(false);
+      }
+    };
+    
+    fetchCities();
+    // Limpar cidade quando mudar o estado
+    setFormData(prev => ({ ...prev, city: '' }));
+    setCitySearch('');
+  }, [formData.state]);
+
+  // Função para formatar valor monetário (R$ 1.500.000,00)
+  const formatCurrency = (value) => {
+    if (!value) return '';
+    // Remove tudo que não é número
+    const numericValue = value.toString().replace(/\D/g, '');
+    if (!numericValue) return '';
+    
+    // Converte para número e formata
+    const number = parseInt(numericValue) / 100;
+    return number.toLocaleString('pt-BR', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+  };
+
+  // Função para converter valor formatado para número
+  const parseCurrency = (formattedValue) => {
+    if (!formattedValue) return '';
+    // Remove pontos e substitui vírgula por ponto
+    const numericString = formattedValue.replace(/\./g, '').replace(',', '.');
+    return parseFloat(numericString) || '';
+  };
+
+  // Handler para campos de valor monetário
+  const handleCurrencyChange = (e, fieldName, displayFieldName) => {
+    const { value } = e.target;
+    const formatted = formatCurrency(value);
+    const numericValue = parseCurrency(formatted);
+    
+    setFormData(prev => ({
+      ...prev,
+      [fieldName]: numericValue,
+      [displayFieldName]: formatted
+    }));
+  };
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -82,6 +154,18 @@ const NovoImovel = () => {
       [name]: type === 'checkbox' ? checked : value
     }));
   };
+
+  // Handler para seleção de cidade
+  const handleCitySelect = (city) => {
+    setFormData(prev => ({ ...prev, city }));
+    setCitySearch(city);
+    setShowCityDropdown(false);
+  };
+
+  // Filtrar cidades baseado na busca
+  const filteredCities = cities.filter(city =>
+    city.toLowerCase().includes(citySearch.toLowerCase())
+  ).slice(0, 10);  // Limitar a 10 resultados
 
   const handleImageUpload = (e) => {
     const files = Array.from(e.target.files);
