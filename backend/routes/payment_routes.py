@@ -569,3 +569,136 @@ async def admin_get_payment_details(
             "user_type": user.get("user_type") if user else "N/A"
         }
     }
+
+
+# ==========================================
+# SISTEMA DE VENCIMENTO DE PLANOS
+# ==========================================
+
+@router.post("/admin/check-expirations")
+async def check_plan_expirations(admin = Depends(get_current_admin_senior)):
+    """
+    Verifica planos vencidos e prestes a vencer.
+    - Planos vencidos: muda status do usuário para 'pending'
+    - Planos vencendo em 5 dias: envia notificação de renovação
+    """
+    now = datetime.utcnow()
+    five_days_from_now = now + timedelta(days=5)
+    
+    results = {
+        "expired": 0,
+        "expiring_soon": 0,
+        "notifications_sent": 0
+    }
+    
+    # 1. Buscar usuários com plano vencido
+    expired_users = await db.users.find({
+        "status": "active",
+        "plan_expires_at": {"$lt": now, "$ne": None}
+    }).to_list(1000)
+    
+    for user in expired_users:
+        # Suspender usuário
+        await db.users.update_one(
+            {"id": user["id"]},
+            {
+                "$set": {
+                    "status": "pending",
+                    "updated_at": datetime.utcnow()
+                }
+            }
+        )
+        
+        # Criar notificação
+        notification = {
+            "id": str(uuid.uuid4()),
+            "user_id": user["id"],
+            "type": "system",
+            "title": "⚠️ Seu Plano Expirou",
+            "message": f"Olá {user.get('name', 'Usuário')}! Seu plano expirou e seus anúncios foram ocultados. Renove agora para continuar anunciando seus imóveis.",
+            "data": {"action": "renew_plan"},
+            "read": False,
+            "created_at": datetime.utcnow()
+        }
+        await db.notifications.insert_one(notification)
+        results["expired"] += 1
+        results["notifications_sent"] += 1
+    
+    # 2. Buscar usuários com plano vencendo em 5 dias (que ainda não foram notificados)
+    expiring_users = await db.users.find({
+        "status": "active",
+        "plan_expires_at": {
+            "$gte": now,
+            "$lte": five_days_from_now
+        },
+        "expiration_notified": {"$ne": True}  # Não notificados ainda
+    }).to_list(1000)
+    
+    for user in expiring_users:
+        expires_at = user.get("plan_expires_at")
+        if expires_at:
+            days_left = (expires_at - now).days
+            
+            # Criar notificação de renovação
+            notification = {
+                "id": str(uuid.uuid4()),
+                "user_id": user["id"],
+                "type": "system",
+                "title": "⏰ Seu Plano Está Vencendo!",
+                "message": f"Olá {user.get('name', 'Usuário')}! Seu plano vence em {days_left} dia(s) ({expires_at.strftime('%d/%m/%Y')}). Renove agora para não perder seus anúncios!",
+                "data": {"action": "renew_plan", "expires_at": expires_at.isoformat()},
+                "read": False,
+                "created_at": datetime.utcnow()
+            }
+            await db.notifications.insert_one(notification)
+            
+            # Marcar como notificado
+            await db.users.update_one(
+                {"id": user["id"]},
+                {"$set": {"expiration_notified": True}}
+            )
+            
+            results["expiring_soon"] += 1
+            results["notifications_sent"] += 1
+    
+    logger.info(f"Verificação de vencimentos: {results}")
+    
+    return {
+        "message": "Verificação de vencimentos concluída",
+        "results": results
+    }
+
+@router.get("/admin/expiring-plans")
+async def get_expiring_plans(
+    days: int = 7,
+    admin = Depends(get_current_admin_senior)
+):
+    """Lista usuários com planos vencendo nos próximos X dias"""
+    now = datetime.utcnow()
+    future_date = now + timedelta(days=days)
+    
+    users = await db.users.find({
+        "status": "active",
+        "plan_expires_at": {
+            "$gte": now,
+            "$lte": future_date
+        }
+    }).to_list(100)
+    
+    result = []
+    for user in users:
+        expires_at = user.get("plan_expires_at")
+        days_left = (expires_at - now).days if expires_at else 0
+        
+        result.append({
+            "id": user["id"],
+            "name": user.get("name"),
+            "email": user.get("email"),
+            "user_type": user.get("user_type"),
+            "plan_type": user.get("plan_type"),
+            "expires_at": expires_at.isoformat() if expires_at else None,
+            "days_left": days_left
+        })
+    
+    return sorted(result, key=lambda x: x["days_left"])
+
