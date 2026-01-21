@@ -496,6 +496,12 @@ const AdminGerenciarBanners = () => {
                   ))}
                 </SelectContent>
               </Select>
+              {/* Dimensões recomendadas */}
+              {formData.position && (
+                <p className="text-sm text-blue-600 mt-2 p-2 bg-blue-50 rounded">
+                  📐 <strong>Dimensões recomendadas:</strong> {positionOptions.find(o => o.value === formData.position)?.dimensions}
+                </p>
+              )}
             </div>
 
             <div className="grid grid-cols-2 gap-4">
