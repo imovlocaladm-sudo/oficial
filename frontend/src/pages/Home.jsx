@@ -71,17 +71,12 @@ const Home = () => {
       <Header />
       <SearchBar />
 
-      {/* Banner Topo */}
-      <div className="container mx-auto px-4 py-4">
-        <BannerDisplay position="home_topo" className="mb-4" />
-      </div>
-
       {/* Main Content Area */}
       <div className="container mx-auto px-4 py-8">
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Main Column */}
           <div className="flex-1">
-            {/* Banner Topo */}
+            {/* Banner Topo - Dimensões ideais: Desktop 1920x300px | Mobile 800x400px */}
             <BannerDisplay position="home_topo" className="mb-8" />
 
             {/* LINHA 1: Lançamentos */}
