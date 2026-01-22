@@ -56,6 +56,10 @@ Portal imobiliário para o estado de Mato Grosso do Sul (Brasil), permitindo que
 - [x] Bug fix: IPTU não exibe valor falso quando não cadastrado
 - [x] **Sistema de Expiração Automática (APScheduler)** - verifica diariamente às 6:00 AM
 - [x] **SECRET_KEY segura** - chave forte de 64 bytes gerada
+- [x] Bug fix: Ano de Construção não exibe valor falso (2020) quando não cadastrado
+- [x] Bug fix: Campos do imóvel só exibem quando realmente cadastrados
+- [x] Correção de nomenclatura de perfis (Corretor/Imobiliária/Particular)
+- [x] SEO completo atualizado (título, description, Open Graph, Twitter Cards)
 
 ---
 
