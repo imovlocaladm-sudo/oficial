@@ -216,8 +216,9 @@ class TestVisitsAPI:
                 "visitor_phone": "123"  # Too short
             }
         )
-        assert response.status_code == 400
-        print("SUCCESS: Validation working for visit scheduling")
+        # API returns 400 for validation errors or 422 for pydantic validation
+        assert response.status_code in [400, 422]
+        print(f"SUCCESS: Validation working for visit scheduling - Status: {response.status_code}")
 
 
 class TestAdminAPI:
@@ -234,16 +235,16 @@ class TestAdminAPI:
             return response.json()["access_token"]
         pytest.skip("Admin login failed")
     
-    def test_admin_stats(self, admin_token):
-        """Test GET /api/admin/stats - Admin dashboard stats"""
+    def test_admin_dashboard(self, admin_token):
+        """Test GET /api/admin/dashboard - Admin dashboard stats"""
         response = requests.get(
-            f"{BASE_URL}/api/admin/stats",
+            f"{BASE_URL}/api/admin/dashboard",
             headers={"Authorization": f"Bearer {admin_token}"}
         )
         assert response.status_code == 200
         data = response.json()
-        assert "total_users" in data or "users" in data or isinstance(data, dict)
-        print(f"SUCCESS: Admin stats retrieved: {data}")
+        assert "total_users" in data or "total_properties" in data
+        print(f"SUCCESS: Admin dashboard retrieved - Properties: {data.get('total_properties', 'N/A')}, Users: {data.get('total_users', 'N/A')}")
     
     def test_admin_users_list(self, admin_token):
         """Test GET /api/admin/users - List all users"""
@@ -258,7 +259,7 @@ class TestAdminAPI:
     
     def test_admin_unauthorized(self):
         """Test admin endpoints without authentication"""
-        response = requests.get(f"{BASE_URL}/api/admin/stats")
+        response = requests.get(f"{BASE_URL}/api/admin/dashboard")
         assert response.status_code in [401, 403]
         print("SUCCESS: Admin endpoints protected - returns 401/403 without auth")
 
