@@ -333,34 +333,42 @@ const PropertyDetail = () => {
 
               <div className="border-t border-b border-gray-200 py-4 my-6">
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <div className="flex items-center gap-3">
-                    <Bed size={24} className="text-blue-600" />
-                    <div>
-                      <p className="text-sm text-gray-600">Quartos</p>
-                      <p className="font-bold text-gray-800">{details.bedrooms}</p>
+                  {details.bedrooms && (
+                    <div className="flex items-center gap-3">
+                      <Bed size={24} className="text-blue-600" />
+                      <div>
+                        <p className="text-sm text-gray-600">Quartos</p>
+                        <p className="font-bold text-gray-800">{details.bedrooms}</p>
+                      </div>
                     </div>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Bath size={24} className="text-blue-600" />
-                    <div>
-                      <p className="text-sm text-gray-600">Banheiros</p>
-                      <p className="font-bold text-gray-800">{details.bathrooms}</p>
+                  )}
+                  {details.bathrooms && (
+                    <div className="flex items-center gap-3">
+                      <Bath size={24} className="text-blue-600" />
+                      <div>
+                        <p className="text-sm text-gray-600">Banheiros</p>
+                        <p className="font-bold text-gray-800">{details.bathrooms}</p>
+                      </div>
                     </div>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Square size={24} className="text-blue-600" />
-                    <div>
-                      <p className="text-sm text-gray-600">Área</p>
-                      <p className="font-bold text-gray-800">{details.area}m²</p>
+                  )}
+                  {details.area && (
+                    <div className="flex items-center gap-3">
+                      <Square size={24} className="text-blue-600" />
+                      <div>
+                        <p className="text-sm text-gray-600">Área</p>
+                        <p className="font-bold text-gray-800">{details.area}m²</p>
+                      </div>
                     </div>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Calendar size={24} className="text-blue-600" />
-                    <div>
-                      <p className="text-sm text-gray-600">Ano</p>
-                      <p className="font-bold text-gray-800">{details.yearBuilt}</p>
+                  )}
+                  {details.yearBuilt && (
+                    <div className="flex items-center gap-3">
+                      <Calendar size={24} className="text-blue-600" />
+                      <div>
+                        <p className="text-sm text-gray-600">Ano</p>
+                        <p className="font-bold text-gray-800">{details.yearBuilt}</p>
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
               </div>
 
