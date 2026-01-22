@@ -53,6 +53,9 @@ Portal imobiliário para o estado de Mato Grosso do Sul (Brasil), permitindo que
 - [x] Remoção de notificação de novos cadastros (apenas pagamento)
 - [x] Logo completa no rodapé
 - [x] Mensagem de isenção de responsabilidade no rodapé
+- [x] Bug fix: IPTU não exibe valor falso quando não cadastrado
+- [x] **Sistema de Expiração Automática (APScheduler)** - verifica diariamente às 6:00 AM
+- [x] **SECRET_KEY segura** - chave forte de 64 bytes gerada
 
 ---
 
