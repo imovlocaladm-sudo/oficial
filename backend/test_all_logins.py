@@ -4,7 +4,7 @@ Script para testar o login de todos os usuários criados
 import requests
 import json
 
-BACKEND_URL = "https://local-property-1.preview.emergentagent.com/api"
+BACKEND_URL = "https://imovlocal-1.preview.emergentagent.com/api"
 
 # Lista de todos os usuários para testar
 TEST_USERS = [

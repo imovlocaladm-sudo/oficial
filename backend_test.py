@@ -10,7 +10,7 @@ import sys
 from typing import Dict, Any, Optional
 
 # Base URL from frontend environment
-BASE_URL = "https://local-property-1.preview.emergentagent.com/api"
+BASE_URL = "https://imovlocal-1.preview.emergentagent.com/api"
 
 # Test users credentials
 TEST_USERS = [
