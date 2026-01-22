@@ -16,6 +16,9 @@ from routes.banner_routes import router as banner_router
 from routes.demand_routes import router as demand_router
 from routes.payment_routes import router as payment_router
 
+# Import scheduler
+from scheduler import start_scheduler, stop_scheduler
+
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
