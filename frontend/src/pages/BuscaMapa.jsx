@@ -64,7 +64,8 @@ const BuscaMapa = () => {
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedProperty, setSelectedProperty] = useState(null);
-  const [mapCenter, setMapCenter] = useState([-20.4697, -54.6201]); // Campo Grande as default
+  const [mapCenter, setMapCenter] = useState([-15.7801, -47.9292]); // Centro do Brasil como default
+  const [mapZoom, setMapZoom] = useState(4);
 
   useEffect(() => {
     const fetchProperties = async () => {
@@ -78,6 +79,18 @@ const BuscaMapa = () => {
             : cityCoordinates[prop.city] || cityCoordinates['default']
         }));
         setProperties(propertiesWithCoords);
+        
+        // Calcular centro do mapa baseado nos imóveis
+        if (propertiesWithCoords.length > 0) {
+          const validCoords = propertiesWithCoords.filter(p => p.coordinates);
+          if (validCoords.length > 0) {
+            const sumLat = validCoords.reduce((sum, p) => sum + p.coordinates[0], 0);
+            const sumLng = validCoords.reduce((sum, p) => sum + p.coordinates[1], 0);
+            setMapCenter([sumLat / validCoords.length, sumLng / validCoords.length]);
+            // Se tiver poucos imóveis, zoom maior
+            setMapZoom(validCoords.length <= 5 ? 5 : 4);
+          }
+        }
       } catch (error) {
         console.error('Error fetching properties:', error);
       } finally {
