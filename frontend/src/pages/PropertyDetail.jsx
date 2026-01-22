@@ -231,11 +231,11 @@ const PropertyDetail = () => {
 
   // Mock property details or use from API
   const details = {
-    bedrooms: property.bedrooms || 3,
-    bathrooms: property.bathrooms || 2,
-    area: property.area || 120,
-    garage: property.garage || 2,
-    yearBuilt: property.year_built || 2020,
+    bedrooms: property.bedrooms || null,
+    bathrooms: property.bathrooms || null,
+    area: property.area || null,
+    garage: property.garage || null,
+    yearBuilt: property.year_built || null,
     condominio: property.condominio,
     iptu: property.iptu || null
   };
@@ -436,7 +436,8 @@ const PropertyDetail = () => {
                       {property.owner_name}
                     </p>
                     <p className="text-sm text-gray-600">
-                      {property.owner_user_type === 'corretor' ? 'Corretor' : 'Particular'}
+                      {property.owner_user_type === 'corretor' ? 'Corretor' : 
+                       property.owner_user_type === 'imobiliaria' ? 'Imobiliária' : 'Particular'}
                       {property.owner_creci && ` • CRECI: ${property.owner_creci}`}
                     </p>
                     {property.owner_company && (
