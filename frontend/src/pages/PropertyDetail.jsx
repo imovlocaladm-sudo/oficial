@@ -54,6 +54,35 @@ const PropertyDetail = () => {
   const [submittingVisit, setSubmittingVisit] = useState(false);
   const [visitSuccess, setVisitSuccess] = useState(false);
   const [showMap, setShowMap] = useState(false);
+  const [showFullscreen, setShowFullscreen] = useState(false);
+
+  // Navegação de imagens
+  const nextImage = () => {
+    const images = property?.images || property?.photos || [];
+    if (images.length > 0) {
+      setCurrentImageIndex((prev) => (prev + 1) % images.length);
+    }
+  };
+
+  const prevImage = () => {
+    const images = property?.images || property?.photos || [];
+    if (images.length > 0) {
+      setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length);
+    }
+  };
+
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (showFullscreen) {
+        if (e.key === 'ArrowRight') nextImage();
+        if (e.key === 'ArrowLeft') prevImage();
+        if (e.key === 'Escape') setShowFullscreen(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [showFullscreen, property]);
 
   useEffect(() => {
     const fetchProperty = async () => {
