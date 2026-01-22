@@ -4,7 +4,7 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import WhatsAppButton from '../components/WhatsAppButton';
 import { propertiesAPI, visitsAPI } from '../services/api';
-import { MapPin, Bed, Bath, Square, Calendar, Phone, Mail, Share2, Heart, ArrowLeft, User, CheckCircle, AlertCircle, Copy, X, Facebook, Twitter, MessageCircle, Check, Map } from 'lucide-react';
+import { MapPin, Bed, Bath, Square, Calendar, Phone, Mail, Share2, Heart, ArrowLeft, User, CheckCircle, AlertCircle, Copy, X, Facebook, Twitter, MessageCircle, Check, Map, ChevronLeft, ChevronRight, Maximize2, ZoomIn } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { toast } from 'sonner';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
