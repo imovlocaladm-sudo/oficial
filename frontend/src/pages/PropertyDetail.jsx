@@ -303,15 +303,19 @@ const PropertyDetail = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content */}
           <div className="lg:col-span-2">
-            {/* Image Gallery */}
-            <div className="bg-white rounded-lg shadow-lg overflow-hidden mb-6">
-              <div className="relative h-96">
+            {/* Image Gallery - Melhorada */}
+            <div className="bg-white rounded-xl shadow-lg overflow-hidden mb-6">
+              {/* Imagem Principal com Setas */}
+              <div className="relative h-[400px] md:h-[500px] bg-gray-900 group">
                 <img
                   src={images[currentImageIndex]}
                   alt={property.title}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-contain cursor-pointer"
+                  onClick={() => setShowFullscreen(true)}
                 />
-                <div className={`absolute top-4 left-4 px-4 py-2 rounded-md font-bold text-sm ${
+                
+                {/* Badges */}
+                <div className={`absolute top-4 left-4 px-4 py-2 rounded-lg font-bold text-sm shadow-lg ${
                   property.purpose === 'VENDA'
                     ? 'bg-green-600 text-white'
                     : 'bg-blue-600 text-white'
@@ -319,25 +323,68 @@ const PropertyDetail = () => {
                   {property.purpose}
                 </div>
                 {property.isLaunch && (
-                  <div className="absolute top-4 right-4 px-4 py-2 rounded-md font-bold text-sm bg-orange-500 text-white">
+                  <div className="absolute top-4 right-4 px-4 py-2 rounded-lg font-bold text-sm bg-orange-500 text-white shadow-lg">
                     LANÇAMENTO
                   </div>
                 )}
+
+                {/* Seta Esquerda */}
+                {images.length > 1 && (
+                  <button
+                    onClick={prevImage}
+                    className="absolute left-3 top-1/2 -translate-y-1/2 w-12 h-12 bg-black/50 hover:bg-black/70 text-white rounded-full flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 shadow-lg"
+                    data-testid="btn-prev-image"
+                  >
+                    <ChevronLeft size={28} />
+                  </button>
+                )}
+
+                {/* Seta Direita */}
+                {images.length > 1 && (
+                  <button
+                    onClick={nextImage}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 w-12 h-12 bg-black/50 hover:bg-black/70 text-white rounded-full flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 shadow-lg"
+                    data-testid="btn-next-image"
+                  >
+                    <ChevronRight size={28} />
+                  </button>
+                )}
+
+                {/* Contador de Fotos */}
+                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 px-4 py-2 bg-black/60 text-white rounded-full text-sm font-medium">
+                  {currentImageIndex + 1} / {images.length} fotos
+                </div>
+
+                {/* Botão Expandir */}
+                <button
+                  onClick={() => setShowFullscreen(true)}
+                  className="absolute bottom-4 right-4 p-3 bg-black/50 hover:bg-black/70 text-white rounded-full transition-all opacity-0 group-hover:opacity-100"
+                  title="Ver em tela cheia"
+                >
+                  <Maximize2 size={20} />
+                </button>
               </div>
               
-              {/* Thumbnail Gallery */}
-              <div className="grid grid-cols-4 gap-2 p-4">
-                {images.map((img, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setCurrentImageIndex(index)}
-                    className={`relative h-20 rounded overflow-hidden border-2 transition-all ${
-                      currentImageIndex === index ? 'border-blue-600' : 'border-gray-200'
-                    }`}
-                  >
-                    <img src={img} alt={`View ${index + 1}`} className="w-full h-full object-cover" />
-                  </button>
-                ))}
+              {/* Thumbnail Gallery - Melhorada */}
+              <div className="p-4 bg-gray-50">
+                <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-thin">
+                  {images.map((img, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setCurrentImageIndex(index)}
+                      className={`relative flex-shrink-0 w-20 h-20 md:w-24 md:h-24 rounded-lg overflow-hidden transition-all ${
+                        currentImageIndex === index 
+                          ? 'ring-3 ring-blue-600 ring-offset-2 scale-105' 
+                          : 'ring-1 ring-gray-200 hover:ring-blue-400 opacity-70 hover:opacity-100'
+                      }`}
+                    >
+                      <img src={img} alt={`Foto ${index + 1}`} className="w-full h-full object-cover" />
+                      {currentImageIndex === index && (
+                        <div className="absolute inset-0 bg-blue-600/20"></div>
+                      )}
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
 
