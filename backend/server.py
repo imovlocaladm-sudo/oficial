@@ -78,8 +78,13 @@ logger = logging.getLogger(__name__)
 async def startup_event():
     logger.info("Starting ImovLocal API...")
     logger.info(f"Connected to MongoDB: {mongo_url}")
+    
+    # Iniciar agendador de tarefas
+    start_scheduler()
+    logger.info("Scheduler started for automatic plan expiration checks")
 
 @app.on_event("shutdown")
 async def shutdown_db_client():
+    stop_scheduler()
     client.close()
-    logger.info("Closed MongoDB connection")
+    logger.info("Closed MongoDB connection and stopped scheduler")
