@@ -85,6 +85,7 @@ const AnunciantePerfil = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [copied, setCopied] = useState(false);
+  const [activeFilter, setActiveFilter] = useState('todos');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -125,6 +126,23 @@ const AnunciantePerfil = () => {
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
       toast.error('Erro ao copiar');
+    }
+  };
+
+  const handleFilterClick = (filter) => {
+    setActiveFilter(filter);
+    // Scroll para o topo da seção de imóveis
+    document.getElementById('properties-section')?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const getFilteredProperties = () => {
+    switch (activeFilter) {
+      case 'venda':
+        return properties.filter(p => p.purpose === 'VENDA');
+      case 'aluguel':
+        return properties.filter(p => p.purpose !== 'VENDA');
+      default:
+        return properties;
     }
   };
 
