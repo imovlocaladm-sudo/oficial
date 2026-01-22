@@ -765,6 +765,61 @@ const PropertyDetail = () => {
         </div>
       </div>
 
+      {/* Modal do Mapa */}
+      {showMap && property.latitude && property.longitude && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg w-full max-w-4xl max-h-[90vh] overflow-hidden shadow-2xl">
+            <div className="p-4 border-b flex items-center justify-between bg-gray-50">
+              <div>
+                <h3 className="font-bold text-lg text-gray-800">Localização do Imóvel</h3>
+                <p className="text-sm text-gray-600">{property.neighborhood} - {property.city}/{property.state}</p>
+              </div>
+              <button 
+                onClick={() => setShowMap(false)}
+                className="p-2 hover:bg-gray-200 rounded-full transition-colors"
+              >
+                <X size={24} />
+              </button>
+            </div>
+            <div className="h-[500px]">
+              <MapContainer 
+                center={[property.latitude, property.longitude]} 
+                zoom={15} 
+                style={{ height: '100%', width: '100%' }}
+              >
+                <TileLayer
+                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                />
+                <Marker position={[property.latitude, property.longitude]}>
+                  <Popup>
+                    <div className="text-center">
+                      <strong>{property.title}</strong>
+                      <br />
+                      <span className="text-sm text-gray-600">{property.neighborhood}</span>
+                    </div>
+                  </Popup>
+                </Marker>
+              </MapContainer>
+            </div>
+            <div className="p-4 border-t bg-gray-50 flex justify-between items-center">
+              <a
+                href={`https://www.google.com/maps/search/?api=1&query=${property.latitude},${property.longitude}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 hover:underline text-sm flex items-center gap-1"
+              >
+                <MapPin size={16} />
+                Abrir no Google Maps
+              </a>
+              <Button variant="outline" onClick={() => setShowMap(false)}>
+                Fechar
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <Footer />
     </div>
   );
