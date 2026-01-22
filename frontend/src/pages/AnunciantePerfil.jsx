@@ -84,7 +84,8 @@ const AnunciantePerfil = () => {
 
   // Texto para compartilhamento
   const getShareText = () => {
-    const typeText = profile?.user_type === 'corretor' ? 'Corretor' : 'Anunciante';
+    const typeText = profile?.user_type === 'corretor' ? 'Corretor' : 
+                     profile?.user_type === 'imobiliaria' ? 'Imobiliária' : 'Anunciante';
     return `Confira o perfil de ${profile?.name} no ImovLocal! ${typeText} com ${profile?.total_properties || 0} imóveis disponíveis.`;
   };
 
