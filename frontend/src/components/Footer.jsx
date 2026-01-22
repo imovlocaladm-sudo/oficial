@@ -106,9 +106,15 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Copyright */}
-        <div className="border-t border-gray-800 mt-6 md:mt-8 pt-4 md:pt-6 text-center text-xs md:text-sm">
-          <p>&copy; {currentYear} ImovLocal. Todos os direitos reservados.</p>
+        {/* Aviso de Responsabilidade */}
+        <div className="border-t border-gray-800 mt-6 md:mt-8 pt-4 md:pt-6">
+          <p className="text-xs text-gray-500 text-center mb-4 px-4">
+            Todos os anúncios publicados neste site são de inteira responsabilidade dos anunciantes. 
+            O ImovLocal não se responsabiliza pelas informações, veracidade dos dados ou negociações 
+            realizadas entre as partes.
+          </p>
+          {/* Copyright */}
+          <p className="text-center text-xs md:text-sm">&copy; {currentYear} ImovLocal. Todos os direitos reservados.</p>
         </div>
       </div>
     </footer>
