@@ -237,7 +237,7 @@ const PropertyDetail = () => {
     garage: property.garage || 2,
     yearBuilt: property.year_built || 2020,
     condominio: property.condominio,
-    iptu: property.iptu || 1200
+    iptu: property.iptu || null
   };
 
   const features = property.features && property.features.length > 0
