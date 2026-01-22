@@ -17,10 +17,11 @@ const Footer = () => {
           {/* Logo e Descrição */}
           <div className="col-span-2 md:col-span-1">
             <Link to="/" className="flex items-center gap-2 mb-3 md:mb-4">
-              <div className="bg-red-600 text-white p-1.5 md:p-2 rounded-lg">
-                <span className="font-bold text-sm md:text-xl">iL</span>
-              </div>
-              <span className="text-white font-bold text-base md:text-xl">ImovLocal</span>
+              <img 
+                src="/assets/images/logo/logo-principal.png" 
+                alt="ImovLocal" 
+                className="h-10 md:h-12 w-auto"
+              />
             </Link>
             <p className="text-xs md:text-sm text-gray-400 mb-3 md:mb-4">
               A melhor plataforma para encontrar seu imóvel ideal em Mato Grosso do Sul.
