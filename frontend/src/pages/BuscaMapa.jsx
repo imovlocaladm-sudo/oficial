@@ -139,7 +139,7 @@ const BuscaMapa = () => {
               ) : (
                 <MapContainer
                   center={mapCenter}
-                  zoom={11}
+                  zoom={mapZoom}
                   style={{ height: '100%', width: '100%' }}
                   scrollWheelZoom={true}
                 >
