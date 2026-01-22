@@ -563,6 +563,19 @@ const PropertyDetail = () => {
                 </div>
               </div>
 
+              {/* Botão Ver no Mapa */}
+              {property.latitude && property.longitude && (
+                <Button 
+                  variant="outline" 
+                  className="w-full mt-4 flex items-center justify-center gap-2 border-green-500 text-green-700 hover:bg-green-50"
+                  onClick={() => setShowMap(true)}
+                  data-testid="btn-view-map"
+                >
+                  <MapPin size={18} />
+                  Ver no Mapa
+                </Button>
+              )}
+
               <div className="mt-6 pt-6 border-t border-gray-200">
                 <p className="text-sm text-gray-600 mb-3">Código do imóvel:</p>
                 <p className="font-bold text-gray-800 text-lg">#{property.id.substring(0, 8)}</p>
