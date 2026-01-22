@@ -896,6 +896,79 @@ const PropertyDetail = () => {
         </div>
       )}
 
+      {/* Modal Fullscreen de Fotos */}
+      {showFullscreen && (
+        <div className="fixed inset-0 bg-black z-50 flex flex-col">
+          {/* Header do Modal */}
+          <div className="flex items-center justify-between p-4 bg-gradient-to-b from-black/80 to-transparent absolute top-0 left-0 right-0 z-10">
+            <div className="text-white">
+              <p className="font-medium">{property.title}</p>
+              <p className="text-sm text-gray-300">{currentImageIndex + 1} de {images.length} fotos</p>
+            </div>
+            <button
+              onClick={() => setShowFullscreen(false)}
+              className="p-2 text-white hover:bg-white/20 rounded-full transition-colors"
+              data-testid="btn-close-fullscreen"
+            >
+              <X size={28} />
+            </button>
+          </div>
+
+          {/* Imagem Principal */}
+          <div className="flex-1 flex items-center justify-center p-4">
+            <img
+              src={images[currentImageIndex]}
+              alt={`${property.title} - Foto ${currentImageIndex + 1}`}
+              className="max-w-full max-h-full object-contain"
+            />
+          </div>
+
+          {/* Seta Esquerda */}
+          {images.length > 1 && (
+            <button
+              onClick={prevImage}
+              className="absolute left-4 top-1/2 -translate-y-1/2 w-14 h-14 bg-white/10 hover:bg-white/30 text-white rounded-full flex items-center justify-center transition-all backdrop-blur-sm"
+              data-testid="btn-prev-fullscreen"
+            >
+              <ChevronLeft size={32} />
+            </button>
+          )}
+
+          {/* Seta Direita */}
+          {images.length > 1 && (
+            <button
+              onClick={nextImage}
+              className="absolute right-4 top-1/2 -translate-y-1/2 w-14 h-14 bg-white/10 hover:bg-white/30 text-white rounded-full flex items-center justify-center transition-all backdrop-blur-sm"
+              data-testid="btn-next-fullscreen"
+            >
+              <ChevronRight size={32} />
+            </button>
+          )}
+
+          {/* Thumbnails no Modal */}
+          <div className="bg-gradient-to-t from-black/80 to-transparent p-4 absolute bottom-0 left-0 right-0">
+            <div className="flex gap-2 justify-center overflow-x-auto pb-2">
+              {images.map((img, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentImageIndex(index)}
+                  className={`flex-shrink-0 w-16 h-16 md:w-20 md:h-20 rounded-lg overflow-hidden transition-all ${
+                    currentImageIndex === index 
+                      ? 'ring-2 ring-white scale-110' 
+                      : 'opacity-50 hover:opacity-100'
+                  }`}
+                >
+                  <img src={img} alt={`Miniatura ${index + 1}`} className="w-full h-full object-cover" />
+                </button>
+              ))}
+            </div>
+            <p className="text-center text-gray-400 text-xs mt-2">
+              Use as setas do teclado ← → para navegar • ESC para fechar
+            </p>
+          </div>
+        </div>
+      )}
+
       <Footer />
     </div>
   );
