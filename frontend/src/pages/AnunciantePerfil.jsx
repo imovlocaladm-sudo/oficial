@@ -273,30 +273,70 @@ const AnunciantePerfil = () => {
         </div>
       </div>
 
+      {/* Bio / Descrição do Corretor */}
+      {profile.bio && (
+        <div className="bg-white border-b">
+          <div className="container mx-auto px-4 py-4">
+            <div className="max-w-3xl">
+              <h3 className="text-sm font-semibold text-gray-700 mb-2">Sobre</h3>
+              <p className="text-gray-600 text-sm leading-relaxed">{profile.bio}</p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Grade de Imóveis */}
-      <div className="container mx-auto px-4 py-6">
+      <div id="properties-section" className="container mx-auto px-4 py-6">
         {properties.length > 0 ? (
           <>
             {/* Filtros rápidos */}
             <div className="flex items-center gap-2 mb-4 overflow-x-auto pb-2">
               <span className="text-sm text-gray-600 flex-shrink-0">Filtrar:</span>
-              <button className="px-3 py-1 bg-white border border-gray-300 rounded-full text-sm hover:bg-gray-50 flex-shrink-0">
+              <button 
+                onClick={() => handleFilterClick('todos')}
+                className={`px-3 py-1 rounded-full text-sm flex-shrink-0 transition-colors ${
+                  activeFilter === 'todos' 
+                    ? 'bg-blue-600 text-white' 
+                    : 'bg-white border border-gray-300 hover:bg-gray-50'
+                }`}
+              >
                 Todos ({properties.length})
               </button>
-              <button className="px-3 py-1 bg-white border border-gray-300 rounded-full text-sm hover:bg-gray-50 flex-shrink-0">
+              <button 
+                onClick={() => handleFilterClick('venda')}
+                className={`px-3 py-1 rounded-full text-sm flex-shrink-0 transition-colors ${
+                  activeFilter === 'venda' 
+                    ? 'bg-green-600 text-white' 
+                    : 'bg-white border border-gray-300 hover:bg-gray-50'
+                }`}
+              >
                 Venda ({properties.filter(p => p.purpose === 'VENDA').length})
               </button>
-              <button className="px-3 py-1 bg-white border border-gray-300 rounded-full text-sm hover:bg-gray-50 flex-shrink-0">
+              <button 
+                onClick={() => handleFilterClick('aluguel')}
+                className={`px-3 py-1 rounded-full text-sm flex-shrink-0 transition-colors ${
+                  activeFilter === 'aluguel' 
+                    ? 'bg-orange-500 text-white' 
+                    : 'bg-white border border-gray-300 hover:bg-gray-50'
+                }`}
+              >
                 Aluguel ({properties.filter(p => p.purpose !== 'VENDA').length})
               </button>
             </div>
 
             {/* Grid de Cards */}
             <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-4">
-              {properties.map(property => (
+              {getFilteredProperties().map(property => (
                 <PropertyMiniCard key={property.id} property={property} />
               ))}
             </div>
+
+            {/* Mensagem quando filtro não tem resultados */}
+            {getFilteredProperties().length === 0 && (
+              <div className="text-center py-8 bg-white rounded-lg mt-4">
+                <p className="text-gray-500">Nenhum imóvel encontrado para este filtro.</p>
+              </div>
+            )}
           </>
         ) : (
           <div className="text-center py-16 bg-white rounded-lg">
