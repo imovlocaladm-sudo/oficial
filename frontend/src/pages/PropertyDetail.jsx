@@ -396,10 +396,12 @@ const PropertyDetail = () => {
                       <span className="font-semibold text-gray-800">{formatPrice(details.condominio)}</span>
                     </div>
                   )}
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-600">IPTU (anual):</span>
-                    <span className="font-semibold text-gray-800">{formatPrice(details.iptu)}</span>
-                  </div>
+                  {details.iptu && (
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600">IPTU (anual):</span>
+                      <span className="font-semibold text-gray-800">{formatPrice(details.iptu)}</span>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
