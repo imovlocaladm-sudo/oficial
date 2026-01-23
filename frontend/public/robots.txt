@@ -1,0 +1,13 @@
+# Robots.txt para ImovLocal
+# https://www.imovlocal.com.br
+
+User-agent: *
+Allow: /
+
+# Bloquear páginas de admin
+Disallow: /admin/
+Disallow: /login
+Disallow: /cadastro
+
+# Sitemap
+Sitemap: https://www.imovlocal.com.br/sitemap.xml
