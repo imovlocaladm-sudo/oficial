@@ -65,6 +65,8 @@ function App() {
             <Route path="/anunciante/:userId" element={<AnunciantePerfil />} />
             <Route path="/cadastro" element={<Register />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/esqueceu-senha" element={<EsqueceuSenha />} />
+            <Route path="/redefinir-senha" element={<RedefinirSenha />} />
             <Route path="/busca-detalhada" element={<BuscaDetalhada />} />
             <Route path="/busca-mapa" element={<BuscaMapa />} />
             <Route path="/anunciar" element={<Anunciar />} />
