@@ -129,10 +129,11 @@ async def forgot_password(request: ForgotPasswordRequest):
     # Enviar email
     if not RESEND_API_KEY:
         logger.warning("RESEND_API_KEY não configurada - email não enviado")
+        # Em produção sem API key, ainda retornamos sucesso por segurança
+        # mas logamos o problema
         return {
             "status": "success",
-            "message": "Se o email existir em nossa base, você receberá um link para redefinir sua senha.",
-            "debug": "Email service not configured"
+            "message": "Se o email existir em nossa base, você receberá um link para redefinir sua senha."
         }
     
     try:
@@ -153,7 +154,11 @@ async def forgot_password(request: ForgotPasswordRequest):
         
     except Exception as e:
         logger.error(f"Erro ao enviar email: {str(e)}")
-        raise HTTPException(status_code=500, detail="Erro ao enviar email. Tente novamente mais tarde.")
+        # Não revelar detalhes do erro ao usuário
+        return {
+            "status": "success",
+            "message": "Se o email existir em nossa base, você receberá um link para redefinir sua senha."
+        }
 
 
 @router.post("/verify-token")
