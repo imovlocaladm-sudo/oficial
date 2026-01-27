@@ -10,6 +10,8 @@ import Lancamentos from "./pages/Lancamentos.jsx";
 import PropertyDetail from "./pages/PropertyDetail.jsx";
 import Register from "./pages/Register.jsx";
 import Login from "./pages/Login.jsx";
+import EsqueceuSenha from "./pages/EsqueceuSenha.jsx";
+import RedefinirSenha from "./pages/RedefinirSenha.jsx";
 import BuscaDetalhada from "./pages/BuscaDetalhada.jsx";
 import BuscaMapa from "./pages/BuscaMapa.jsx";
 import Anunciar from "./pages/Anunciar.jsx";
