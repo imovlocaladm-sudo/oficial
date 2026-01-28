@@ -6,6 +6,8 @@ import os
 import asyncio
 import logging
 import secrets
+import random
+import string
 import resend
 from datetime import datetime, timedelta
 from fastapi import APIRouter, HTTPException
@@ -35,18 +37,25 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 class ForgotPasswordRequest(BaseModel):
     email: EmailStr
 
+class VerifyCodeRequest(BaseModel):
+    email: EmailStr
+    code: str
+
 class ResetPasswordRequest(BaseModel):
-    token: str
+    email: EmailStr
+    code: str
     new_password: str
 
-class VerifyTokenRequest(BaseModel):
-    token: str
+
+def generate_code():
+    """Gera um código de 6 dígitos"""
+    return ''.join(random.choices(string.digits, k=6))
 
 
 @router.post("/forgot")
 async def forgot_password(request: ForgotPasswordRequest):
     """
-    Envia email com link para redefinir senha
+    Envia email com código de 6 dígitos para redefinir senha
     """
     from database import db
     
@@ -54,35 +63,26 @@ async def forgot_password(request: ForgotPasswordRequest):
     user = await db.users.find_one({"email": request.email}, {"_id": 0})
     
     if not user:
-        # Por segurança, não revelamos se o email existe ou não
         return {
             "status": "success",
-            "message": "Se o email existir em nossa base, você receberá um link para redefinir sua senha."
+            "message": "Se o email existir em nossa base, você receberá um código para redefinir sua senha."
         }
     
-    # Gerar token único
-    token = secrets.token_urlsafe(32)
-    expires_at = datetime.utcnow() + timedelta(hours=1)  # Token válido por 1 hora
+    # Gerar código de 6 dígitos
+    code = generate_code()
+    expires_at = datetime.utcnow() + timedelta(minutes=30)  # Código válido por 30 minutos
     
-    logger.info(f"=== GERANDO TOKEN ===")
-    logger.info(f"Token gerado: {token}")
-    logger.info(f"Token length: {len(token)}")
-    logger.info(f"Email: {request.email}")
+    logger.info(f"Gerando código para: {request.email}")
+    logger.info(f"Código: {code}")
     
-    # Salvar token no banco
-    await db.password_resets.delete_many({"email": request.email})  # Remover tokens antigos
-    result = await db.password_resets.insert_one({
+    # Salvar código no banco
+    await db.password_resets.delete_many({"email": request.email})
+    await db.password_resets.insert_one({
         "email": request.email,
-        "token": token,
+        "code": code,
         "expires_at": expires_at,
         "created_at": datetime.utcnow()
     })
-    
-    logger.info(f"Token salvo no banco com sucesso!")
-    
-    # Link de redefinição
-    reset_link = f"{FRONTEND_URL}/redefinir-senha?token={token}"
-    logger.info(f"Link gerado: {reset_link}")
     
     # HTML do email
     html_content = f"""
@@ -96,7 +96,7 @@ async def forgot_password(request: ForgotPasswordRequest):
             <h1 style="color: #E31E24;">ImovLocal</h1>
         </div>
         
-        <h2 style="color: #333;">Redefinição de Senha</h2>
+        <h2 style="color: #333;">Código de Redefinição de Senha</h2>
         
         <p style="color: #666; line-height: 1.6;">
             Olá <strong>{user.get('name', 'Usuário')}</strong>,
@@ -104,24 +104,31 @@ async def forgot_password(request: ForgotPasswordRequest):
         
         <p style="color: #666; line-height: 1.6;">
             Recebemos uma solicitação para redefinir a senha da sua conta no ImovLocal.
-            Clique no botão abaixo para criar uma nova senha:
+            Use o código abaixo para criar uma nova senha:
         </p>
         
         <div style="text-align: center; margin: 30px 0;">
-            <a href="{reset_link}" 
-               style="background-color: #E31E24; color: white; padding: 15px 30px; 
-                      text-decoration: none; border-radius: 5px; font-weight: bold;">
-                Redefinir Minha Senha
-            </a>
+            <div style="background-color: #f5f5f5; border: 2px dashed #E31E24; 
+                        padding: 20px; display: inline-block; border-radius: 10px;">
+                <span style="font-size: 32px; font-weight: bold; letter-spacing: 8px; color: #333;">
+                    {code}
+                </span>
+            </div>
         </div>
         
+        <p style="color: #666; line-height: 1.6; text-align: center;">
+            <a href="{FRONTEND_URL}/redefinir-senha" 
+               style="color: #E31E24; text-decoration: underline;">
+                Clique aqui para redefinir sua senha
+            </a>
+        </p>
+        
         <p style="color: #999; font-size: 14px; line-height: 1.6;">
-            Este link expira em <strong>1 hora</strong>.
+            Este código expira em <strong>30 minutos</strong>.
         </p>
         
         <p style="color: #999; font-size: 14px; line-height: 1.6;">
             Se você não solicitou a redefinição de senha, ignore este email.
-            Sua senha permanecerá a mesma.
         </p>
         
         <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
@@ -136,93 +143,88 @@ async def forgot_password(request: ForgotPasswordRequest):
     
     # Enviar email
     if not RESEND_API_KEY:
-        logger.warning("RESEND_API_KEY não configurada - email não enviado")
-        # Em produção sem API key, ainda retornamos sucesso por segurança
-        # mas logamos o problema
+        logger.warning("RESEND_API_KEY não configurada")
         return {
             "status": "success",
-            "message": "Se o email existir em nossa base, você receberá um link para redefinir sua senha."
+            "message": "Se o email existir em nossa base, você receberá um código para redefinir sua senha."
         }
     
     try:
         params = {
             "from": SENDER_EMAIL,
             "to": [request.email],
-            "subject": "Redefinição de Senha - ImovLocal",
+            "subject": f"Código de Redefinição: {code} - ImovLocal",
             "html": html_content
         }
         
-        email_result = await asyncio.to_thread(resend.Emails.send, params)
-        logger.info(f"Email de recuperação enviado para {request.email}")
+        await asyncio.to_thread(resend.Emails.send, params)
+        logger.info(f"Email enviado para {request.email}")
         
         return {
             "status": "success",
-            "message": "Se o email existir em nossa base, você receberá um link para redefinir sua senha."
+            "message": "Se o email existir em nossa base, você receberá um código para redefinir sua senha."
         }
         
     except Exception as e:
         logger.error(f"Erro ao enviar email: {str(e)}")
-        # Não revelar detalhes do erro ao usuário
         return {
             "status": "success",
-            "message": "Se o email existir em nossa base, você receberá um link para redefinir sua senha."
+            "message": "Se o email existir em nossa base, você receberá um código para redefinir sua senha."
         }
 
 
-@router.post("/verify-token")
-async def verify_token(request: VerifyTokenRequest):
+@router.post("/verify-code")
+async def verify_code(request: VerifyCodeRequest):
     """
-    Verifica se o token de redefinição é válido
+    Verifica se o código de redefinição é válido
     """
     from database import db
     
-    logger.info(f"=== VERIFICANDO TOKEN ===")
-    logger.info(f"Token recebido: {request.token}")
-    logger.info(f"Token length: {len(request.token)}")
+    logger.info(f"Verificando código para: {request.email}")
+    logger.info(f"Código recebido: {request.code}")
     
-    # Listar todos os tokens existentes
-    all_tokens = await db.password_resets.find({}, {"_id": 0}).to_list(100)
-    logger.info(f"Total de tokens no banco: {len(all_tokens)}")
-    for t in all_tokens:
-        logger.info(f"  - Token salvo: {t.get('token')}")
-        logger.info(f"  - Email: {t.get('email')}")
-    
-    reset_request = await db.password_resets.find_one({"token": request.token}, {"_id": 0})
+    reset_request = await db.password_resets.find_one({
+        "email": request.email,
+        "code": request.code
+    }, {"_id": 0})
     
     if not reset_request:
-        logger.warning(f"Token NÃO encontrado no banco de dados!")
-        raise HTTPException(status_code=400, detail="Token inválido ou expirado")
-    
-    logger.info(f"Token ENCONTRADO para: {reset_request.get('email')}")
+        logger.warning("Código não encontrado")
+        raise HTTPException(status_code=400, detail="Código inválido")
     
     if datetime.utcnow() > reset_request["expires_at"]:
-        await db.password_resets.delete_one({"token": request.token})
-        logger.warning(f"Token expirado")
-        raise HTTPException(status_code=400, detail="Token expirado. Solicite uma nova redefinição.")
+        await db.password_resets.delete_one({"email": request.email})
+        logger.warning("Código expirado")
+        raise HTTPException(status_code=400, detail="Código expirado. Solicite um novo.")
     
-    logger.info(f"Token VÁLIDO!")
+    logger.info("Código válido!")
     return {
         "status": "valid",
-        "email": reset_request["email"]
+        "message": "Código válido"
     }
 
 
 @router.post("/reset")
 async def reset_password(request: ResetPasswordRequest):
     """
-    Redefine a senha do usuário
+    Redefine a senha do usuário usando o código
     """
     from database import db
     
-    # Verificar token
-    reset_request = await db.password_resets.find_one({"token": request.token}, {"_id": 0})
+    logger.info(f"Redefinindo senha para: {request.email}")
+    
+    # Verificar código
+    reset_request = await db.password_resets.find_one({
+        "email": request.email,
+        "code": request.code
+    }, {"_id": 0})
     
     if not reset_request:
-        raise HTTPException(status_code=400, detail="Token inválido ou expirado")
+        raise HTTPException(status_code=400, detail="Código inválido")
     
     if datetime.utcnow() > reset_request["expires_at"]:
-        await db.password_resets.delete_one({"token": request.token})
-        raise HTTPException(status_code=400, detail="Token expirado. Solicite uma nova redefinição.")
+        await db.password_resets.delete_one({"email": request.email})
+        raise HTTPException(status_code=400, detail="Código expirado. Solicite um novo.")
     
     # Validar senha
     if len(request.new_password) < 6:
@@ -233,19 +235,33 @@ async def reset_password(request: ResetPasswordRequest):
     
     # Atualizar senha do usuário
     result = await db.users.update_one(
-        {"email": reset_request["email"]},
+        {"email": request.email},
         {"$set": {"hashed_password": hashed_password, "updated_at": datetime.utcnow()}}
     )
     
     if result.modified_count == 0:
         raise HTTPException(status_code=404, detail="Usuário não encontrado")
     
-    # Remover token usado
-    await db.password_resets.delete_one({"token": request.token})
+    # Remover código usado
+    await db.password_resets.delete_one({"email": request.email})
     
-    logger.info(f"Senha redefinida com sucesso para {reset_request['email']}")
+    logger.info(f"Senha redefinida com sucesso para {request.email}")
     
     return {
         "status": "success",
-        "message": "Senha redefinida com sucesso! Você já pode fazer login."
+        "message": "Senha redefinida com sucesso!"
     }
+
+
+# Manter endpoints antigos para compatibilidade
+class VerifyTokenRequest(BaseModel):
+    token: str
+
+class ResetPasswordTokenRequest(BaseModel):
+    token: str
+    new_password: str
+
+@router.post("/verify-token")
+async def verify_token(request: VerifyTokenRequest):
+    """Endpoint legado - redireciona para verificação por código"""
+    raise HTTPException(status_code=400, detail="Use o código de 6 dígitos enviado por email")
