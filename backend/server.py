@@ -81,9 +81,57 @@ async def startup_event():
     logger.info("Starting ImovLocal API...")
     logger.info(f"Connected to MongoDB: {mongo_url}")
     
+    # Criar admin padrão se não existir
+    await create_default_admin()
+    
     # Iniciar agendador de tarefas
     start_scheduler()
     logger.info("Scheduler started for automatic plan expiration checks")
+
+async def create_default_admin():
+    """Cria o admin padrão se não existir no banco"""
+    from passlib.context import CryptContext
+    import uuid
+    from datetime import datetime
+    
+    pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+    
+    admin_email = "imovlocaladm@gmail.com"
+    admin_password = "Admin@2025"
+    
+    # Verificar se admin já existe
+    existing_admin = await db.users.find_one({"email": admin_email})
+    
+    if not existing_admin:
+        # Criar admin
+        admin_user = {
+            "id": str(uuid.uuid4()),
+            "name": "Admin Master",
+            "email": admin_email,
+            "hashed_password": pwd_context.hash(admin_password),
+            "phone": "",
+            "user_type": "admin",
+            "status": "active",
+            "city": "Campo Grande",
+            "state": "MS",
+            "created_at": datetime.utcnow(),
+            "updated_at": datetime.utcnow()
+        }
+        await db.users.insert_one(admin_user)
+        logger.info(f"✅ Admin padrão criado: {admin_email}")
+    else:
+        # Garantir que o admin está ativo e com senha correta
+        await db.users.update_one(
+            {"email": admin_email},
+            {
+                "$set": {
+                    "hashed_password": pwd_context.hash(admin_password),
+                    "status": "active",
+                    "user_type": "admin"
+                }
+            }
+        )
+        logger.info(f"✅ Admin existente atualizado: {admin_email}")
 
 @app.on_event("shutdown")
 async def shutdown_db_client():
