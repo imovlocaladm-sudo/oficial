@@ -168,24 +168,31 @@ async def verify_token(request: VerifyTokenRequest):
     """
     from database import db
     
-    logger.info(f"Verificando token: {request.token[:20]}...")
+    logger.info(f"=== VERIFICANDO TOKEN ===")
+    logger.info(f"Token recebido: {request.token}")
+    logger.info(f"Token length: {len(request.token)}")
+    
+    # Listar todos os tokens existentes
+    all_tokens = await db.password_resets.find({}, {"_id": 0}).to_list(100)
+    logger.info(f"Total de tokens no banco: {len(all_tokens)}")
+    for t in all_tokens:
+        logger.info(f"  - Token salvo: {t.get('token')}")
+        logger.info(f"  - Email: {t.get('email')}")
     
     reset_request = await db.password_resets.find_one({"token": request.token}, {"_id": 0})
     
     if not reset_request:
-        logger.warning(f"Token não encontrado no banco de dados")
-        # Listar todos os tokens para debug
-        all_tokens = await db.password_resets.find({}, {"_id": 0, "token": 1, "email": 1}).to_list(10)
-        logger.info(f"Tokens existentes: {len(all_tokens)}")
+        logger.warning(f"Token NÃO encontrado no banco de dados!")
         raise HTTPException(status_code=400, detail="Token inválido ou expirado")
     
-    logger.info(f"Token encontrado para: {reset_request.get('email')}")
+    logger.info(f"Token ENCONTRADO para: {reset_request.get('email')}")
     
     if datetime.utcnow() > reset_request["expires_at"]:
         await db.password_resets.delete_one({"token": request.token})
         logger.warning(f"Token expirado")
         raise HTTPException(status_code=400, detail="Token expirado. Solicite uma nova redefinição.")
     
+    logger.info(f"Token VÁLIDO!")
     return {
         "status": "valid",
         "email": reset_request["email"]
