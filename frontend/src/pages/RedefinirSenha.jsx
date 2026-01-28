@@ -21,15 +21,21 @@ const RedefinirSenha = () => {
   useEffect(() => {
     const verifyToken = async () => {
       if (!token) {
+        console.log('Token não encontrado na URL');
         setVerifying(false);
         return;
       }
 
+      console.log('Token da URL:', token);
+      console.log('Token length:', token.length);
+
       try {
         const response = await api.post('/password/verify-token', { token });
+        console.log('Token válido:', response.data);
         setTokenValid(true);
         setEmail(response.data.email);
       } catch (error) {
+        console.error('Erro ao verificar token:', error.response?.data || error.message);
         setTokenValid(false);
       } finally {
         setVerifying(false);
