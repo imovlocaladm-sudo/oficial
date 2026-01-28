@@ -168,13 +168,22 @@ async def verify_token(request: VerifyTokenRequest):
     """
     from database import db
     
+    logger.info(f"Verificando token: {request.token[:20]}...")
+    
     reset_request = await db.password_resets.find_one({"token": request.token}, {"_id": 0})
     
     if not reset_request:
+        logger.warning(f"Token não encontrado no banco de dados")
+        # Listar todos os tokens para debug
+        all_tokens = await db.password_resets.find({}, {"_id": 0, "token": 1, "email": 1}).to_list(10)
+        logger.info(f"Tokens existentes: {len(all_tokens)}")
         raise HTTPException(status_code=400, detail="Token inválido ou expirado")
+    
+    logger.info(f"Token encontrado para: {reset_request.get('email')}")
     
     if datetime.utcnow() > reset_request["expires_at"]:
         await db.password_resets.delete_one({"token": request.token})
+        logger.warning(f"Token expirado")
         raise HTTPException(status_code=400, detail="Token expirado. Solicite uma nova redefinição.")
     
     return {
