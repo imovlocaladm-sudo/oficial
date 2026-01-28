@@ -64,17 +64,25 @@ async def forgot_password(request: ForgotPasswordRequest):
     token = secrets.token_urlsafe(32)
     expires_at = datetime.utcnow() + timedelta(hours=1)  # Token válido por 1 hora
     
+    logger.info(f"=== GERANDO TOKEN ===")
+    logger.info(f"Token gerado: {token}")
+    logger.info(f"Token length: {len(token)}")
+    logger.info(f"Email: {request.email}")
+    
     # Salvar token no banco
     await db.password_resets.delete_many({"email": request.email})  # Remover tokens antigos
-    await db.password_resets.insert_one({
+    result = await db.password_resets.insert_one({
         "email": request.email,
         "token": token,
         "expires_at": expires_at,
         "created_at": datetime.utcnow()
     })
     
+    logger.info(f"Token salvo no banco com sucesso!")
+    
     # Link de redefinição
     reset_link = f"{FRONTEND_URL}/redefinir-senha?token={token}"
+    logger.info(f"Link gerado: {reset_link}")
     
     # HTML do email
     html_content = f"""
