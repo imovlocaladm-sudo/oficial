@@ -16,6 +16,7 @@ from routes.banner_routes import router as banner_router
 from routes.demand_routes import router as demand_router
 from routes.payment_routes import router as payment_router
 from routes.password_routes import router as password_router
+from routes.cloudinary_routes import router as cloudinary_router
 
 # Import scheduler
 from scheduler import start_scheduler, stop_scheduler
