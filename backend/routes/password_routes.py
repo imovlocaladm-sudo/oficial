@@ -211,7 +211,8 @@ async def reset_password(request: ResetPasswordRequest):
     """
     from database import db
     
-    logger.info(f"Redefinindo senha para: {request.email}")
+    logger.info(f"=== INICIANDO REDEFINIÇÃO DE SENHA ===")
+    logger.info(f"Email: {request.email}")
     
     # Verificar código
     reset_request = await db.password_resets.find_one({
@@ -220,10 +221,12 @@ async def reset_password(request: ResetPasswordRequest):
     }, {"_id": 0})
     
     if not reset_request:
+        logger.error(f"Código inválido para: {request.email}")
         raise HTTPException(status_code=400, detail="Código inválido")
     
     if datetime.utcnow() > reset_request["expires_at"]:
         await db.password_resets.delete_one({"email": request.email})
+        logger.error(f"Código expirado para: {request.email}")
         raise HTTPException(status_code=400, detail="Código expirado. Solicite um novo.")
     
     # Validar senha
@@ -232,9 +235,12 @@ async def reset_password(request: ResetPasswordRequest):
     
     # Hash da nova senha
     hashed_password = pwd_context.hash(request.new_password)
+    logger.info(f"Nova senha hash gerada para: {request.email}")
     
-    # Atualizar senha do usuário
-    result = await db.users.update_one(
+    # Atualizar senha do usuário - USAR A MESMA COLEÇÃO QUE O AUTH
+    from database import users_collection
+    
+    result = await users_collection.update_one(
         {"email": request.email},
         {"$set": {"hashed_password": hashed_password, "updated_at": datetime.utcnow()}}
     )
