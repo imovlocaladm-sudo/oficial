@@ -12,6 +12,8 @@ import uuid
 import os
 from pathlib import Path
 import logging
+import cloudinary
+import cloudinary.uploader
 
 logger = logging.getLogger(__name__)
 
@@ -20,9 +22,25 @@ router = APIRouter(prefix="/banners", tags=["banners"])
 # Collections
 banners_collection = db.banners
 
-# Upload directory for banner images
+# Upload directory for banner images (fallback)
 UPLOAD_DIR = Path(__file__).parent.parent / "uploads" / "banners"
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
+
+# Configurar Cloudinary
+CLOUDINARY_CLOUD_NAME = os.environ.get("CLOUDINARY_CLOUD_NAME")
+CLOUDINARY_API_KEY = os.environ.get("CLOUDINARY_API_KEY")
+CLOUDINARY_API_SECRET = os.environ.get("CLOUDINARY_API_SECRET")
+
+if CLOUDINARY_CLOUD_NAME and CLOUDINARY_API_KEY and CLOUDINARY_API_SECRET:
+    cloudinary.config(
+        cloud_name=CLOUDINARY_CLOUD_NAME,
+        api_key=CLOUDINARY_API_KEY,
+        api_secret=CLOUDINARY_API_SECRET,
+        secure=True
+    )
+
+def is_cloudinary_configured():
+    return bool(CLOUDINARY_CLOUD_NAME and CLOUDINARY_API_KEY and CLOUDINARY_API_SECRET)
 
 
 async def save_banner_image(upload_file: UploadFile, banner_id: str) -> str:
@@ -35,25 +53,42 @@ async def save_banner_image(upload_file: UploadFile, banner_id: str) -> str:
             detail="Tipo de arquivo não permitido. Use JPEG, PNG, WebP ou GIF."
         )
     
-    # Generate unique filename
+    content = await upload_file.read()
+    
+    # Validate file size (max 5MB)
+    if len(content) > 5 * 1024 * 1024:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Arquivo muito grande. O tamanho máximo é 5MB."
+        )
+    
+    # Se Cloudinary estiver configurado, usar ele
+    if is_cloudinary_configured():
+        try:
+            result = cloudinary.uploader.upload(
+                content,
+                folder=f"imovlocal/banners",
+                public_id=f"banner_{banner_id}",
+                resource_type="image",
+                overwrite=True,
+                transformation=[
+                    {"quality": "auto", "fetch_format": "auto"}
+                ]
+            )
+            logger.info(f"Banner enviado para Cloudinary: {result.get('public_id')}")
+            return result.get("secure_url")
+        except Exception as e:
+            logger.error(f"Erro no upload de banner para Cloudinary: {str(e)}")
+            # Fallback para armazenamento local se Cloudinary falhar
+    
+    # Fallback: salvar localmente
     file_extension = Path(upload_file.filename).suffix.lower()
     unique_filename = f"banner_{banner_id}{file_extension}"
     file_path = UPLOAD_DIR / unique_filename
     
-    # Save file
     with open(file_path, "wb") as buffer:
-        content = await upload_file.read()
-        
-        # Validate file size (max 5MB)
-        if len(content) > 5 * 1024 * 1024:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Arquivo muito grande. O tamanho máximo é 5MB."
-            )
-        
         buffer.write(content)
     
-    # Return relative path for the API
     return f"/api/uploads/banners/{unique_filename}"
 
 
