@@ -245,13 +245,16 @@ async def reset_password(request: ResetPasswordRequest):
         {"$set": {"hashed_password": hashed_password, "updated_at": datetime.utcnow()}}
     )
     
+    logger.info(f"Update result - modified_count: {result.modified_count}")
+    
     if result.modified_count == 0:
+        logger.error(f"Usuário não encontrado para atualização: {request.email}")
         raise HTTPException(status_code=404, detail="Usuário não encontrado")
     
     # Remover código usado
     await db.password_resets.delete_one({"email": request.email})
     
-    logger.info(f"Senha redefinida com sucesso para {request.email}")
+    logger.info(f"=== SENHA REDEFINIDA COM SUCESSO para {request.email} ===")
     
     return {
         "status": "success",
