@@ -91,19 +91,55 @@ async def geocode_endpoint(
     result = await geocode_address(full_address, city, state)
     return result
 
+# Importar Cloudinary
+import cloudinary
+import cloudinary.uploader
+
+# Configurar Cloudinary
+CLOUDINARY_CLOUD_NAME = os.environ.get("CLOUDINARY_CLOUD_NAME")
+CLOUDINARY_API_KEY = os.environ.get("CLOUDINARY_API_KEY")
+CLOUDINARY_API_SECRET = os.environ.get("CLOUDINARY_API_SECRET")
+
+if CLOUDINARY_CLOUD_NAME and CLOUDINARY_API_KEY and CLOUDINARY_API_SECRET:
+    cloudinary.config(
+        cloud_name=CLOUDINARY_CLOUD_NAME,
+        api_key=CLOUDINARY_API_KEY,
+        api_secret=CLOUDINARY_API_SECRET,
+        secure=True
+    )
+
+def is_cloudinary_configured():
+    return bool(CLOUDINARY_CLOUD_NAME and CLOUDINARY_API_KEY and CLOUDINARY_API_SECRET)
+
 async def save_upload_file(upload_file: UploadFile, property_id: str) -> str:
     """Save an uploaded file and return its URL path"""
-    # Generate unique filename
+    content = await upload_file.read()
+    
+    # Se Cloudinary estiver configurado, usar ele
+    if is_cloudinary_configured():
+        try:
+            result = cloudinary.uploader.upload(
+                content,
+                folder=f"imovlocal/properties/{property_id}",
+                resource_type="image",
+                transformation=[
+                    {"quality": "auto", "fetch_format": "auto"}
+                ]
+            )
+            logger.info(f"Imagem enviada para Cloudinary: {result.get('public_id')}")
+            return result.get("secure_url")
+        except Exception as e:
+            logger.error(f"Erro no upload para Cloudinary: {str(e)}")
+            # Fallback para armazenamento local se Cloudinary falhar
+    
+    # Fallback: salvar localmente
     file_extension = Path(upload_file.filename).suffix.lower()
     unique_filename = f"{property_id}_{uuid.uuid4().hex[:8]}{file_extension}"
     file_path = UPLOAD_DIR / unique_filename
     
-    # Save file
     with open(file_path, "wb") as buffer:
-        content = await upload_file.read()
         buffer.write(content)
     
-    # Return relative path for the API
     return f"/api/uploads/{unique_filename}"
 
 @router.post("/", response_model=Property, status_code=status.HTTP_201_CREATED)
