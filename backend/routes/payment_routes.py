@@ -3,13 +3,14 @@ Sistema de Pagamentos PIX - ImovLocal
 Gerencia planos, pedidos de pagamento e aprovações
 """
 
-from fastapi import APIRouter, HTTPException, status, Depends, UploadFile, File, Form
+from fastapi import APIRouter, HTTPException, status, Depends, UploadFile, File, Form, BackgroundTasks
 from typing import List, Optional
 from pydantic import BaseModel, EmailStr
 from datetime import datetime, timedelta
 from database import db
 from auth import get_current_user_email
 from middlewares.admin_middleware import get_current_admin_senior
+from routes.notification_routes import send_payment_approved_email
 import uuid
 import os
 import aiofiles
