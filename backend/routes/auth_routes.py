@@ -133,6 +133,14 @@ async def register(user: UserCreate, background_tasks: BackgroundTasks):
     
     logger.info(f"Novo usuário cadastrado: {user.email}")
     
+    # Enviar email de boas-vindas em background
+    background_tasks.add_task(
+        send_welcome_email,
+        user_name=user.name,
+        user_email=user.email
+    )
+    logger.info(f"Email de boas-vindas agendado para: {user.email}")
+    
     # Criar token de acesso para permitir que o usuário vá direto para pagamento
     access_token = create_access_token(data={"sub": user.email})
     
