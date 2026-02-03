@@ -122,9 +122,17 @@ async def save_upload_file(upload_file: UploadFile, property_id: str) -> str:
                 content,
                 folder=f"imovlocal/properties/{property_id}",
                 resource_type="image",
+                # Otimizações automáticas do Cloudinary
                 transformation=[
-                    {"quality": "auto", "fetch_format": "auto"}
-                ]
+                    {"quality": "auto:good", "fetch_format": "auto"},
+                    {"width": 1920, "crop": "limit"}  # Limita largura máxima
+                ],
+                # Gerar versões otimizadas automaticamente
+                eager=[
+                    {"width": 400, "height": 300, "crop": "fill", "quality": "auto:low"},  # Thumbnail
+                    {"width": 800, "height": 600, "crop": "fill", "quality": "auto:good"}  # Medium
+                ],
+                eager_async=True  # Processar em background
             )
             logger.info(f"Imagem enviada para Cloudinary: {result.get('public_id')}")
             return result.get("secure_url")
