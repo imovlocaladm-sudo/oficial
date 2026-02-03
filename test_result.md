@@ -290,7 +290,7 @@ agent_communication:
       🏡 DETALHES DO IMÓVEL:
       ✅ GET /api/properties/{id} - Detalhes completos incluindo dados do proprietário
       
-      Base URL testada: https://imovlocal-1.preview.emergentagent.com/api
+      Base URL testada: https://cloudinary-migrate-4.preview.emergentagent.com/api
       Todos os endpoints principais estão funcionando perfeitamente!
   - agent: "main"
     message: |
@@ -366,4 +366,4 @@ agent_communication:
       - Inconsistência no sistema de notificações (user_id vs user_email)
       - Não afeta funcionalidade principal, apenas exibição de notificações
       
-      Base URL testada: https://imovlocal-1.preview.emergentagent.com/api
+      Base URL testada: https://cloudinary-migrate-4.preview.emergentagent.com/api

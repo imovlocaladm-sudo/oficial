@@ -7,7 +7,7 @@ import requests
 import os
 from datetime import datetime, timedelta
 
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://imovlocal-1.preview.emergentagent.com')
+BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://cloudinary-migrate-4.preview.emergentagent.com')
 
 # Test credentials
 ADMIN_EMAIL = "imovlocaladm@gmail.com"
