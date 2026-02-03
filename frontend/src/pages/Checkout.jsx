@@ -231,7 +231,7 @@ const Checkout = () => {
     }).format(value);
   };
 
-  if (loading) {
+  if (loading || authLoading) {
     return (
       <div className="min-h-screen bg-gray-50">
         <Header />
