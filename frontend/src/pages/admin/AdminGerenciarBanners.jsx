@@ -43,6 +43,15 @@ import {
 } from '../../components/ui/card';
 import { Badge } from '../../components/ui/badge';
 
+// Helper function to get full image URL (supports both local and Cloudinary URLs)
+const getImageUrl = (imagePath) => {
+  if (!imagePath) return null;
+  if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+    return imagePath;
+  }
+  return `${process.env.REACT_APP_BACKEND_URL}${imagePath}`;
+};
+
 const AdminGerenciarBanners = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -153,7 +162,7 @@ const AdminGerenciarBanners = () => {
       status: banner.status,
       image: null
     });
-    setImagePreview(`${process.env.REACT_APP_BACKEND_URL}${banner.image_url}`);
+    setImagePreview(getImageUrl(banner.image_url));
     setIsDialogOpen(true);
   };
 
@@ -339,9 +348,10 @@ const AdminGerenciarBanners = () => {
               <Card key={banner.id} className="overflow-hidden">
                 <div className="relative">
                   <img
-                    src={`${process.env.REACT_APP_BACKEND_URL}${banner.image_url}`}
+                    src={getImageUrl(banner.image_url)}
                     alt={banner.title}
                     className="w-full h-48 object-cover"
+                    onError={(e) => { e.target.src = 'https://via.placeholder.com/400x200?text=Imagem+Indisponível'; }}
                   />
                   <Badge 
                     className={`absolute top-2 right-2 ${
