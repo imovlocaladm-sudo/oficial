@@ -98,7 +98,16 @@ Portal imobiliário para o estado de Mato Grosso do Sul (Brasil), permitindo que
 ```
 /app/
 ├── backend/         # FastAPI
-│   ├── routes/      # auth, properties, payments, visits, banners, cloudinary, password
+│   ├── routes/      
+│   │   ├── auth_routes.py
+│   │   ├── property_routes.py
+│   │   ├── payment_routes.py
+│   │   ├── visit_routes.py
+│   │   ├── banner_routes.py
+│   │   ├── notification_routes.py  # NOVO - Refatorado
+│   │   ├── seo_routes.py           # NOVO - SEO dinâmico
+│   │   ├── cloudinary_routes.py
+│   │   └── password_routes.py
 │   ├── utils/       # email_validator.py
 │   ├── middlewares/ # admin_middleware.py
 │   ├── database.py
