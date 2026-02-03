@@ -25,7 +25,7 @@ const API_URL = `${BACKEND_URL}/api`;
 const Checkout = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, loading: authLoading } = useAuth();
   
   const [plan, setPlan] = useState(null);
   const [pixInfo, setPixInfo] = useState(null);
@@ -40,6 +40,9 @@ const Checkout = () => {
   const planId = searchParams.get('plan');
 
   useEffect(() => {
+    // Aguardar o carregamento da autenticação
+    if (authLoading) return;
+    
     if (!isAuthenticated()) {
       navigate('/login', { state: { returnTo: `/checkout?plan=${planId}` } });
       return;
@@ -51,7 +54,7 @@ const Checkout = () => {
     }
 
     fetchData();
-  }, [planId, isAuthenticated, navigate]);
+  }, [planId, isAuthenticated, navigate, authLoading]);
 
   const fetchData = async () => {
     try {
