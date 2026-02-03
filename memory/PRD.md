@@ -127,14 +127,20 @@ Portal imobiliário para o estado de Mato Grosso do Sul (Brasil), permitindo que
 
 ## Integrações
 - **Cloudinary:** Armazenamento permanente de imagens (cloud_name: dwlvgs9a3)
-- **Resend:** Envio de emails para recuperação de senha
+- **Resend:** Envio de emails transacionais (boas-vindas, pagamento, expiração)
 - **API IBGE Cidades:** Para dropdown de cidades por estado
 - **dnspython:** Validação de domínio de email
-- **APScheduler:** Jobs em background (expiração de planos)
+- **APScheduler:** Jobs em background (expiração de planos + emails)
 
 ---
 
 ## Changelog
+
+### 03/02/2025 - Emails Automáticos
+- [x] **Email de Boas-Vindas** - Enviado automaticamente ao registrar novo usuário
+- [x] **Email de Pagamento Aprovado** - Enviado quando admin aprova pagamento
+- [x] **Email de Plano Expirando** - Enviado 5 dias antes do vencimento (via scheduler)
+- ⚠️ **IMPORTANTE:** Para emails funcionarem em produção, verificar domínio no Resend
 
 ### 03/02/2025 - Melhorias P0 e P2
 - [x] **CORS para produção** - Restrito a: imovlocal.com.br, www.imovlocal.com.br, localhost:3000
