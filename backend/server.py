@@ -17,6 +17,7 @@ from routes.demand_routes import router as demand_router
 from routes.payment_routes import router as payment_router
 from routes.password_routes import router as password_router
 from routes.cloudinary_routes import router as cloudinary_router
+from routes.seo_routes import router as seo_router
 
 # Import scheduler
 from scheduler import start_scheduler, stop_scheduler
@@ -52,6 +53,7 @@ api_router.include_router(demand_router)
 api_router.include_router(payment_router)
 api_router.include_router(password_router)
 api_router.include_router(cloudinary_router)
+api_router.include_router(seo_router)
 
 # Include the router in the main app
 app.include_router(api_router)
