@@ -437,6 +437,7 @@ async def admin_payment_stats(admin = Depends(get_current_admin_senior)):
 async def admin_approve_payment(
     payment_id: str,
     approval: PaymentApproval,
+    background_tasks: BackgroundTasks,
     admin = Depends(get_current_admin_senior)
 ):
     """Aprovar ou rejeitar um pagamento (Admin)"""
