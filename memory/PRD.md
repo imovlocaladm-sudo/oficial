@@ -66,16 +66,18 @@ Portal imobiliário para o estado de Mato Grosso do Sul (Brasil), permitindo que
 ## Backlog Priorizado
 
 ### P0 - Crítico
-- [ ] **Sistema de Expiração Automática:** Implementar APScheduler para verificar planos vencidos diariamente
-- [ ] **Segurança:** Alterar SECRET_KEY padrão para chave forte
+- [x] ~~**Sistema de Expiração Automática:** Implementar APScheduler para verificar planos vencidos diariamente~~ ✅
+- [x] ~~**Segurança:** Alterar SECRET_KEY padrão para chave forte~~ ✅
+- [x] ~~**Migração Cloudinary:** Migrar todas as imagens locais para Cloudinary~~ ✅ (03/02/2025)
 - [ ] **CORS:** Configurar para restringir ao domínio de produção
 
 ### P1 - Importante
+- [x] ~~**Sistema de Recuperação de Senha:** Via código de 6 dígitos por email~~ ✅
 - [ ] **Teste E2E Completo:** Fluxo registro → pagamento → aprovação → anúncio
-- [ ] **Emails Transacionais:** Integrar Resend para notificações por email
+- [ ] **Emails Transacionais:** Integrar Resend para outras notificações (boas-vindas, etc.)
 
 ### P2 - Melhorias
-- [ ] **SEO Avançado:** sitemap.xml, dados estruturados Schema.org
+- [ ] **SEO Avançado:** sitemap dinâmico, dados estruturados Schema.org
 - [ ] **Refatoração:** Mover notificações de visit_routes.py para notification_routes.py
 
 ---
