@@ -19,11 +19,12 @@ async def check_plan_expirations():
     """
     Verifica planos vencidos e prestes a vencer.
     - Planos vencidos: muda status do usuário para 'pending'
-    - Planos vencendo em 5 dias: envia notificação de renovação
+    - Planos vencendo em 5 dias: envia notificação de renovação + email
     
     Executado automaticamente todos os dias às 6:00 AM
     """
     from database import db
+    from routes.notification_routes import send_plan_expiring_email
     
     logger.info("Iniciando verificação automática de vencimento de planos...")
     
@@ -33,7 +34,8 @@ async def check_plan_expirations():
     results = {
         "expired": 0,
         "expiring_soon": 0,
-        "notifications_sent": 0
+        "notifications_sent": 0,
+        "emails_sent": 0
     }
     
     try:
@@ -97,6 +99,18 @@ async def check_plan_expirations():
                     "created_at": datetime.utcnow()
                 }
                 await db.notifications.insert_one(notification)
+                
+                # Enviar email de aviso
+                if user.get("email"):
+                    try:
+                        send_plan_expiring_email(
+                            user_name=user.get("name", "Usuário"),
+                            user_email=user["email"],
+                            days_remaining=days_left
+                        )
+                        results["emails_sent"] += 1
+                    except Exception as e:
+                        logger.error(f"Erro ao enviar email para {user['email']}: {e}")
                 
                 # Marcar como notificado
                 await db.users.update_one(
