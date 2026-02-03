@@ -331,20 +331,37 @@ const Checkout = () => {
                       
                       <div className="bg-white border-2 border-dashed border-gray-300 rounded-lg p-4 mb-4">
                         <p className="text-xs text-gray-500 mb-1">Chave PIX (Aleatória)</p>
-                        <div className="flex items-center justify-between">
-                          <code className="text-sm font-mono text-gray-800 break-all">
+                        <div className="flex items-center justify-between gap-2">
+                          <code 
+                            className="text-sm font-mono text-gray-800 break-all select-all cursor-text flex-1"
+                            onClick={(e) => {
+                              // Selecionar texto ao clicar
+                              const range = document.createRange();
+                              range.selectNodeContents(e.target);
+                              const selection = window.getSelection();
+                              selection.removeAllRanges();
+                              selection.addRange(range);
+                            }}
+                          >
                             {pixInfo?.chave}
                           </code>
                           <Button
                             variant="outline"
                             size="sm"
                             onClick={handleCopyPix}
-                            className="ml-2 flex-shrink-0"
+                            className="flex-shrink-0"
+                            data-testid="copy-pix-button"
                           >
                             {copied ? (
-                              <Check className="w-4 h-4 text-green-600" />
+                              <>
+                                <Check className="w-4 h-4 text-green-600 mr-1" />
+                                <span className="text-green-600 text-xs">Copiado!</span>
+                              </>
                             ) : (
-                              <Copy className="w-4 h-4" />
+                              <>
+                                <Copy className="w-4 h-4 mr-1" />
+                                <span className="text-xs">Copiar</span>
+                              </>
                             )}
                           </Button>
                         </div>
