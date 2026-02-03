@@ -69,16 +69,17 @@ Portal imobiliário para o estado de Mato Grosso do Sul (Brasil), permitindo que
 - [x] ~~**Sistema de Expiração Automática:** Implementar APScheduler para verificar planos vencidos diariamente~~ ✅
 - [x] ~~**Segurança:** Alterar SECRET_KEY padrão para chave forte~~ ✅
 - [x] ~~**Migração Cloudinary:** Migrar todas as imagens locais para Cloudinary~~ ✅ (03/02/2025)
-- [ ] **CORS:** Configurar para restringir ao domínio de produção
+- [x] ~~**CORS:** Configurar para restringir ao domínio de produção~~ ✅ (03/02/2025)
 
 ### P1 - Importante
 - [x] ~~**Sistema de Recuperação de Senha:** Via código de 6 dígitos por email~~ ✅
 - [ ] **Teste E2E Completo:** Fluxo registro → pagamento → aprovação → anúncio
-- [ ] **Emails Transacionais:** Integrar Resend para outras notificações (boas-vindas, etc.)
+- [x] ~~**Emails Transacionais:** Templates prontos para boas-vindas, pagamento aprovado, plano expirando~~ ✅ (03/02/2025)
 
 ### P2 - Melhorias
-- [ ] **SEO Avançado:** sitemap dinâmico, dados estruturados Schema.org
-- [ ] **Refatoração:** Mover notificações de visit_routes.py para notification_routes.py
+- [x] ~~**SEO Avançado:** Sitemap dinâmico, Schema.org JSON-LD~~ ✅ (03/02/2025)
+- [x] ~~**Refatoração:** Criar notification_routes.py dedicado~~ ✅ (03/02/2025)
+- [x] ~~**Compressão de Imagens:** Otimização automática no Cloudinary (thumbnails, resize)~~ ✅ (03/02/2025)
 
 ---
 
