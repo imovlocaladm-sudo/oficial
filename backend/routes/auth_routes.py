@@ -63,7 +63,7 @@ async def validate_email_endpoint(data: EmailValidation):
     }
 
 @router.post("/register", response_model=Token, status_code=status.HTTP_201_CREATED)
-async def register(user: UserCreate):
+async def register(user: UserCreate, background_tasks: BackgroundTasks):
     """Register a new user"""
     
     # Validar domínio do email
