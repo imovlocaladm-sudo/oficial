@@ -136,6 +136,11 @@ Portal imobiliário para o estado de Mato Grosso do Sul (Brasil), permitindo que
 
 ## Changelog
 
+### 03/02/2025 - Correções no Fluxo de Pagamento
+- [x] **Fix: Cópia de Chave PIX** - Adicionado fallback para navegadores sem permissão de clipboard
+- [x] **Fix: Checkout Auth Loop** - Corrigido bug que redirecionava para login mesmo com usuário autenticado
+- [x] **UX: Chave PIX selecionável** - Texto da chave agora é facilmente selecionável para cópia manual
+
 ### 03/02/2025 - Emails Automáticos
 - [x] **Email de Boas-Vindas** - Enviado automaticamente ao registrar novo usuário
 - [x] **Email de Pagamento Aprovado** - Enviado quando admin aprova pagamento
