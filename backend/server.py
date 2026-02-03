@@ -11,13 +11,14 @@ from pathlib import Path
 from routes.auth_routes import router as auth_router
 from routes.property_routes import router as property_router
 from routes.admin_routes import router as admin_router
-from routes.visit_routes import router as visit_router, notifications_router
+from routes.visit_routes import router as visit_router, notifications_router as legacy_notifications_router
 from routes.banner_routes import router as banner_router
 from routes.demand_routes import router as demand_router
 from routes.payment_routes import router as payment_router
 from routes.password_routes import router as password_router
 from routes.cloudinary_routes import router as cloudinary_router
 from routes.seo_routes import router as seo_router
+from routes.notification_routes import router as notification_router
 
 # Import scheduler
 from scheduler import start_scheduler, stop_scheduler
@@ -47,7 +48,7 @@ api_router.include_router(auth_router)
 api_router.include_router(property_router)
 api_router.include_router(admin_router)
 api_router.include_router(visit_router)
-api_router.include_router(notifications_router)
+api_router.include_router(notification_router)  # Novo router refatorado
 api_router.include_router(banner_router)
 api_router.include_router(demand_router)
 api_router.include_router(payment_router)
