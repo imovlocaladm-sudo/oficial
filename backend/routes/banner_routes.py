@@ -72,7 +72,8 @@ async def save_banner_image(upload_file: UploadFile, banner_id: str) -> str:
                 resource_type="image",
                 overwrite=True,
                 transformation=[
-                    {"quality": "auto", "fetch_format": "auto"}
+                    {"quality": "auto:good", "fetch_format": "auto"},
+                    {"width": 1920, "crop": "limit"}  # Limita largura máxima
                 ]
             )
             logger.info(f"Banner enviado para Cloudinary: {result.get('public_id')}")
