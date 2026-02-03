@@ -130,12 +130,45 @@ const Checkout = () => {
   };
 
   const handleCopyPix = useCallback(() => {
-    if (pixInfo?.chave) {
-      navigator.clipboard.writeText(pixInfo.chave);
-      setCopied(true);
-      toast.success('Chave PIX copiada!');
-      setTimeout(() => setCopied(false), 3000);
-    }
+    if (!pixInfo?.chave) return;
+    
+    // Fallback para navegadores que não suportam navigator.clipboard
+    const copyToClipboard = (text) => {
+      // Método moderno
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        return navigator.clipboard.writeText(text);
+      }
+      
+      // Fallback: criar elemento temporário
+      const textArea = document.createElement('textarea');
+      textArea.value = text;
+      textArea.style.position = 'fixed';
+      textArea.style.left = '-9999px';
+      textArea.style.top = '-9999px';
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      
+      try {
+        document.execCommand('copy');
+        return Promise.resolve();
+      } catch (err) {
+        return Promise.reject(err);
+      } finally {
+        document.body.removeChild(textArea);
+      }
+    };
+    
+    copyToClipboard(pixInfo.chave)
+      .then(() => {
+        setCopied(true);
+        toast.success('Chave PIX copiada!');
+        setTimeout(() => setCopied(false), 3000);
+      })
+      .catch((err) => {
+        console.error('Erro ao copiar:', err);
+        toast.error('Erro ao copiar. Selecione e copie manualmente.');
+      });
   }, [pixInfo]);
 
   const handleFileSelect = (e) => {
