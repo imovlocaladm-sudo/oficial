@@ -136,11 +136,16 @@ Portal imobiliário para o estado de Mato Grosso do Sul (Brasil), permitindo que
 
 ## Changelog
 
-### 03/02/2025 - Migração Cloudinary
-- [x] Criado script `migrate_to_cloudinary.py`
-- [x] Migradas 24 imagens de propriedades para Cloudinary
-- [x] Migradas 2 imagens de banners para Cloudinary
-- [x] Migrada 1 foto de perfil de usuário para Cloudinary
-- [x] Corrigido `AdminGerenciarBanners.jsx` para suportar URLs do Cloudinary
-- [x] Todos os novos uploads agora vão automaticamente para Cloudinary
-- [x] Testes completos passando (verificado via testing agent)
+### 03/02/2025 - Melhorias P0 e P2
+- [x] **CORS para produção** - Restrito a: imovlocal.com.br, www.imovlocal.com.br, localhost:3000
+- [x] **SEO Avançado:**
+  - Sitemap dinâmico em `/api/seo/sitemap.xml` (atualiza automaticamente com novos imóveis)
+  - Schema.org JSON-LD nas páginas de imóveis (RealEstateListing)
+  - Robots.txt atualizado
+- [x] **Compressão de Imagens:**
+  - Upload com `quality: auto:good` e limite de 1920px de largura
+  - Thumbnails gerados automaticamente (400x300, 800x600)
+- [x] **Refatoração:**
+  - Criado `notification_routes.py` com funções centralizadas
+  - Templates de email para: boas-vindas, pagamento aprovado, plano expirando
+- [x] **Migração Cloudinary** - Todas as 27 imagens migradas com sucesso
