@@ -99,6 +99,59 @@ const PropertyDetail = () => {
     }
   }, [id]);
 
+  // Adicionar Schema.org JSON-LD para SEO
+  useEffect(() => {
+    if (!property) return;
+    
+    const schema = {
+      "@context": "https://schema.org",
+      "@type": "RealEstateListing",
+      "name": property.title,
+      "description": property.description,
+      "url": window.location.href,
+      "image": property.images?.slice(0, 5) || [],
+      "offers": {
+        "@type": "Offer",
+        "price": property.price,
+        "priceCurrency": "BRL",
+        "availability": "https://schema.org/InStock"
+      },
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": property.city,
+        "addressRegion": property.state,
+        "addressCountry": "BR",
+        "streetAddress": property.neighborhood
+      }
+    };
+    
+    if (property.bedrooms) schema.numberOfRooms = property.bedrooms;
+    if (property.bathrooms) schema.numberOfBathroomsTotal = property.bathrooms;
+    if (property.area) {
+      schema.floorSize = {
+        "@type": "QuantitativeValue",
+        "value": property.area,
+        "unitCode": "MTK"
+      };
+    }
+    
+    // Inserir script JSON-LD no head
+    const existingScript = document.querySelector('script[data-schema="property"]');
+    if (existingScript) existingScript.remove();
+    
+    const script = document.createElement('script');
+    script.type = 'application/ld+json';
+    script.setAttribute('data-schema', 'property');
+    script.textContent = JSON.stringify(schema);
+    document.head.appendChild(script);
+    
+    // Cleanup ao desmontar
+    return () => {
+      const scriptToRemove = document.querySelector('script[data-schema="property"]');
+      if (scriptToRemove) scriptToRemove.remove();
+    };
+  }, [property]);
+
   // Função para validar e enviar o formulário de visita
   const handleVisitSubmit = async (e) => {
     e.preventDefault();
