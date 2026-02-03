@@ -512,6 +512,16 @@ async def admin_approve_payment(
         }
         await db.notifications.insert_one(notification)
         
+        # Enviar email de pagamento aprovado em background
+        if user_data and user_data.get("email"):
+            background_tasks.add_task(
+                send_payment_approved_email,
+                user_name=user_name,
+                user_email=user_data["email"],
+                plan_name=payment['plan_nome']
+            )
+            logger.info(f"Email de aprovação agendado para: {user_data['email']}")
+        
         logger.info(f"Pagamento {payment_id} aprovado por {admin['email']}")
         
         return {
