@@ -63,10 +63,17 @@ UPLOAD_DIR.mkdir(exist_ok=True)
 # Mount static files for uploaded images
 app.mount("/api/uploads", StaticFiles(directory=str(UPLOAD_DIR)), name="uploads")
 
+# CORS Configuration - Load allowed origins from environment
+cors_origins_str = os.environ.get('CORS_ORIGINS', '*')
+if cors_origins_str == '*':
+    cors_origins = ["*"]
+else:
+    cors_origins = [origin.strip() for origin in cors_origins_str.split(',') if origin.strip()]
+
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
-    allow_origins=["*"],
+    allow_origins=cors_origins,
     allow_methods=["*"],
     allow_headers=["*"],
 )
