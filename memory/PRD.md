@@ -97,12 +97,14 @@ Portal imobiliário para o estado de Mato Grosso do Sul (Brasil), permitindo que
 ```
 /app/
 ├── backend/         # FastAPI
-│   ├── routes/      # auth, properties, payments, visits, notifications
+│   ├── routes/      # auth, properties, payments, visits, banners, cloudinary, password
 │   ├── utils/       # email_validator.py
 │   ├── middlewares/ # admin_middleware.py
 │   ├── database.py
 │   ├── models.py
-│   └── server.py
+│   ├── scheduler.py # APScheduler para expiração de planos
+│   ├── server.py    # Inclui script de startup para admin
+│   └── migrate_to_cloudinary.py  # Script de migração (já executado)
 ├── frontend/        # React + Tailwind
 │   ├── src/
 │   │   ├── components/
@@ -110,9 +112,25 @@ Portal imobiliário para o estado de Mato Grosso do Sul (Brasil), permitindo que
 │   │   ├── services/
 │   │   └── context/
 │   └── public/
-└── uploads/         # Fotos de imóveis e comprovantes
+└── uploads/         # DEPRECATED - agora usa Cloudinary
 ```
 
 ## Integrações
+- **Cloudinary:** Armazenamento permanente de imagens (cloud_name: dwlvgs9a3)
+- **Resend:** Envio de emails para recuperação de senha
 - **API IBGE Cidades:** Para dropdown de cidades por estado
 - **dnspython:** Validação de domínio de email
+- **APScheduler:** Jobs em background (expiração de planos)
+
+---
+
+## Changelog
+
+### 03/02/2025 - Migração Cloudinary
+- [x] Criado script `migrate_to_cloudinary.py`
+- [x] Migradas 24 imagens de propriedades para Cloudinary
+- [x] Migradas 2 imagens de banners para Cloudinary
+- [x] Migrada 1 foto de perfil de usuário para Cloudinary
+- [x] Corrigido `AdminGerenciarBanners.jsx` para suportar URLs do Cloudinary
+- [x] Todos os novos uploads agora vão automaticamente para Cloudinary
+- [x] Testes completos passando (verificado via testing agent)
