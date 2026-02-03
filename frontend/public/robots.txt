@@ -4,10 +4,13 @@
 User-agent: *
 Allow: /
 
-# Bloquear páginas de admin
+# Bloquear páginas administrativas e de autenticação
 Disallow: /admin/
 Disallow: /login
 Disallow: /cadastro
+Disallow: /esqueci-senha
+Disallow: /redefinir-senha
+Disallow: /checkout/
 
-# Sitemap
-Sitemap: https://www.imovlocal.com.br/sitemap.xml
+# Sitemap dinâmico (atualizado automaticamente com novos imóveis)
+Sitemap: https://www.imovlocal.com.br/api/seo/sitemap.xml
