@@ -390,12 +390,24 @@ async def delete_profile_photo(email: str = Depends(get_current_user_email)):
     # Delete photo file if exists
     old_photo = user.get('profile_photo')
     if old_photo:
-        old_path = old_photo.replace('/api/', '')
-        if os.path.exists(old_path):
+        if 'cloudinary.com' in old_photo:
+            # Delete from Cloudinary
             try:
-                os.remove(old_path)
+                public_id = old_photo.split('/upload/')[-1].rsplit('.', 1)[0]
+                if public_id.startswith('v'):
+                    public_id = '/'.join(public_id.split('/')[1:])
+                cloudinary.uploader.destroy(public_id)
+                logger.info(f"Deleted profile photo from Cloudinary: {public_id}")
             except Exception as e:
-                logger.warning(f"Could not delete profile photo: {e}")
+                logger.warning(f"Could not delete profile photo from Cloudinary: {e}")
+        else:
+            # Delete local file
+            old_path = old_photo.replace('/api/', '')
+            if os.path.exists(old_path):
+                try:
+                    os.remove(old_path)
+                except Exception as e:
+                    logger.warning(f"Could not delete profile photo: {e}")
     
     # Update user to remove photo
     await users_collection.update_one(
