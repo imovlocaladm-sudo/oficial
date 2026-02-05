@@ -301,27 +301,69 @@ async def upload_profile_photo(
             detail="Arquivo muito grande. O tamanho máximo é 5MB."
         )
     
-    # Generate unique filename
-    file_extension = photo.filename.split('.')[-1] if '.' in photo.filename else 'jpg'
-    filename = f"{user['id']}_{uuid.uuid4().hex[:8]}.{file_extension}"
-    filepath = os.path.join(UPLOAD_DIR, filename)
-    
-    # Delete old photo if exists
-    old_photo = user.get('profile_photo')
-    if old_photo:
-        old_path = old_photo.replace('/api/', '')
-        if os.path.exists(old_path):
-            try:
-                os.remove(old_path)
-            except Exception as e:
-                logger.warning(f"Could not delete old profile photo: {e}")
-    
-    # Save new photo
-    async with aiofiles.open(filepath, 'wb') as f:
-        await f.write(contents)
+    # Upload to Cloudinary if configured
+    if is_cloudinary_configured():
+        try:
+            # Delete old photo from Cloudinary if exists
+            old_photo = user.get('profile_photo')
+            if old_photo and 'cloudinary.com' in old_photo:
+                try:
+                    # Extract public_id from URL
+                    public_id = old_photo.split('/upload/')[-1].rsplit('.', 1)[0]
+                    if public_id.startswith('v'):
+                        public_id = '/'.join(public_id.split('/')[1:])
+                    cloudinary.uploader.destroy(public_id)
+                    logger.info(f"Deleted old profile photo from Cloudinary: {public_id}")
+                except Exception as e:
+                    logger.warning(f"Could not delete old profile photo from Cloudinary: {e}")
+            
+            # Upload new photo to Cloudinary
+            result = cloudinary.uploader.upload(
+                contents,
+                folder=f"imovlocal/profiles/{user['id']}",
+                public_id=f"profile_{uuid.uuid4().hex[:8]}",
+                resource_type="image",
+                overwrite=True,
+                transformation=[
+                    {"quality": "auto:good", "fetch_format": "auto"},
+                    {"width": 400, "height": 400, "crop": "fill", "gravity": "face"}
+                ]
+            )
+            photo_url = result.get("secure_url")
+            logger.info(f"Profile photo uploaded to Cloudinary for user {user['id']}")
+            
+        except Exception as e:
+            logger.error(f"Cloudinary upload failed: {str(e)}")
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Erro ao fazer upload da foto. Tente novamente."
+            )
+    else:
+        # Fallback: Save locally
+        file_extension = photo.filename.split('.')[-1] if '.' in photo.filename else 'jpg'
+        filename = f"{user['id']}_{uuid.uuid4().hex[:8]}.{file_extension}"
+        filepath = os.path.join(UPLOAD_DIR, filename)
+        
+        # Ensure directory exists
+        os.makedirs(UPLOAD_DIR, exist_ok=True)
+        
+        # Delete old photo if exists
+        old_photo = user.get('profile_photo')
+        if old_photo and not old_photo.startswith('http'):
+            old_path = old_photo.replace('/api/', '')
+            if os.path.exists(old_path):
+                try:
+                    os.remove(old_path)
+                except Exception as e:
+                    logger.warning(f"Could not delete old profile photo: {e}")
+        
+        # Save new photo
+        async with aiofiles.open(filepath, 'wb') as f:
+            await f.write(contents)
+        
+        photo_url = f"/api/{filepath}"
     
     # Update user with new photo URL
-    photo_url = f"/api/{filepath}"
     await users_collection.update_one(
         {"email": email},
         {"$set": {
