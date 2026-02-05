@@ -11,13 +11,23 @@ import uuid
 import logging
 import os
 import aiofiles
+import cloudinary
+import cloudinary.uploader
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/auth", tags=["authentication"])
 
-# Directory for profile photos
+# Directory for profile photos (fallback)
 UPLOAD_DIR = "uploads/profiles"
+
+# Cloudinary configuration check
+def is_cloudinary_configured():
+    return all([
+        os.environ.get('CLOUDINARY_CLOUD_NAME'),
+        os.environ.get('CLOUDINARY_API_KEY'),
+        os.environ.get('CLOUDINARY_API_SECRET')
+    ])
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 # Pydantic models for profile updates
