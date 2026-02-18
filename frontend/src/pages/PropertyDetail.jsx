@@ -324,20 +324,9 @@ const PropertyDetail = () => {
 
   const features = property.features && property.features.length > 0
     ? property.features
-    : [
-        'Sala de estar ampla',
-        'Cozinha planejada',
-        'Área de serviço',
-        'Sacada com churrasqueira',
-        'Armários embutidos',
-        'Piso porcelanato',
-        'Ar condicionado',
-        'Portaria 24h',
-        'Academia',
-        'Piscina',
-        'Salão de festas',
-        'Playground'
-      ];
+    : [];
+
+  const hasFeatures = features.length > 0;
 
   return (
     <div className="min-h-screen bg-gray-50">
