@@ -497,17 +497,19 @@ const PropertyDetail = () => {
                 </p>
               </div>
 
-              <div className="mb-6">
-                <h2 className="text-xl font-bold text-gray-800 mb-3">Características</h2>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                  {features.map((feature, index) => (
-                    <div key={index} className="flex items-center gap-2 text-gray-700">
-                      <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
-                      <span className="text-sm">{feature}</span>
-                    </div>
-                  ))}
+              {hasFeatures && (
+                <div className="mb-6">
+                  <h2 className="text-xl font-bold text-gray-800 mb-3">Características</h2>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                    {features.map((feature, index) => (
+                      <div key={index} className="flex items-center gap-2 text-gray-700">
+                        <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
+                        <span className="text-sm">{feature}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
 
               <div>
                 <h2 className="text-xl font-bold text-gray-800 mb-3">Valores</h2>
