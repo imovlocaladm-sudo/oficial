@@ -39,6 +39,8 @@ import AdminPagamentos from "./pages/admin/AdminPagamentos.jsx";
 // Payment Pages
 import Planos from "./pages/Planos.jsx";
 import Checkout from "./pages/Checkout.jsx";
+import PagamentoSucesso from "./pages/PagamentoSucesso.jsx";
+import PagamentoCancelado from "./pages/PagamentoCancelado.jsx";
 
 // Parcerias Pages
 import ParceriasHub from "./pages/parcerias/ParceriasHub.jsx";
