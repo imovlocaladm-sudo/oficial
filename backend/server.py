@@ -19,6 +19,7 @@ from routes.password_routes import router as password_router
 from routes.cloudinary_routes import router as cloudinary_router
 from routes.seo_routes import router as seo_router
 from routes.notification_routes import router as notification_router
+from routes.stripe_routes import router as stripe_router
 
 # Import scheduler
 from scheduler import start_scheduler, stop_scheduler
