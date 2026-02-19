@@ -56,6 +56,7 @@ api_router.include_router(payment_router)
 api_router.include_router(password_router)
 api_router.include_router(cloudinary_router)
 api_router.include_router(seo_router)
+api_router.include_router(stripe_router)  # Stripe Checkout
 
 # Include the router in the main app
 app.include_router(api_router)
