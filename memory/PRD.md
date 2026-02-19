@@ -70,6 +70,7 @@ Portal imobiliário para o estado de Mato Grosso do Sul (Brasil), permitindo que
 - [x] ~~**Segurança:** Alterar SECRET_KEY padrão para chave forte~~ ✅
 - [x] ~~**Migração Cloudinary:** Migrar todas as imagens locais para Cloudinary~~ ✅ (03/02/2025)
 - [x] ~~**CORS:** Configurar para restringir ao domínio de produção~~ ✅ (03/02/2025)
+- [x] ~~**Integração Stripe Checkout:** Pagamento via cartão/PIX com aprovação manual~~ ✅ (19/02/2025)
 
 ### P1 - Importante
 - [x] ~~**Sistema de Recuperação de Senha:** Via código de 6 dígitos por email~~ ✅
@@ -80,6 +81,34 @@ Portal imobiliário para o estado de Mato Grosso do Sul (Brasil), permitindo que
 - [x] ~~**SEO Avançado:** Sitemap dinâmico, Schema.org JSON-LD~~ ✅ (03/02/2025)
 - [x] ~~**Refatoração:** Criar notification_routes.py dedicado~~ ✅ (03/02/2025)
 - [x] ~~**Compressão de Imagens:** Otimização automática no Cloudinary (thumbnails, resize)~~ ✅ (03/02/2025)
+
+---
+
+## Integração Stripe
+
+### Configuração Necessária
+No Dashboard da Stripe, crie os seguintes Products/Prices:
+
+1. **Particular Trimestral** (R$ 47,90 / 3 meses)
+   - Após criar, copie o `price_id` e substitua em `stripe_routes.py`
+
+2. **Corretor Trimestral** (R$ 197,90 / 3 meses)
+   - Após criar, copie o `price_id` e substitua em `stripe_routes.py`
+
+3. **Imobiliária Anual** (R$ 497,90 / 12 meses)
+   - Após criar, copie o `price_id` e substitua em `stripe_routes.py`
+
+### Variáveis de Ambiente
+```
+STRIPE_API_KEY=sk_live_xxxxx  # Chave secreta da Stripe
+```
+
+### Fluxo de Pagamento
+1. Usuário escolhe plano → Clica em "Cartão ou PIX"
+2. Redirecionado ao Stripe Checkout
+3. Após pagamento → Status: PAGO (aguardando aprovação)
+4. Admin recebe notificação → Aprova manualmente
+5. Usuário tem acesso liberado
 
 ---
 
