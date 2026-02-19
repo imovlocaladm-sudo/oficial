@@ -14,7 +14,8 @@ import {
   CheckCircle,
   AlertCircle,
   FileImage,
-  X
+  X,
+  Loader2
 } from 'lucide-react';
 import { toast } from 'sonner';
 import axios from 'axios';
@@ -35,7 +36,9 @@ const Checkout = () => {
   const [uploading, setUploading] = useState(false);
   const [copied, setCopied] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
-  const [step, setStep] = useState(1); // 1: Confirmar, 2: PIX, 3: Comprovante, 4: Aguardando
+  const [step, setStep] = useState(1); // 1: Escolher método, 2: PIX Manual, 3: Comprovante, 4: Aguardando
+  const [paymentMethod, setPaymentMethod] = useState(null); // 'stripe' ou 'pix_manual'
+  const [stripeLoading, setStripeLoading] = useState(false);
 
   const planId = searchParams.get('plan');
 
