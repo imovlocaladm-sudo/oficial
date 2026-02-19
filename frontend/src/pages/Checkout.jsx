@@ -314,12 +314,12 @@ const Checkout = () => {
             {/* Main Content */}
             <div className="lg:col-span-2">
               <div className="bg-white rounded-lg shadow-lg p-6">
-                {/* Step 1: Confirmar Plano */}
+                {/* Step 1: Escolher Método de Pagamento */}
                 {step === 1 && (
                   <>
                     <h2 className="text-2xl font-bold text-gray-800 mb-6">
                       <CreditCard className="inline-block w-6 h-6 mr-2 text-red-600" />
-                      Confirmar Assinatura
+                      Escolha como pagar
                     </h2>
                     <div className="border rounded-lg p-4 mb-6">
                       <h3 className="font-semibold text-lg text-gray-800 mb-2">
@@ -335,23 +335,62 @@ const Checkout = () => {
                         ))}
                       </ul>
                     </div>
-                    <Button
-                      onClick={handleCreatePayment}
-                      disabled={creating}
-                      className="w-full bg-red-600 hover:bg-red-700"
-                    >
-                      {creating ? (
-                        <>
-                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
-                          Criando pedido...
-                        </>
-                      ) : (
-                        <>
-                          Continuar para Pagamento
-                          <ArrowLeft className="w-4 h-4 ml-2 rotate-180" />
-                        </>
-                      )}
-                    </Button>
+
+                    {/* Opções de Pagamento */}
+                    <div className="space-y-4">
+                      {/* Opção 1: Stripe (Cartão/PIX) - Recomendado */}
+                      <div 
+                        className="border-2 border-green-500 rounded-lg p-4 bg-green-50 cursor-pointer hover:bg-green-100 transition-colors"
+                        onClick={() => !stripeLoading && handleSelectPaymentMethod('stripe')}
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center">
+                              <CreditCard className="w-5 h-5 text-white" />
+                            </div>
+                            <div>
+                              <h4 className="font-semibold text-gray-800">Cartão de Crédito ou PIX</h4>
+                              <p className="text-sm text-gray-600">Pagamento rápido e seguro via Stripe</p>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <span className="bg-green-600 text-white text-xs px-2 py-1 rounded-full">Recomendado</span>
+                          </div>
+                        </div>
+                        {stripeLoading && (
+                          <div className="mt-3 flex items-center justify-center text-green-600">
+                            <Loader2 className="w-5 h-5 animate-spin mr-2" />
+                            Redirecionando para pagamento seguro...
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Opção 2: PIX Manual */}
+                      <div 
+                        className="border rounded-lg p-4 cursor-pointer hover:bg-gray-50 transition-colors"
+                        onClick={() => !creating && handleSelectPaymentMethod('pix_manual')}
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 bg-gray-500 rounded-full flex items-center justify-center">
+                            <span className="text-white text-lg font-bold">₱</span>
+                          </div>
+                          <div>
+                            <h4 className="font-semibold text-gray-800">PIX Manual</h4>
+                            <p className="text-sm text-gray-600">Copie a chave e envie o comprovante</p>
+                          </div>
+                        </div>
+                        {creating && (
+                          <div className="mt-3 flex items-center justify-center text-gray-600">
+                            <Loader2 className="w-5 h-5 animate-spin mr-2" />
+                            Criando pedido...
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    <p className="text-xs text-gray-500 mt-4 text-center">
+                      Após o pagamento, seu acesso será liberado em até 24h úteis após aprovação.
+                    </p>
                   </>
                 )}
 
