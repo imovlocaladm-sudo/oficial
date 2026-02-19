@@ -135,6 +135,39 @@ const Checkout = () => {
     }
   };
 
+  // Iniciar checkout Stripe (cartão/PIX)
+  const handleStripeCheckout = async () => {
+    setStripeLoading(true);
+    try {
+      const token = JSON.parse(localStorage.getItem('imovlocal_user'))?.access_token;
+      const response = await axios.post(
+        `${API_URL}/stripe/checkout/session`,
+        { 
+          plan_id: planId,
+          origin_url: window.location.origin
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      
+      // Redirecionar para Stripe Checkout
+      window.location.href = response.data.checkout_url;
+    } catch (error) {
+      console.error('Error creating Stripe checkout:', error);
+      toast.error(error.response?.data?.detail || 'Erro ao iniciar pagamento');
+      setStripeLoading(false);
+    }
+  };
+
+  // Escolher método de pagamento
+  const handleSelectPaymentMethod = (method) => {
+    setPaymentMethod(method);
+    if (method === 'stripe') {
+      handleStripeCheckout();
+    } else if (method === 'pix_manual') {
+      handleCreatePayment();
+    }
+  };
+
   const handleCopyPix = useCallback(() => {
     if (!pixInfo?.chave) return;
     
