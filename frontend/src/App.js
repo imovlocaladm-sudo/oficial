@@ -75,6 +75,8 @@ function App() {
             <Route path="/solicitar" element={<SolicitarImovel />} />
             <Route path="/planos" element={<Planos />} />
             <Route path="/checkout" element={<Checkout />} />
+            <Route path="/pagamento/sucesso" element={<PagamentoSucesso />} />
+            <Route path="/pagamento/cancelado" element={<PagamentoCancelado />} />
             
             {/* Protected User Routes */}
             <Route path="/admin/dashboard" element={
