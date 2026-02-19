@@ -445,7 +445,7 @@ async def admin_approve_payment(
     if not payment:
         raise HTTPException(status_code=404, detail="Pagamento não encontrado")
     
-    if payment["status"] != PaymentStatus.AWAITING_APPROVAL:
+    if payment["status"] not in [PaymentStatus.AWAITING_APPROVAL, "awaiting_approval"]:
         raise HTTPException(
             status_code=400,
             detail="Este pagamento não está aguardando aprovação"
