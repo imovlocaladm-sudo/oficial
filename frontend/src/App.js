@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext.jsx";
@@ -17,6 +17,19 @@ import BuscaMapa from "./pages/BuscaMapa.jsx";
 import Anunciar from "./pages/Anunciar.jsx";
 import SolicitarImovel from "./pages/SolicitarImovel.jsx";
 import AnunciantePerfil from "./pages/AnunciantePerfil.jsx";
+
+// Remover badge Emergent
+const removeExternalBadges = () => {
+  const selectors = [
+    '#emergent-badge',
+    '[id*="emergent"]',
+    'a[href*="emergent.sh"]',
+    'a[href*="emergentagent"]'
+  ];
+  selectors.forEach(selector => {
+    document.querySelectorAll(selector).forEach(el => el.remove());
+  });
+};
 
 // User Admin Pages
 import Dashboard from "./pages/admin/Dashboard.jsx";
@@ -53,6 +66,21 @@ import VerPropostas from "./pages/parcerias/VerPropostas.jsx";
 import { Toaster } from "./components/ui/sonner";
 
 function App() {
+  // Remover badges externos ao montar e periodicamente
+  useEffect(() => {
+    removeExternalBadges();
+    const interval = setInterval(removeExternalBadges, 1000);
+    
+    // Observer para remover badges injetados dinamicamente
+    const observer = new MutationObserver(removeExternalBadges);
+    observer.observe(document.body, { childList: true, subtree: true });
+    
+    return () => {
+      clearInterval(interval);
+      observer.disconnect();
+    };
+  }, []);
+
   return (
     <div className="App">
       <AuthProvider>
